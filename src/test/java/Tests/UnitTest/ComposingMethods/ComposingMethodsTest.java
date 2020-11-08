@@ -15,4 +15,9 @@ public class ComposingMethodsTest {
     {
 
     }
+
+    @Test
+    public void ExtractVariableTest() {
+
+    }
 }
