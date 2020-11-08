@@ -18,7 +18,7 @@
 
     <actions>
         <!-- Add your actions here -->
-        <group id="top" text="Wanted_Refactoring">
+        <group id="Wanted-Refactoring" text="Wanted_Refactoring">
             <add-to-group group-id="MainMenu" anchor="last"/>
 
             <action id="Wanted-Refactoring.dummy" class="dummy.dummy" text="dummydummy"
