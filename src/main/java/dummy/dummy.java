@@ -8,7 +8,6 @@ public class dummy extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        // TODO: insert action logic here
         Messages.showInputDialog("dummy", "dummy", null);
     }
 }
