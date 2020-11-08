@@ -1,4 +1,4 @@
-package Tests.UnitTest.ComposingMethods;
+package tests.unit;
 
 import org.junit.jupiter.api.Test;
 
