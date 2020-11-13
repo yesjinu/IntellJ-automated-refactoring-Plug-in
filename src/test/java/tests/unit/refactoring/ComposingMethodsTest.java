@@ -1,8 +1,16 @@
 package tests.unit.refactoring;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import org.junit.jupiter.api.Test;
 
-public class ComposingMethodsTest {
+public class ComposingMethodsTest extends LightJavaCodeInsightFixtureTestCase {
+
+    @Test
+    public void fetchCandidateTest() {
+        Project project = getActiveProject();
+        int i = 1;
+    }
 
     @Test
     public void InlineMethodTest()

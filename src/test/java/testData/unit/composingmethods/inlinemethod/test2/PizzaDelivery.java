@@ -1,9 +1,9 @@
-package codeblock.unit.composingmethods.inlinemethod.test1;
+package testData.unit.composingmethods.inlinemethod.test2;
 
 public class PizzaDelivery {
-    final int numberofLateDeliveries;
+    public final int numberofLateDeliveries;
 
-    public PizzaDelivery(int numberofLateDeliveries) {
+    public PizzaDelivery (int numberofLateDeliveries) {
         this.numberofLateDeliveries = numberofLateDeliveries;
     }
 
