@@ -14,6 +14,7 @@ public class FindPsi {
     private Project focusProject;
     private PsiFile focusFile;
     private PsiClass focusClass;
+    private PsiMethod focusMethod;
 
     /* get focusProject, File, Class from given event */
     public FindPsi(AnActionEvent e)
@@ -22,6 +23,7 @@ public class FindPsi {
         focusFile = e.getData(LangDataKeys.PSI_FILE);
         // assume file always contains one class
         focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
+        focusMethod = focusClass.getMethods()[0];
     }
 
     /* returns list of private members from focused class */
@@ -63,5 +65,17 @@ public class FindPsi {
 
         return ret;
     }
+
+    public List<PsiParameter> getParametersOfMethod()
+    {
+        List<PsiParameter> result = new ArrayList<>();
+
+        // assume class always contains one field
+        if (focusMethod.hasParameters()) {
+            result.addAll(Arrays.asList(focusMethod.getParameterList().getParameters()));
+        }
+        return result;
+    }
+
 
 }
