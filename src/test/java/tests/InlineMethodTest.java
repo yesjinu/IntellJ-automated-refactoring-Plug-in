@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import org.junit.jupiter.api.Test;
 
-public class ComposingMethodsTest extends LightJavaCodeInsightFixtureTestCase {
+public class InlineMethodTest extends LightJavaCodeInsightFixtureTestCase {
 
     @Test
     public void fetchCandidateTest() {
