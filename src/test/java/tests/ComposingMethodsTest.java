@@ -1,4 +1,4 @@
-package tests.unit.refactoring;
+package tests;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;

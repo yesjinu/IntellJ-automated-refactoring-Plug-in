@@ -1,4 +1,4 @@
-package model.utils;
+package utils;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;

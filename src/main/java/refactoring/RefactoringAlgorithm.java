@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.Messages;
 
 public abstract class RefactoringAlgorithm extends AnAction{
+
     @Override
     public void actionPerformed(AnActionEvent e) {
         int result = Messages.showYesNoDialog("Apply "+storyName(), "Wanted Refactoring", null);

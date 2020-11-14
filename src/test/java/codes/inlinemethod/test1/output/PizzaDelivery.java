@@ -1,4 +1,4 @@
-package testData.unit.composingmethods.inlinemethod.test1;
+package codes.inlinemethod.test1.output;
 
 public class PizzaDelivery {
     final int numberofLateDeliveries;

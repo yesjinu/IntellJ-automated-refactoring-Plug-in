@@ -1,4 +1,4 @@
-package testData.unit.composingmethods.inlinemethod.test2;
+package codes.inlinemethod.test2.output;
 
 public class HawaiianPizzaDelivery extends PizzaDelivery {
     public HawaiianPizzaDelivery(int numberofLateDeliveries) {

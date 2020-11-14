@@ -1,4 +1,4 @@
-package model.refactoring.composingmethods;
+package refactoring;
 
 import model.refactoring.RefactoringAlgorithm;
 

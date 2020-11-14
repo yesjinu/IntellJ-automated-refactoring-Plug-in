@@ -1,9 +1,8 @@
-package model.refactoring.composingmethods;
+package refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
 import model.refactoring.RefactoringAlgorithm;
-import model.utils.FindPsi;
 
 import java.util.ArrayList;
 import java.util.List;

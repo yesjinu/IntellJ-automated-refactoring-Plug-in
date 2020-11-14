@@ -1,4 +1,4 @@
-package tests.unit.refactoring;
+package tests;
 
 public class OrganizingDataTest {
 }

@@ -1,9 +1,9 @@
-package testData.unit.composingmethods.inlinemethod.test2;
+package codes.inlinemethod.test1.input;
 
 public class PizzaDelivery {
-    public final int numberofLateDeliveries;
+    final int numberofLateDeliveries;
 
-    public PizzaDelivery (int numberofLateDeliveries) {
+    public PizzaDelivery(int numberofLateDeliveries) {
         this.numberofLateDeliveries = numberofLateDeliveries;
     }
 
