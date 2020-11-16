@@ -6,8 +6,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /* Class to find specific Psi element */
 public class FindPsi {
@@ -21,7 +20,8 @@ public class FindPsi {
     {
         focusProject = e.getData(PlatformDataKeys.PROJECT);
         focusFile = e.getData(LangDataKeys.PSI_FILE);
-        // assume file always contains one class
+        // assume file always contains one class which has only one method
+        assert focusFile != null;
         focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
         focusMethod = focusClass.getMethods()[0];
     }
@@ -53,6 +53,7 @@ public class FindPsi {
         for(PsiMethod m : focusClass.getMethods())
         {
             PsiCodeBlock c = m.getBody();
+            assert c != null;
             for(PsiStatement s : c.getStatements())
             {
                 /* TODO: find statements by using reference list */
@@ -66,9 +67,10 @@ public class FindPsi {
         return ret;
     }
 
-    public List<PsiParameter> getParametersOfMethod()
+    /* returns list of parameters that passed to the method */
+    public Set<PsiParameter> findParametersOfMethod()
     {
-        List<PsiParameter> result = new ArrayList<>();
+        Set<PsiParameter> result = new HashSet<>();
 
         // assume class always contains one field
         if (focusMethod.hasParameters()) {
@@ -77,5 +79,26 @@ public class FindPsi {
         return result;
     }
 
+
+    /* returns list of reference expressions(symbols) in a method */
+    // TODO: method 안에서 PsiReferenceExpression을 찾아야 함
+   public Set<PsiReferenceExpression> findReferenceUsedInMethod()
+    {
+        Set<PsiReferenceExpression> result = new HashSet<>();
+
+        PsiCodeBlock codeBlock = focusMethod.getBody();
+        assert codeBlock != null;
+        for (PsiStatement p : codeBlock.getStatements()) {
+            p.accept(new JavaRecursiveElementVisitor() {
+                @Override
+                public void visitReferenceExpression(PsiReferenceExpression expression)
+                {
+                    super.visitReferenceExpression(expression);
+                    result.add(expression);
+                }
+            });
+        }
+        return result;
+    }
 
 }

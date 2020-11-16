@@ -1,12 +1,10 @@
-package SimplifyMethodCalls;
+package refactoring;
 
-import DataOrganize.Common.Refactoring;
-import DataOrganize.Common.PsiUtil.FindPsi;
-import DataOrganize.Common.PsiUtil.CreatePsi;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
+import com.intellij.refactoring.Refactoring;
 
-public class RemoveUnusedParameter extends Refactoring {
+public class RemoveUnusedParameter extends RefactoringAlgorithm {
 
     @Override
     public String storyName() {
