@@ -20,7 +20,7 @@ public class TraverseProjectPsi {
      * Returns List of every methods in project
      * @return classList List of all methods
      */
-    public List<PsiClass> getMethodsFromProject (Project focusProject) {
+    public static List<PsiClass> getMethodsFromProject (Project focusProject) {
         final List<PsiClass> classList = new ArrayList<>();
 
         final JavaElementVisitor visitor = new JavaElementVisitor() {
@@ -33,7 +33,7 @@ public class TraverseProjectPsi {
             }
         };
 
-        getRootPackages().forEach(aPackage -> aPackage.accept(visitor));
+        getRootPackages(focusProject).forEach(aPackage -> aPackage.accept(visitor));
         return classList;
     }
 

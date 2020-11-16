@@ -2,11 +2,13 @@
  * Class to find specific Psi element in given context.
  *
  * @author seha park
+ * @author Mintae Kim
  */
 package utils;
 
 import com.intellij.psi.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FindPsi {
@@ -66,5 +68,20 @@ public class FindPsi {
     /**
      * Searching for every
      */
+    // TODO: Implement Someting @seha park
+
+    /**
+     * Searching for every subclasses
+     * @param superclass Superclass
+     * @param classList List of all classes in project
+     * @return List of all subclasses extends superclass
+     */
+    public static List<PsiClass> findEverySubClass (PsiClass superclass, List<PsiClass> classList) {
+        List<PsiClass> subclassList = new ArrayList<>();
+        for (PsiClass psiClass : classList)
+            if (Arrays.asList(psiClass.getSupers()).contains(superclass))
+                subclassList.add(psiClass);
+        return subclassList;
+    }
 }
 
