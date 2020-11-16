@@ -45,7 +45,7 @@ public class SelfEncapField extends refactoring.RefactoringAlgorithm {
         methods.add("get"+newName); methods.add("set"+newName);
 
         List<String> methodToImpl = navigator.findMethod(methods);
-        if(methodToImpl.size()!=2){ return false; } // there's either getMember or setMember
+        if(methodToImpl.size()!=2){ return false; } // there's either getMember or setMember already
 
         return true;
     }

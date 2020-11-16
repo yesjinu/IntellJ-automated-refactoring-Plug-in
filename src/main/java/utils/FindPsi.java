@@ -18,7 +18,7 @@ public class FindPsi {
         for(PsiMethod m : focusClass.getMethods())
         {
             PsiCodeBlock c = m.getBody();
-            if(c==null){ return ret; } // no code block
+            if(c==null){ continue; } // no code block
 
             for(PsiStatement s : c.getStatements())
             {

@@ -23,7 +23,7 @@ public class ReplacePsi {
             if(old.getParent() instanceof PsiAssignmentExpression)
             {
                 PsiAssignmentExpression assignment = (PsiAssignmentExpression) old.getParent();
-                if(assignment.getLExpression().isEquivalentTo(old)) // define member
+                if(assignment.getLExpression().isEquivalentTo(old)) // assignment to member
                 {
                     PsiElement newValue = assignment.getRExpression();
                     PsiMethodCallExpression callSetter = CreatePsi.createMethodCall(project, setter, newValue);
@@ -38,29 +38,6 @@ public class ReplacePsi {
             {
                 old.replace(callGetter);
             }
-
-
-/*
-            if(((PsiExpressionStatement) old).getExpression() instanceof PsiAssignmentExpression)
-            {
-                PsiAssignmentExpression assignment= (PsiAssignmentExpression) ((PsiExpressionStatement)old).getExpression();
-                PsiElement newValue = assignment.getRExpression();
-                PsiMethodCallExpression callSetter = CreatePsi.createMethodCall(project, setter, newValue);
-                old.replace(callSetter);
-            }
-            else {
-                PsiMethodCallExpression callGetter = CreatePsi.createMethodCall(project, getter, null);
-                List<PsiReferenceExpression> ref = FindPsi.findReference(old);
-                for(PsiReferenceExpression r : ref)
-                {
-                    // ? assume no synonym
-                    if(r.getText().contains(member.getName()))
-                    {
-                        r.replace(callGetter);
-                    }
-                }
-            }*/
-
         }
     }
 }

@@ -54,7 +54,7 @@ public class CreatePsi {
      * @param project
      * @param method
      * @param par null if there's no parameter
-     * @return
+     * @return  Method Call expression
      */
     public static PsiMethodCallExpression createMethodCall(@NotNull Project project, @NotNull PsiMethod method, PsiElement par)
     {
