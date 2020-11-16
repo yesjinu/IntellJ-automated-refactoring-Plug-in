@@ -1,3 +1,9 @@
+/**
+ * Class to find specific Psi element in given context.
+ *
+ * @author seha park
+ * @author Mintae Kim
+ */
 package utils;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -7,8 +13,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/* Class to find specific Psi element */
 public class FindPsi {
     private Project focusProject;
     private PsiFile focusFile;
@@ -16,89 +24,110 @@ public class FindPsi {
     private PsiMethod focusMethod;
 
     /* get focusProject, File, Class from given event */
-    public FindPsi(AnActionEvent e)
-    {
+    public FindPsi(AnActionEvent e) {
         focusProject = e.getData(PlatformDataKeys.PROJECT);
         focusFile = e.getData(LangDataKeys.PSI_FILE);
         // assume file always contains one class which has only one method
         assert focusFile != null;
-        focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
+        focusClass = ((PsiClassOwner) focusFile).getClasses()[0];
         focusMethod = focusClass.getMethods()[0];
     }
 
-    /* returns list of private members from focused class */
-    public List<PsiField> findPrivateField()
-    {
-        List<PsiField> ret = new ArrayList<>();
-
-        // assume class always contains one field
-        for(PsiField f : focusClass.getFields())
-        {
-            if(f.getModifierList().hasModifierProperty("private"))
-            {
-                ret.add(f);
-                break;
-            }
-        }
-
-        return ret;
-    }
-
-    /* returns list of statements referring to given member */
-    public List<PsiStatement> findMemberStatement(PsiField member)
-    {
-        List<PsiStatement> ret = new ArrayList<>();
-
-        // assume class has more than one method
-        for(PsiMethod m : focusClass.getMethods())
-        {
+    /**
+     * Returns list of statements referring to given member
+     *
+     * @param member
+     * @return list of statements
+     */
+    public static List<PsiReferenceExpression> findMemberReference(PsiClass focusClass, PsiField member) {
+        List<PsiReferenceExpression> ret = new ArrayList<>();
+        for (PsiMethod m : focusClass.getMethods()) {
             PsiCodeBlock c = m.getBody();
-            assert c != null;
-            for(PsiStatement s : c.getStatements())
-            {
-                /* TODO: find statements by using reference list */
-                if(((PsiExpressionStatement)s).getExpression().toString().contains(member.getName()))
-                {
-                    ret.add(s);
+            if (c == null) {
+                return ret;
+            } // no code block
+
+            for (PsiStatement s : c.getStatements()) {
+                if (!s.getText().contains(member.getName())) {
+                    continue;
                 }
+
+                List<PsiReferenceExpression> refers = findReference(s);
+                for (PsiReferenceExpression r : refers) {
+                    if (r.isReferenceTo(member)) {
+                        ret.add(r);
+                    }
+                }
+
             }
         }
 
         return ret;
     }
 
-    /* returns list of parameters that passed to the method */
-    public Set<PsiParameter> findParametersOfMethod()
-    {
-        Set<PsiParameter> result = new HashSet<>();
+    /**
+     * Collect reference expression from given statement
+     * from 2019 Team 1 example
+     *
+     * @param statement
+     * @return PsiReferenceExpression in given statement
+     */
+    public static List<PsiReferenceExpression> findReference(PsiStatement statement) {
+        List<PsiReferenceExpression> ret = new ArrayList<>();
+        statement.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitReferenceExpression(PsiReferenceExpression expression) {
+                super.visitReferenceExpression(expression);
+                ret.add(expression);
+            }
+        });
+        return ret;
+    }
+
+    /* returns set of parameters that passed to the method */
+    public static Set<String> findParametersOfMethod(PsiMethod focusMethod) {
+        Set<String> result = new HashSet<>();
 
         // assume class always contains one field
         if (focusMethod.hasParameters()) {
-            result.addAll(Arrays.asList(focusMethod.getParameterList().getParameters()));
+            result.addAll(Collections.singletonList(Arrays.toString(focusMethod.getParameterList().getParameters())));
         }
         return result;
     }
 
 
-    /* returns list of reference expressions(symbols) in a method */
-    // TODO: method 안에서 PsiReferenceExpression을 찾아야 함
-   public Set<PsiReferenceExpression> findReferenceUsedInMethod()
-    {
-        Set<PsiReferenceExpression> result = new HashSet<>();
+    /* returns set of reference expressions(symbols) in a method */
+    public static Set<String> findReferenceUsedInMethod(PsiMethod focusMethod) {
+        Set<String> result = new HashSet<>();
 
-        PsiCodeBlock codeBlock = focusMethod.getBody();
-        assert codeBlock != null;
-        for (PsiStatement p : codeBlock.getStatements()) {
-            p.accept(new JavaRecursiveElementVisitor() {
-                @Override
-                public void visitReferenceExpression(PsiReferenceExpression expression)
-                {
-                    super.visitReferenceExpression(expression);
-                    result.add(expression);
-                }
-            });
-        }
+        focusMethod.accept((new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitReferenceExpression(PsiReferenceExpression expression) {
+                super.visitReferenceExpression(expression);
+                result.add(expression.toString());
+            }
+        }));
         return result;
     }
 
+    /**
+     * Searching for every
+     */
+    // TODO: Implement Someting @seha park
+
+    /**
+     * Searching for every subclasses
+     *
+     * @param superclass Superclass
+     * @param classList  List of all classes in project
+     * @return List of all subclasses extends superclass
+     */
+    public static List<PsiClass> findEverySubClass(PsiClass superclass, List<PsiClass> classList) {
+        List<PsiClass> subclassList = new ArrayList<>();
+        for (PsiClass psiClass : classList)
+            if (Arrays.asList(psiClass.getSupers()).contains(superclass))
+                subclassList.add(psiClass);
+        return subclassList;
+    }
 }
+
