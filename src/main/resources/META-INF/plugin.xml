@@ -11,7 +11,8 @@
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
-
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.java</depends>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
     </extensions>
@@ -21,8 +22,8 @@
         <group id="Wanted-Refactoring" text="Wanted_Refactoring">
             <add-to-group group-id="MainMenu" anchor="last"/>
 
-            <action id="Wanted-Refactoring.dummy" class="dummy.dummy" text="dummydummy"
-                    description="dummy action for testing making action"/>
+            <action id="Wanted-Refactoring.SEF" class="refactoring.SelfEncapField" text="self encapsulate field"
+                    description="Data Organize: self encapsulate field"/>
         </group>
     </actions>
 </idea-plugin>
