@@ -7,6 +7,8 @@ package utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+
+import java.util.Arrays;
 import java.util.List;
 
 public class ReplacePsi {

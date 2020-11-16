@@ -5,9 +5,12 @@
  */
 package refactoring;
 
+import com.intellij.lang.jvm.JvmParameter;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.refactoring.changeSignature.PsiCallReference;
 import utils.FindPsi;
 import utils.NavigatePsi;
 import utils.TraverseProjectPsi;
@@ -53,8 +56,43 @@ public class InlineMethod extends RefactoringAlgorithm {
      */
     @Override
     protected void refactor() {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
-        return;
+        for (PsiMethod removeMethod : fetchCandidateMethods()) {
+            List<PsiReference> references = Arrays.asList(removeMethod.getReference());
+
+            assert removeMethod.getBody() != null;
+            assert removeMethod.getBody().getStatementCount() > 0;
+
+            // Fetching element to replace
+            PsiStatement removeMethodStatement = removeMethod.getBody().getStatements()[0];
+            PsiElement replaceElement;
+            if (PsiType.VOID.equals(removeMethod.getReturnType()))
+                replaceElement = removeMethodStatement;
+            else
+                replaceElement = ((PsiReturnStatement) removeMethodStatement).getReturnValue();
+
+            assert replaceElement != null;
+
+            // Fetching Method Parameter: Replace
+            PsiParameterList paramList = removeMethod.getParameterList();
+            for (PsiReference reference : references) {
+                PsiElement refElement = reference.getElement();
+                PsiExpressionList paramRefList = ((PsiCall) refElement).getArgumentList();
+
+                // TODO: replace vars in replaceElement with Map paramList -> paramRefList
+                // Replace & Delete
+                WriteCommandAction.runWriteCommandAction(project, () -> {
+                    // TODO: Write Runnable Function
+                    removeMethod.delete();
+                });
+            }
+
+            // Delete Original Method
+            WriteCommandAction.runWriteCommandAction(project, () -> {
+                removeMethod.delete();
+            });
+        }
     }
 
     /**
