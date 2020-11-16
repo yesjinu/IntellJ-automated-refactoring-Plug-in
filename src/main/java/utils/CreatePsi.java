@@ -12,7 +12,7 @@ public class CreatePsi {
      * @param member member to build setter
      * @return PsiMethod with name setMember
      */
-    public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member)
+    public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member, String accessModifier)
     {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -20,7 +20,7 @@ public class CreatePsi {
         String newName = capitalize(member);
 
         PsiMethod newMethod = factory.createMethodFromText(
-                        "protected void " + "set" + newName + "(" + type + " newValue) {\n"
+                        accessModifier + " void " + "set" + newName + "(" + type + " newValue) {\n"
                             + member.getName() + " = newValue;\n}",
                             null);
 
@@ -33,7 +33,7 @@ public class CreatePsi {
      * @param member member to build getter
      * @return PsiMethod with name getMember
      */
-    public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member)
+    public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member, String accessModifier)
     {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -41,7 +41,7 @@ public class CreatePsi {
         String newName = capitalize(member);
 
         PsiMethod newMethod = factory.createMethodFromText(
-                        "protected " + type + " get" + newName + "() {\n"
+                        accessModifier + " " + type + " get" + newName + "() {\n"
                             + "return " + member.getName() + ";\n}",
                             null);
 

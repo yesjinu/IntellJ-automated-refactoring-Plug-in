@@ -7,7 +7,8 @@ import java.util.List;
 // Class to find specific Psi element in given context
 public class FindPsi {
     /**
-     * Returns list of statements referring to given member
+     * Returns list of statements referring to given member from class
+     * @param focusClass search scope
      * @param member
      * @return list of statements
      */

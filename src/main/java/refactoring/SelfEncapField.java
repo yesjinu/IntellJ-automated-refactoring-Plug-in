@@ -1,8 +1,6 @@
 package refactoring;
 
-import utils.CreatePsi;
-import utils.NavigatePsi;
-import utils.FindPsi;
+import utils.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
@@ -16,7 +14,7 @@ public class SelfEncapField extends refactoring.RefactoringAlgorithm {
     private Project project;
     private PsiClass targetClass;
     private PsiField member;
-    private List<PsiReferenceExpression> statements;
+    private List<PsiReferenceExpression> references;
 
     @Override
     public String storyName()
@@ -53,20 +51,21 @@ public class SelfEncapField extends refactoring.RefactoringAlgorithm {
     @Override
     protected void refactor()
     {
-        statements = FindPsi.findMemberReference(targetClass, member);
+        references = FindPsi.findMemberReference(targetClass, member);
 
         List<PsiElement> addList = new ArrayList<>();
 
         // create getter and setter
-        PsiMethod getMember = CreatePsi.createGetMethod(project, member);
+        PsiMethod getMember = CreatePsi.createGetMethod(project, member, "protected");
         addList.add(getMember);
 
-        PsiMethod setMember = CreatePsi.createSetMethod(project, member);
+        PsiMethod setMember = CreatePsi.createSetMethod(project, member, "protected");
         addList.add(setMember);
 
-        // create runner and refactor
-        SEFRunner runner = new SEFRunner(project, targetClass, addList, statements, member);
-        WriteCommandAction.runWriteCommandAction(project, runner);
+        WriteCommandAction.runWriteCommandAction(project, ()->{
+            AddPsi.addMethod(targetClass, addList); // add method in addList to targetClass
+            ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references, member); // encapsulate with getter and setter
+        });
     }
 
 }
