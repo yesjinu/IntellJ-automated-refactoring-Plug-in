@@ -1,10 +1,10 @@
-package model.refactoring;
+package refactoring;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.Messages;
 
-public abstract class RefactoringAlgorithm extends AnAction{
+public abstract class RefactoringAlgorithm extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {

@@ -1,13 +1,20 @@
 package refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import utils.FindPsi;
+import utils.NavigatePsi;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InlineMethod implements RefactoringAlgorithm {
+public class InlineMethod extends RefactoringAlgorithm {
+    private Project project;
+    private PsiClass targetClass;
+    private PsiField member;
+    private List<PsiReferenceExpression> statements;
+
 
     /**
      * Returns the story name as a string format, for message.
@@ -25,7 +32,13 @@ public class InlineMethod implements RefactoringAlgorithm {
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
-        FindPsi
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+
+        project = navigator.findProject();
+
+        targetClass = navigator.findClass();
+        if (targetClass == null) return false;
+
     }
 
     /**
@@ -33,6 +46,7 @@ public class InlineMethod implements RefactoringAlgorithm {
      */
     @Override
     protected void refactor() {
+
         return;
     }
 
