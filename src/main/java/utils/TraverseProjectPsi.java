@@ -8,8 +8,6 @@
 package utils;
 
 import com.intellij.ide.projectView.impl.nodes.PackageUtil;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 
@@ -18,34 +16,11 @@ import com.intellij.psi.*;
 import java.util.*;
 
 public class TraverseProjectPsi {
-    private static TraverseProjectPsi observer;
-    private static Project focusProject;
-
-    /**
-     * Collect project.
-     * @param e AnActionEvent
-     */
-    private TraverseProjectPsi(AnActionEvent e) {
-        focusProject = e.getData(PlatformDataKeys.PROJECT);
-    }
-
-    /**
-     * Factory for TraverseProjectPsi
-     * @param e AnActionEvent
-     * @return observer Factory object for TraverseProjectPsi
-     */
-    public static TraverseProjectPsi TraverseProjectPsiFactory (AnActionEvent e) {
-        if (observer == null)
-            observer = new TraverseProjectPsi(e);
-
-        return observer;
-    }
-
     /**
      * Returns List of every methods in project
      * @return classList List of all methods
      */
-    public List<PsiClass> getMethodsFromProject () {
+    public List<PsiClass> getMethodsFromProject (Project focusProject) {
         final List<PsiClass> classList = new ArrayList<>();
 
         final JavaElementVisitor visitor = new JavaElementVisitor() {
@@ -69,7 +44,7 @@ public class TraverseProjectPsi {
      *
      * @return a set of root packages
      */
-    private static Set<PsiPackage> getRootPackages() {
+    private static Set<PsiPackage> getRootPackages(Project focusProject) {
         final Set<PsiPackage> rootPackages = new HashSet<>();
         PsiElementVisitor visitor = new PsiElementVisitor() {
             @Override

@@ -38,7 +38,6 @@ public class InlineMethod extends RefactoringAlgorithm {
 
         targetClass = navigator.findClass();
         if (targetClass == null) return false;
-
     }
 
     /**
