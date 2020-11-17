@@ -1,4 +1,4 @@
-package model.refactoring;
+package refactoring;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
