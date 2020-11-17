@@ -1,4 +1,4 @@
-package codes.inlinemethod.test2.input;
+package wanted.inlinemethod.test2.input;
 
 public class HawaiianPizzaDelivery extends PizzaDelivery {
     public HawaiianPizzaDelivery(int numberofLateDeliveries) {

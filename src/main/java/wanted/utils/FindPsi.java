@@ -1,4 +1,4 @@
-package utils;
+package wanted.utils;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;

@@ -1,4 +1,4 @@
-package codes.inlinemethod.test2.output;
+package wanted.inlinemethod.test2.output;
 
 public class PizzaDelivery {
     public final int numberofLateDeliveries;
