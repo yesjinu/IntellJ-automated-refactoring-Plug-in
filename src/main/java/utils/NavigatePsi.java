@@ -37,8 +37,8 @@ public class NavigatePsi {
 
     /**
      * factory for navigator
-     * @param e
-     * @return NavigatePsi
+     * @param e event
+     * @return NavigatePsi object
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e)
     {

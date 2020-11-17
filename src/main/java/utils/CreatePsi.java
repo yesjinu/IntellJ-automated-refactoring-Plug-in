@@ -51,10 +51,11 @@ public class CreatePsi {
     /**
      * Create MethodCallExpression for given method and parameter
      * Method can have only one parameter
-     * @param project
-     * @param method
-     * @param par null if there's no parameter
-     * @return  Method Call expression
+     * @param project factory context
+     * @param method method to call
+     * @param par parameter of method
+     *        null if there's no parameter
+     * @return  Method Call expression. ex) method(par)
      */
     public static PsiMethodCallExpression createMethodCall(@NotNull Project project, @NotNull PsiMethod method, PsiElement par)
     {
@@ -74,6 +75,7 @@ public class CreatePsi {
         return (PsiMethodCallExpression)expression;
     }
 
+    /* capitalize name of given member */
     public static String capitalize(PsiField member)
     {
         String name = member.getName(); // make first character uppercase

@@ -6,13 +6,13 @@ import com.sun.istack.NotNull;
 
 import java.util.List;
 
-/* Class to add Psi Elements */
+// Class to add Psi Elements
 public class AddPsi {
     /**
-     * add all methods of addList to target class in order
+     * add all elements of addList to target class
      * append at end of class
-     * @param targetClass
-     * @param addList
+     * @param targetClass class to modify
+     * @param addList elements to add
      */
     public static void addMethod(@NotNull PsiClass targetClass, @NotNull List<PsiElement> addList)
     {

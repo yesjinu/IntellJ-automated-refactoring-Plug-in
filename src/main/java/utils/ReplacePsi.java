@@ -8,7 +8,7 @@ import java.util.List;
 public class ReplacePsi {
     /**
      * Replace getter() and setter()
-     * @param project
+     * @param project context
      * @param getter getter PsiMethod
      * @param setter setter PsiMethod
      * @param expressions Statements that refers 'member'

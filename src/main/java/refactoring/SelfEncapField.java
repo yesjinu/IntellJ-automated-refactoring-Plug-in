@@ -58,7 +58,6 @@ public class SelfEncapField extends refactoring.RefactoringAlgorithm {
         // create getter and setter
         PsiMethod getMember = CreatePsi.createGetMethod(project, member, "protected");
         addList.add(getMember);
-
         PsiMethod setMember = CreatePsi.createSetMethod(project, member, "protected");
         addList.add(setMember);
 
@@ -67,5 +66,4 @@ public class SelfEncapField extends refactoring.RefactoringAlgorithm {
             ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references, member); // encapsulate with getter and setter
         });
     }
-
 }

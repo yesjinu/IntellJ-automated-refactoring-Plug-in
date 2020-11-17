@@ -23,9 +23,9 @@ public class FindPsi {
 
             for(PsiStatement s : c.getStatements())
             {
-                if(!s.getText().contains(member.getName())){ continue; }
+                if(!s.getText().contains(member.getName())){ continue; } // check by text
 
-                List<PsiReferenceExpression> refers = findReference(s);
+                List<PsiReferenceExpression> refers = findReferenceExpression(s);
                 for(PsiReferenceExpression r : refers)
                 {
                     if(r.isReferenceTo(member))
@@ -41,15 +41,15 @@ public class FindPsi {
     }
 
     /**
-     * Collect reference expression from given statement
+     * Collect reference expression from given element
      * from 2019 Team 1 example
-     * @param statement
+     * @param element Psi element to check
      * @return PsiReferenceExpression in given statement
      */
-    public static List<PsiReferenceExpression> findReference(PsiStatement statement)
+    public static List<PsiReferenceExpression> findReferenceExpression(PsiElement element)
     {
         List<PsiReferenceExpression> ret = new ArrayList<>();
-        statement.accept(new JavaRecursiveElementVisitor() {
+        element.accept(new JavaRecursiveElementVisitor() {
                 @Override
                 public void visitReferenceExpression(PsiReferenceExpression expression)
                 {
