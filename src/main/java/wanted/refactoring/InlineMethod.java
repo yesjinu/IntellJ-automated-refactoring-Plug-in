@@ -1,13 +1,12 @@
-package refactoring;
+package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
-import model.refactoring.RefactoringAlgorithm;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InlineMethod implements RefactoringAlgorithm {
+public class InlineMethod extends wanted.refactoring.RefactoringAlgorithm {
 
     /**
      * Returns the story name as a string format, for message.
@@ -19,17 +18,17 @@ public class InlineMethod implements RefactoringAlgorithm {
     }
 
     /**
-     * Returns the possibility of refactoring for current project with particular strategy.
+     * Returns the possibility of wanted.refactoring for current project with particular strategy.
      * @param e An Actionevent
-     * @return true if refactoring is available, otherwise false.
+     * @return true if wanted.refactoring is available, otherwise false.
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
-        FindPsi
+        return true;
     }
 
     /**
-     * Method that performs refactoring.
+     * Method that performs wanted.refactoring.
      */
     @Override
     protected void refactor() {
