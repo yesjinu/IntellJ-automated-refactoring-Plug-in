@@ -1,67 +1,62 @@
 package utils;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
-/* Class to find specific Psi element */
+// Class to find specific Psi element in given context
 public class FindPsi {
-    private Project focusProject;
-    private PsiFile focusFile;
-    private PsiClass focusClass;
-
-    /* get focusProject, File, Class from given event */
-    public FindPsi(AnActionEvent e)
+    /**
+     * Returns list of statements referring to given member from class
+     * @param focusClass search scope
+     * @param member
+     * @return list of statements
+     */
+    public static List<PsiReferenceExpression> findMemberReference(PsiClass focusClass, PsiField member)
     {
-        focusProject = e.getData(PlatformDataKeys.PROJECT);
-        focusFile = e.getData(LangDataKeys.PSI_FILE);
-        // assume file always contains one class
-        focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
-    }
+        List<PsiReferenceExpression> ret = new ArrayList<>();
 
-    /* returns list of private members from focused class */
-    public List<PsiField> findPrivateField()
-    {
-        List<PsiField> ret = new ArrayList<>();
-
-        // assume class always contains one field
-        for(PsiField f : focusClass.getFields())
-        {
-            if(f.getModifierList().hasModifierProperty("private"))
-            {
-                ret.add(f);
-                break;
-            }
-        }
-
-        return ret;
-    }
-
-    /* returns list of statements referring to given member */
-    public List<PsiStatement> findMemberStatement(PsiField member)
-    {
-        List<PsiStatement> ret = new ArrayList<>();
-
-        // assume class has more than one method
         for(PsiMethod m : focusClass.getMethods())
         {
             PsiCodeBlock c = m.getBody();
+            if(c==null){ continue; } // no code block
+
             for(PsiStatement s : c.getStatements())
             {
-                /* TODO: find statements by using reference list */
-                if(((PsiExpressionStatement)s).getExpression().toString().contains(member.getName()))
+                if(!s.getText().contains(member.getName())){ continue; } // check by text
+
+                List<PsiReferenceExpression> refers = findReferenceExpression(s);
+                for(PsiReferenceExpression r : refers)
                 {
-                    ret.add(s);
+                    if(r.isReferenceTo(member))
+                    {
+                        ret.add(r);
+                    }
                 }
+
             }
         }
 
         return ret;
     }
 
+    /**
+     * Collect reference expression from given element
+     * from 2019 Team 1 example
+     * @param element Psi element to check
+     * @return PsiReferenceExpression in given statement
+     */
+    public static List<PsiReferenceExpression> findReferenceExpression(PsiElement element)
+    {
+        List<PsiReferenceExpression> ret = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+                @Override
+                public void visitReferenceExpression(PsiReferenceExpression expression)
+                {
+                    super.visitReferenceExpression(expression);
+                    ret.add(expression);
+                }
+        });
+        return ret;
+    }
 }
