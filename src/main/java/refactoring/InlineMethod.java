@@ -2,12 +2,12 @@ package refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
-import model.refactoring.RefactoringAlgorithm;
+import refactoring.RefactoringAlgorithm;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InlineMethod implements RefactoringAlgorithm {
+public class InlineMethod extends RefactoringAlgorithm {
 
     /**
      * Returns the story name as a string format, for message.
@@ -25,7 +25,7 @@ public class InlineMethod implements RefactoringAlgorithm {
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
-        FindPsi
+        return false;
     }
 
     /**
