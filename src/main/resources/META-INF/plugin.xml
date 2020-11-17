@@ -24,6 +24,10 @@
 
             <action id="Wanted-Refactoring.SEF" class="refactoring.SelfEncapField" text="self encapsulate field"
                     description="Data Organize: self encapsulate field"/>
+
+            <!-- Edited by YSJ -->
+            <action id="Wanted-Refactoring.CCE" class="refactoring.ConsolidateCondExpr" text="consolidate conditional expression"
+                    description="Simplifying Conditional Expressions: consolidate conditional expression"/>
         </group>
     </actions>
 </idea-plugin>

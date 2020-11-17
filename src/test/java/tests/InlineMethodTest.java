@@ -8,7 +8,8 @@ public class InlineMethodTest extends LightJavaCodeInsightFixtureTestCase {
 
     @Test
     public void fetchCandidateTest() {
-        Project project = getActiveProject();
+        //Edited by YSJ
+        //Project project = getActiveProject();
         int i = 1;
     }
 

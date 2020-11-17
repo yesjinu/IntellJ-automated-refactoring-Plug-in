@@ -1,5 +1,6 @@
 package utils;
 
+import com.intellij.ide.projectWizard.ModuleTypeCategory;
 import com.intellij.psi.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,20 @@ public class FindPsi {
                     super.visitReferenceExpression(expression);
                     ret.add(expression);
                 }
+        });
+        return ret;
+    }
+
+    // Edited by YSJ
+    public static List<PsiIfStatement> findIfStatement(PsiClass psiClass)
+    {
+        List<PsiIfStatement> ret = new ArrayList<>();
+        psiClass.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitIfStatement(PsiIfStatement statement) {
+                super.visitIfStatement(statement);
+                ret.add(statement);
+            }
         });
         return ret;
     }
