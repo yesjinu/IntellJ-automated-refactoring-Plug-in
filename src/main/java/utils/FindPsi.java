@@ -84,7 +84,12 @@ public class FindPsi {
         return ret;
     }
 
-    /* returns set of parameters that passed to the method */
+    /**
+     * method that returns set of parameters that passed to the method
+     * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
+     * @return set of unused parameters
+     * @author : JINU NOH
+     * */
     public static Set<String> findParametersOfMethod(PsiMethod focusMethod) {
         Set<String> result = new HashSet<>();
 
@@ -96,7 +101,12 @@ public class FindPsi {
     }
 
 
-    /* returns set of reference expressions(symbols) in a method */
+    /**
+     * returns set of reference expressions(symbols) in a method
+     * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
+     * @return set of used reference in method
+     * @author : JINU NOH
+     * */
     public static Set<String> findReferenceUsedInMethod(PsiMethod focusMethod) {
         Set<String> result = new HashSet<>();
 
