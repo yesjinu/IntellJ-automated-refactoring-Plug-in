@@ -40,4 +40,23 @@ public class ReplacePsi {
             }
         }
     }
+
+    /**
+     * Edit modifier of member
+     * @param member selected member
+     * @param removeValues modifier to be removed
+     * @param addValues modifier to be added
+     */
+    public static void changeModifier(PsiField member, List<String> removeValues, List<String> addValues)
+    {
+        for(String removeValue :removeValues)
+        {
+            member.getModifierList().setModifierProperty(removeValue, false);
+        }
+
+        for(String addValue :addValues)
+        {
+            member.getModifierList().setModifierProperty(addValue, true);
+        }
+    }
 }

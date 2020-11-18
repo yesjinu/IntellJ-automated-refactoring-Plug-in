@@ -55,7 +55,9 @@ public class EncapField extends refactoring.RefactoringAlgorithm{
     {
        references = FindPsi.findMemberReference(project, file, member);
 
-        List<PsiElement> addList = new ArrayList<>();
+       System.out.println(references);
+
+       List<PsiElement> addList = new ArrayList<>();
 
         // create getter and setter
         PsiMethod getMember = CreatePsi.createGetMethod(project, member, PsiModifier.PUBLIC);
@@ -64,12 +66,15 @@ public class EncapField extends refactoring.RefactoringAlgorithm{
         PsiMethod setMember = CreatePsi.createSetMethod(project, member, PsiModifier.PUBLIC);
         addList.add(setMember);
 
-        // TODO: make import statement
+        // change modifier
+        List<String> removeValue = new ArrayList<>();
+        removeValue.add(PsiModifier.PUBLIC);
+        List<String> addValue = new ArrayList<>();
+        addValue.add(PsiModifier.PRIVATE);
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
             AddPsi.addMethod(targetClass, addList); // add method in addList to targetClass
-            // TODO: add import statement
-            // TODO: change modifier
+            ReplacePsi.changeModifier(member, removeValue, addValue);
             ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references, member); // encapsulate with getter and setter
         });
     }
