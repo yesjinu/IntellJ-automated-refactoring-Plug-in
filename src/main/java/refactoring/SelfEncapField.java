@@ -56,9 +56,9 @@ public class SelfEncapField extends refactoring.RefactoringAlgorithm {
         List<PsiElement> addList = new ArrayList<>();
 
         // create getter and setter
-        PsiMethod getMember = CreatePsi.createGetMethod(project, member, "protected");
+        PsiMethod getMember = CreatePsi.createGetMethod(project, member, PsiModifier.PROTECTED);
         addList.add(getMember);
-        PsiMethod setMember = CreatePsi.createSetMethod(project, member, "protected");
+        PsiMethod setMember = CreatePsi.createSetMethod(project, member, PsiModifier.PROTECTED);
         addList.add(setMember);
 
         WriteCommandAction.runWriteCommandAction(project, ()->{

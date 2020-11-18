@@ -33,7 +33,7 @@ public class EncapField extends refactoring.RefactoringAlgorithm{
         targetClass = navigator.findClass();
         if(targetClass==null){ return false; }
 
-        List<PsiField> members = navigator.findPrivateField(); // TODO: find public field
+        List<PsiField> members = navigator.findPublicField(); // find public field
         if(members.isEmpty()){ return false; }
 
         // ! only encapsulate one member
@@ -53,15 +53,15 @@ public class EncapField extends refactoring.RefactoringAlgorithm{
     @Override
     protected void refactor()
     {
-       references = FindPsi.findMemberReference(targetClass, member);
+       references = FindPsi.findMemberReference(project, file, member);
 
         List<PsiElement> addList = new ArrayList<>();
 
         // create getter and setter
-        PsiMethod getMember = CreatePsi.createGetMethod(project, member, "public");
+        PsiMethod getMember = CreatePsi.createGetMethod(project, member, PsiModifier.PUBLIC);
         addList.add(getMember);
 
-        PsiMethod setMember = CreatePsi.createSetMethod(project, member, "public");
+        PsiMethod setMember = CreatePsi.createSetMethod(project, member, PsiModifier.PUBLIC);
         addList.add(setMember);
 
         // TODO: make import statement

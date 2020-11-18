@@ -58,7 +58,23 @@ public class NavigatePsi {
 
         for(PsiField f : focusClass.getFields())
         {
-            if(f.getModifierList().hasModifierProperty("private")){ ret.add(f); }
+            if(f.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ ret.add(f); }
+        }
+
+        return ret;
+    }
+
+    /**
+     * Returns list of public members from focused class
+     * @return list of public fields
+     */
+    public List<PsiField> findPublicField()
+    {
+        List<PsiField> ret = new ArrayList<>();
+
+        for(PsiField f : focusClass.getFields())
+        {
+            if(f.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ ret.add(f); }
         }
 
         return ret;
