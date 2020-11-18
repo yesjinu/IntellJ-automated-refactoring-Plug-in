@@ -24,6 +24,8 @@
 
             <action id="Wanted-Refactoring.SEF" class="refactoring.SelfEncapField" text="self encapsulate field"
                     description="Data Organize: self encapsulate field"/>
+            <action id="Wanted-Refactoring.EF" class="refactoring.EncapField" text="encapsulate field"
+                    description="Data Organize: encapsulate field"/>
         </group>
     </actions>
 </idea-plugin>
