@@ -15,6 +15,7 @@ import com.intellij.refactoring.changeSignature.PsiCallReference;
 import org.jetbrains.annotations.NotNull;
 import utils.FindPsi;
 import utils.NavigatePsi;
+import utils.ReplacePsi;
 import utils.TraverseProjectPsi;
 
 import java.util.ArrayList;
@@ -65,7 +66,6 @@ public class InlineMethod extends RefactoringAlgorithm {
     protected void refactor() {
         assert isCandidate (method);
 
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
         List<PsiReference> references = Arrays.asList(method.getReference());
 
         // Fetching element to replace
@@ -91,16 +91,24 @@ public class InlineMethod extends RefactoringAlgorithm {
                 PsiElement refElement = reference.getElement();
                 PsiExpressionList paramRefList = ((PsiCall) refElement).getArgumentList();
 
-                // TODO: replace vars in replaceElement with Map paramList -> paramRefList
                 // Replace & Delete
                 WriteCommandAction.runWriteCommandAction(project, () -> {
-                    // TODO: Write Runnable Function
-                    method.delete();
+                    // Replace statement
+                    refElement.replace(replaceElement);
+                    // replace vars in replaceElement with Map paramList -> paramRefList
+                    ReplacePsi.replaceParamToArgs(refElement, paramList, paramRefList);
                 });
             }
         }
         else {
-            // TODO: Remove
+            // Remove
+            for (PsiReference reference : references) {
+                PsiElement refElement = reference.getElement();
+                WriteCommandAction.runWriteCommandAction(project, () -> {
+                    // Replace statement
+                    refElement.delete();
+                });
+            }
         }
         // Delete Original Method
         WriteCommandAction.runWriteCommandAction(project, () -> {

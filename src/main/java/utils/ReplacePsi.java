@@ -69,4 +69,14 @@ public class ReplacePsi {
 
         }
     }
+    /**
+     * Replace vars in paramList to vars in paramRefList for PsiElement element.
+     *
+     * @param element Target PsiElement to refactor
+     * @param paramList List of PsiMethod parameters
+     * @param paramRefList List of expressions for calling target PsiMethod
+     */
+    public static void replaceParamToArgs(PsiElement element, PsiParameterList paramList, PsiExpressionList paramRefList) {
+
+    }
 }
