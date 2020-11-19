@@ -19,7 +19,7 @@ public class ExtractVariable extends RefactoringAlgorithm {
     }
 
     @Override
-    protected void refactor() {
+    protected void refactor(AnActionEvent e) {
 
     }
 }

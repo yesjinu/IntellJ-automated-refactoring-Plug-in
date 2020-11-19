@@ -30,7 +30,7 @@ public class AddForeignMethod extends RefactoringAlgorithm {
      * Method that performs wanted.refactoring.
      */
     @Override
-    protected void refactor() {
+    protected void refactor(AnActionEvent e) {
 
     }
 }

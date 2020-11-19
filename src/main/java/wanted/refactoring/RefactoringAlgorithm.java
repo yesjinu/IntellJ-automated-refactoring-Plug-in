@@ -8,30 +8,27 @@ public abstract class RefactoringAlgorithm extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        int result = Messages.showYesNoDialog("Apply "+storyName(), "Wanted Refactoring", null);
-        if(result==0) // perform wanted.refactoring
-        {
-            refactorRequest(e);
-        }
+
+        refactorRequest(e);
+
     }
 
-    /* apply wanted.refactoring if it's available */
+    /* apply refactoring if it's available */
     private void refactorRequest(AnActionEvent e)
     {
         if(!refactorValid(e)){ Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null); }
         else
         {
-            refactor();
-            Messages.showMessageDialog("Refactoring success", "Wanted Refactoring", null);
+            refactor(e);
         }
     }
 
     /* return story name for message */
     public abstract String storyName();
 
-    /* return true if wanted.refactoring is available */
+    /* return true if refactoring is available */
     public abstract boolean refactorValid(AnActionEvent e);
 
-    /* perform wanted.refactoring */
-    protected abstract void refactor();
+    /* perform refactoring */
+    protected abstract void refactor(AnActionEvent e);
 }

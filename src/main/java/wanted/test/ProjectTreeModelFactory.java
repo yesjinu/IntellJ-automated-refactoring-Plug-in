@@ -48,8 +48,6 @@ class ProjectTreeModelFactory {
             public void visitPackage(PsiPackage pack) {
                 // TODO: add a new node to the parent node, and traverse the content of the package
                 if (pack.getName().equals("META-INF")) return;
-//                System.out.println("******************************");
-//                System.out.println(pack.getParentPackage().toString());
                 System.out.println("Package : " + pack.getName() + "   -----   Parent : " + parent.toString());
                 DefaultMutableTreeNode node = new DefaultMutableTreeNode(pack.getQualifiedName());
                 node.setUserObject(pack);
@@ -137,7 +135,7 @@ class ProjectTreeModelFactory {
                 final PsiPackage psiPackage = JavaDirectoryService.getInstance().getPackage(dir);
 
                 // 디폴트가 아닌 패키지이면 -> rootPackage에 넣는다
-                if (psiPackage != null && !PackageUtil.isPackageDefault(psiPackage)) {
+                if (psiPackage != null && PackageUtil.isPackageDefault(psiPackage)) {
 //                    System.out.println("1. " + psiPackage.getName());
                     rootPackages.add(psiPackage);
                 }
