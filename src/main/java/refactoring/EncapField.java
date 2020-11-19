@@ -53,9 +53,7 @@ public class EncapField extends refactoring.RefactoringAlgorithm{
     @Override
     protected void refactor()
     {
-       references = FindPsi.findMemberReference(project, file, member);
-
-       System.out.println(references);
+       references = FindPsi.findMemberReference(file, member);
 
        List<PsiElement> addList = new ArrayList<>();
 

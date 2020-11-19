@@ -16,8 +16,6 @@ public class ReplacePsi {
      */
     public static void encapFied(Project project, PsiMethod getter, PsiMethod setter, List<PsiReferenceExpression> expressions, PsiField member)
     {
-        PsiMethodCallExpression callGetter = CreatePsi.createMethodCall(project, getter, null);
-
         for(PsiReferenceExpression old :expressions)
         {
             if(old.getParent() instanceof PsiAssignmentExpression)
@@ -26,16 +24,18 @@ public class ReplacePsi {
                 if(assignment.getLExpression().isEquivalentTo(old)) // assignment to member
                 {
                     PsiElement newValue = assignment.getRExpression();
-                    PsiMethodCallExpression callSetter = CreatePsi.createMethodCall(project, setter, newValue);
+                    PsiMethodCallExpression callSetter = CreatePsi.createMethodCall(project, setter, newValue, old.getQualifier());
                     (old.getParent()).replace(callSetter);
                 }
                 else
                 {
+                    PsiMethodCallExpression callGetter = CreatePsi.createMethodCall(project, getter, null, old.getQualifier());
                     old.replace(callGetter);
                 }
             }
             else
             {
+                PsiMethodCallExpression callGetter = CreatePsi.createMethodCall(project, getter, null, old.getQualifier());
                 old.replace(callGetter);
             }
         }
