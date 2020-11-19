@@ -10,7 +10,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.tree.java.PsiBreakStatementImpl;
 import com.intellij.refactoring.changeSignature.PsiCallReference;
+import org.jetbrains.annotations.NotNull;
 import utils.FindPsi;
 import utils.NavigatePsi;
 import utils.TraverseProjectPsi;
@@ -23,6 +25,7 @@ public class InlineMethod extends RefactoringAlgorithm {
     private Project project;
     private PsiClass targetClass;
     private PsiField member;
+    private PsiMethod method;
     private List<PsiReferenceExpression> statements;
 
     /**
@@ -36,8 +39,9 @@ public class InlineMethod extends RefactoringAlgorithm {
 
     /**
      * Returns the possibility of refactoring for current project with particular strategy.
+     *
      * @param e An Actionevent
-     * @return true if refactoring is available, otherwise false.
+     * @return true if refactoring selected method is available, otherwise false.
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
@@ -48,7 +52,10 @@ public class InlineMethod extends RefactoringAlgorithm {
         targetClass = navigator.findClass();
         if (targetClass == null) return false;
 
-        return fetchCandidateMethods().size() > 0;
+        method = navigator.findFocusMethod();
+        if (method == null) return false;
+
+        return isCandidate(method);
     }
 
     /**
@@ -56,26 +63,30 @@ public class InlineMethod extends RefactoringAlgorithm {
      */
     @Override
     protected void refactor() {
+        assert isCandidate (method);
+
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        List<PsiReference> references = Arrays.asList(method.getReference());
 
-        for (PsiMethod removeMethod : fetchCandidateMethods()) {
-            List<PsiReference> references = Arrays.asList(removeMethod.getReference());
+        // Fetching element to replace
+        PsiStatement removeMethodStatement = method.getBody().getStatements()[0];
+        PsiElement replaceElement;
+        boolean insert = false;
 
-            assert removeMethod.getBody() != null;
-            assert removeMethod.getBody().getStatementCount() > 0;
+        if (PsiType.VOID.equals(method.getReturnType())) {
+            replaceElement = removeMethodStatement;
+            insert = isInsertStatement(removeMethodStatement);
+        }
+        else {
+            replaceElement = ((PsiReturnStatement) removeMethodStatement).getReturnValue();
+            insert = true;
+        }
 
-            // Fetching element to replace
-            PsiStatement removeMethodStatement = removeMethod.getBody().getStatements()[0];
-            PsiElement replaceElement;
-            if (PsiType.VOID.equals(removeMethod.getReturnType()))
-                replaceElement = removeMethodStatement;
-            else
-                replaceElement = ((PsiReturnStatement) removeMethodStatement).getReturnValue();
+        assert replaceElement != null;
 
-            assert replaceElement != null;
-
+        if (insert) {
             // Fetching Method Parameter: Replace
-            PsiParameterList paramList = removeMethod.getParameterList();
+            PsiParameterList paramList = method.getParameterList();
             for (PsiReference reference : references) {
                 PsiElement refElement = reference.getElement();
                 PsiExpressionList paramRefList = ((PsiCall) refElement).getArgumentList();
@@ -84,46 +95,79 @@ public class InlineMethod extends RefactoringAlgorithm {
                 // Replace & Delete
                 WriteCommandAction.runWriteCommandAction(project, () -> {
                     // TODO: Write Runnable Function
-                    removeMethod.delete();
+                    method.delete();
                 });
             }
+        }
+        else {
+            // TODO: Remove
+        }
+        // Delete Original Method
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            method.delete();
+        });
+    }
 
-            // Delete Original Method
-            WriteCommandAction.runWriteCommandAction(project, () -> {
-                removeMethod.delete();
-            });
+    /**
+     * Helper method that checks whether statement in method needs to be inserted while refactoring.
+     *
+     * @return true if statement needs insertion.
+     */
+    private boolean isInsertStatement(PsiStatement statement) {
+        if (statement instanceof PsiAssertStatement ||
+                statement instanceof PsiThrowStatement ||
+                statement instanceof PsiExpressionStatement ||
+                statement instanceof PsiYieldStatement ||
+                statement instanceof PsiSynchronizedStatement)
+            return true;
+        else if (statement instanceof PsiIfStatement)
+            return isInsertStatement(((PsiIfStatement) statement).getThenBranch()) &&
+                    isInsertStatement(((PsiIfStatement) statement).getElseBranch());
+        else if (statement instanceof PsiLabeledStatement)
+            return isInsertStatement(((PsiLabeledStatement) statement).getStatement());
+        else if (statement instanceof PsiLoopStatement)
+            return isInsertStatement(((PsiLoopStatement) statement).getBody());
+        else if (statement instanceof PsiSwitchStatement){
+            if (((PsiSwitchStatement) statement).getBody() == null) return false;
+
+            for (PsiStatement innerStatement : ((PsiSwitchStatement) statement).getBody().getStatements()) {
+                if (!isInsertStatement(innerStatement)) return false;
+            }
+            return true;
+        }
+        else if (statement instanceof PsiBlockStatement){
+            for (PsiStatement innerStatement : ((PsiBlockStatement) statement).getCodeBlock().getStatements()) {
+                if (!isInsertStatement(innerStatement)) return false;
+            }
+            return true;
         }
     }
 
     /**
-     * Helper method that fetches candidate methods to eliminate.
+     * Helper method that checks whether candidate method is refactorable using 'Inline Method'.
      *
      * Every candidate methods should follow these two requisites:
      * 1. Methods which is not defined in subclasses
      * 2. Methods with 1 statement.
      *
-     * @return List of Candidate Methods for Refactoring
+     * @return true if method is refactorable
      */
-    private List<PsiMethod> fetchCandidateMethods() {
+    private boolean isCandidate(@NotNull PsiMethod method) {
         List<PsiClass> classList = TraverseProjectPsi.getMethodsFromProject(project);
         List<PsiClass> subclassList = FindPsi.findEverySubClass(targetClass, classList);
 
-        List<PsiMethod> psiMethods = Arrays.asList(targetClass.getMethods());
-
         List<PsiMethod> candidates = new ArrayList<>();
-        for (PsiMethod psiMethod : psiMethods) {
-            for (PsiClass subclass : subclassList) {
-                if (Arrays.asList(subclass.getMethods()).contains(psiMethod))
-                    continue;
+        for (PsiClass subclass : subclassList) {
+            if (Arrays.asList(subclass.getMethods()).contains(method))
+                return false;
 
-                PsiCodeBlock body = psiMethod.getBody();
-                if (body == null) continue;
+            PsiCodeBlock body = method.getBody();
+            if (body == null) return false;
 
-                // Choosing Methods with One
-                if (body.getStatementCount() == 1) candidates.add(psiMethod);
-            }
+            // Choosing Methods with One Statement
+            if (body.getStatementCount() > 1) return false;
         }
 
-        return candidates;
+        return true;
     }
 }
