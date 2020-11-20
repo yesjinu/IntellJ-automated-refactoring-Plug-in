@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /* class to provide self encapsulate field refactoring */
-public class HideMethodAction extends RefactoringAlgorithm {
+public class HideMethodAction extends BaseRefactorAction {
 
     @Override
     public boolean refactorValid(AnActionEvent e)

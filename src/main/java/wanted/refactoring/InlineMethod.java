@@ -6,7 +6,7 @@ import com.intellij.psi.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InlineMethod extends wanted.refactoring.RefactoringAlgorithm {
+public class InlineMethod extends BaseRefactorAction {
 
     /**
      * Returns the story name as a string format, for message.
@@ -18,17 +18,17 @@ public class InlineMethod extends wanted.refactoring.RefactoringAlgorithm {
     }
 
     /**
-     * Returns the possibility of wanted.refactoring for current project with particular strategy.
+     * Returns the possibility of refactoring for current project with particular strategy.
      * @param e An Actionevent
-     * @return true if wanted.refactoring is available, otherwise false.
+     * @return true if refactoring is available, otherwise false.
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
-        return true;
+        return false;
     }
 
     /**
-     * Method that performs wanted.refactoring.
+     * Method that performs refactoring.
      */
     @Override
     protected void refactor(AnActionEvent e) {

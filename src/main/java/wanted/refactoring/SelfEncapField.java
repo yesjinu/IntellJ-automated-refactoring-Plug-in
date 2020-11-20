@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /* class to provide self encapsulate field refactoring */
-public class SelfEncapField extends RefactoringAlgorithm {
+public class SelfEncapField extends BaseRefactorAction {
     private Project project;
     private PsiClass targetClass;
     private PsiField member;

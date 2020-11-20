@@ -32,9 +32,9 @@ public class HideMethodActionTestByBasePlatform extends BasePlatformTestCase {
 
         HideMethodAction action = new HideMethodAction();
 
-        // assertTrue(action.refactorValid(file));
-        // action.runRefactoring(file);
-        // assertTrue(TextUtils.codeEqual(file.getText(), ansBlock));
+//         assertTrue(action.refactorValid(file));
+//         action.runRefactoring(file);
+//         assertTrue(TextUtils.codeEqual(file.getText(), ansBlock));
     }
 
 }
