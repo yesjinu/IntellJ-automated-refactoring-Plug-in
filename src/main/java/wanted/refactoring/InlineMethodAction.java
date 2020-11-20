@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class InlineMethod extends BaseRefactorAction {
+public class InlineMethodAction extends BaseRefactorAction {
     private Project project;
     private PsiClass targetClass;
     private PsiField member;
@@ -57,12 +57,12 @@ public class InlineMethod extends BaseRefactorAction {
     protected void refactor(AnActionEvent e) {
         assert isCandidate (method);
 
-        List<PsiReference> references = Arrays.asList(method.getReference());
+        List<PsiReference> references = Arrays.asList(method.getReferences());
 
         // Fetching element to replace
         PsiStatement removeMethodStatement = method.getBody().getStatements()[0];
         PsiElement replaceElement;
-        boolean insert = false;
+        boolean insert;
 
         if (PsiType.VOID.equals(method.getReturnType())) {
             replaceElement = removeMethodStatement;

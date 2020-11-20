@@ -24,7 +24,7 @@
 
             <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="Self Encapsulate Field"
                     description="Data Organize: self encapsulate field"/>
-            <action id="Wanted-Refactoring.IM" class="wanted.refactoring.InlineMethod" text="Inline Method"
+            <action id="Wanted-Refactoring.IM" class="wanted.refactoring.InlineMethodAction" text="Inline Method"
                     description="Data Organize: self encapsulate field"/>
         </group>
     </actions>

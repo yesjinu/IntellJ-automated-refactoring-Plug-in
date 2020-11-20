@@ -1,4 +1,4 @@
-package wanted.inlinemethod.test2.output;
+package wanted.InlineMethod.test2.input;
 
 public class HawaiianPizzaDelivery extends PizzaDelivery {
     public HawaiianPizzaDelivery(int numberofLateDeliveries) {
