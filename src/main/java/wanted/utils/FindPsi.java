@@ -83,4 +83,18 @@ public class FindPsi {
         });
         return ret;
     }
+
+    /**
+     * Searching for every subclasses
+     * @param superclass Superclass
+     * @param classList List of all classes in project
+     * @return List of all subclasses extends superclass
+     */
+    public static List<PsiClass> findEverySubClass (PsiClass superclass, List<PsiClass> classList) {
+        List<PsiClass> subclassList = new ArrayList<>();
+        for (PsiClass psiClass : classList)
+            if (Arrays.asList(psiClass.getSupers()).contains(superclass))
+                subclassList.add(psiClass);
+        return subclassList;
+    }
 }
