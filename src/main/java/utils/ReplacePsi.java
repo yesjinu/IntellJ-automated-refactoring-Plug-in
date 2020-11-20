@@ -8,6 +8,7 @@ package utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -79,6 +80,24 @@ public class ReplacePsi {
      * @param paramRefList List of expressions for calling target PsiMethod
      */
     public static void replaceParamToArgs(PsiElement element, PsiParameterList paramList, PsiExpressionList paramRefList) {
-        // TODO: Mapping -> replace Needed
+        assert paramList.getParametersCount() == paramRefList.getExpressionCount();
+        PsiParameter [] paramArray = paramList.getParameters();
+        PsiExpression [] paramRefArray = paramRefList.getExpressions();
+
+        JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitElement(@NotNull PsiElement element) {
+                super.visitElement(element);
+
+                for (int i = 0; i < paramList.getParametersCount(); i++) {
+                    if (element.isEquivalentTo(paramArray[i])) {
+                        element.replace(paramRefArray[i]);
+                        break;
+                    }
+                }
+            }
+        };
+
+        element.accept(visitor);
     }
 }

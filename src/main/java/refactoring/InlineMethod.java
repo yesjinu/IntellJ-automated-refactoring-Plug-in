@@ -5,13 +5,10 @@
  */
 package refactoring;
 
-import com.intellij.lang.jvm.JvmParameter;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.java.PsiBreakStatementImpl;
-import com.intellij.refactoring.changeSignature.PsiCallReference;
 import org.jetbrains.annotations.NotNull;
 import utils.FindPsi;
 import utils.NavigatePsi;
@@ -129,7 +126,7 @@ public class InlineMethod extends RefactoringAlgorithm {
                 statement instanceof PsiSynchronizedStatement)
             return true;
         else if (statement instanceof PsiIfStatement)
-            return isInsertStatement(((PsiIfStatement) statement).getThenBranch()) &&
+            return isInsertStatement(((PsiIfStatement) statement).getThenBranch()) ||
                     isInsertStatement(((PsiIfStatement) statement).getElseBranch());
         else if (statement instanceof PsiLabeledStatement)
             return isInsertStatement(((PsiLabeledStatement) statement).getStatement());
@@ -139,15 +136,21 @@ public class InlineMethod extends RefactoringAlgorithm {
             if (((PsiSwitchStatement) statement).getBody() == null) return false;
 
             for (PsiStatement innerStatement : ((PsiSwitchStatement) statement).getBody().getStatements()) {
-                if (!isInsertStatement(innerStatement)) return false;
+                if (isInsertStatement(innerStatement) ||
+                        innerStatement instanceof PsiBreakStatement ||
+                        innerStatement instanceof PsiContinueStatement)
+                    return true;
             }
-            return true;
+            return false;
         }
         else if (statement instanceof PsiBlockStatement){
             for (PsiStatement innerStatement : ((PsiBlockStatement) statement).getCodeBlock().getStatements()) {
-                if (!isInsertStatement(innerStatement)) return false;
+                if (isInsertStatement(innerStatement) ||
+                        innerStatement instanceof PsiBreakStatement ||
+                        innerStatement instanceof PsiContinueStatement)
+                    return true;
             }
-            return true;
+            return false;
         }
     }
 
