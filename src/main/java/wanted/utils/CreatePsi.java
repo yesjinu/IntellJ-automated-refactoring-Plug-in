@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 
+
 public class CreatePsi {
     /**
      * Create setter method for given member
@@ -16,7 +17,7 @@ public class CreatePsi {
      * @param member member to build setter
      * @return PsiMethod with name setMember
      */
-    public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member)
+    public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member, String accessModifier)
     {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -24,9 +25,9 @@ public class CreatePsi {
         String newName = capitalize(member);
 
         PsiMethod newMethod = factory.createMethodFromText(
-                "protected void " + "set" + newName + "(" + type + " newValue) {\n"
-                        + member.getName() + " = newValue;\n}",
-                null);
+                        accessModifier + " void " + "set" + newName + "(" + type + " newValue) {\n"
+                            + member.getName() + " = newValue;\n}",
+                            null);
 
         return newMethod;
     }
@@ -37,7 +38,7 @@ public class CreatePsi {
      * @param member member to build getter
      * @return PsiMethod with name getMember
      */
-    public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member)
+    public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member, String accessModifier)
     {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -45,9 +46,9 @@ public class CreatePsi {
         String newName = capitalize(member);
 
         PsiMethod newMethod = factory.createMethodFromText(
-                "protected " + type + " get" + newName + "() {\n"
-                        + "return " + member.getName() + ";\n}",
-                null);
+                        accessModifier + " " + type + " get" + newName + "() {\n"
+                            + "return " + member.getName() + ";\n}",
+                            null);
 
         return newMethod;
     }
@@ -55,10 +56,11 @@ public class CreatePsi {
     /**
      * Create MethodCallExpression for given method and parameter
      * Method can have only one parameter
-     * @param project
-     * @param method
-     * @param par null if there's no parameter
-     * @return
+     * @param project factory context
+     * @param method method to call
+     * @param par parameter of method
+     *        null if there's no parameter
+     * @return  Method Call expression. ex) method(par)
      */
     public static PsiMethodCallExpression createMethodCall(@NotNull Project project, @NotNull PsiMethod method, PsiElement par)
     {
@@ -72,12 +74,13 @@ public class CreatePsi {
         }
 
         PsiExpression expression = factory.createExpressionFromText(
-                method.getName()+"("+param+")",
-                null);
+                                method.getName()+"("+param+")",
+                                null);
 
         return (PsiMethodCallExpression)expression;
     }
 
+    /* capitalize name of given member */
     public static String capitalize(PsiField member)
     {
         String name = member.getName(); // make first character uppercase

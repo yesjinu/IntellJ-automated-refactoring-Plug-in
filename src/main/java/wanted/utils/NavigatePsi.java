@@ -18,6 +18,7 @@ import com.sun.istack.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class NavigatePsi {
     private static NavigatePsi navigator = null;
     private static Project focusProject;
@@ -48,8 +49,8 @@ public class NavigatePsi {
 
     /**
      * factory for navigator
-     * @param e
-     * @return NavigatePsi
+     * @param e event
+     * @return NavigatePsi object
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e)
     {

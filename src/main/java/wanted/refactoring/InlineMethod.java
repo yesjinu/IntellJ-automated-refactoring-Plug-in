@@ -1,30 +1,12 @@
-/**
- * Composing Methods: Inline Method
- *
- * @author Mintae Kim
- */
 package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
-import wanted.utils.FindPsi;
-import wanted.utils.NavigatePsi;
-import wanted.utils.ReplacePsi;
-import wanted.utils.TraverseProjectPsi;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class InlineMethod extends RefactoringAlgorithm {
-    private Project project;
-    private PsiClass targetClass;
-    private PsiField member;
-    private PsiMethod method;
-    private List<PsiReferenceExpression> statements;
+public class InlineMethod extends BaseRefactorAction {
 
     /**
      * Returns the story name as a string format, for message.
@@ -36,151 +18,38 @@ public class InlineMethod extends RefactoringAlgorithm {
     }
 
     /**
-     * Returns the possibility of wanted.refactoring for current project with particular strategy.
-     *
+     * Returns the possibility of refactoring for current project with particular strategy.
      * @param e An Actionevent
-     * @return true if wanted.refactoring selected method is available, otherwise false.
+     * @return true if refactoring is available, otherwise false.
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
-        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
-
-        project = navigator.findProject();
-
-        targetClass = navigator.findClass();
-        if (targetClass == null) return false;
-
-        method = navigator.findFocusMethod();
-        if (method == null) return false;
-
-        return isCandidate(method);
-    }
-
-    /**
-     * Method that performs wanted.refactoring.
-     */
-    @Override
-    protected void refactor() {
-        assert isCandidate (method);
-
-        List<PsiReference> references = Arrays.asList(method.getReference());
-
-        // Fetching element to replace
-        PsiStatement removeMethodStatement = method.getBody().getStatements()[0];
-        PsiElement replaceElement;
-        boolean insert = false;
-
-        if (PsiType.VOID.equals(method.getReturnType())) {
-            replaceElement = removeMethodStatement;
-            insert = isInsertStatement(removeMethodStatement);
-        }
-        else {
-            replaceElement = ((PsiReturnStatement) removeMethodStatement).getReturnValue();
-            insert = true;
-        }
-
-        assert replaceElement != null;
-
-        if (insert) {
-            // Fetching Method Parameter: Replace
-            PsiParameterList paramList = method.getParameterList();
-            for (PsiReference reference : references) {
-                PsiElement refElement = reference.getElement();
-                PsiExpressionList paramRefList = ((PsiCall) refElement).getArgumentList();
-
-                // Replace & Delete
-                WriteCommandAction.runWriteCommandAction(project, () -> {
-                    // Replace statement
-                    refElement.replace(replaceElement);
-                    // replace vars in replaceElement with Map paramList -> paramRefList
-                    ReplacePsi.replaceParamToArgs(refElement, paramList, paramRefList);
-                });
-            }
-        }
-        else {
-            // Remove
-            for (PsiReference reference : references) {
-                PsiElement refElement = reference.getElement();
-                WriteCommandAction.runWriteCommandAction(project, () -> {
-                    // Replace statement
-                    refElement.delete();
-                });
-            }
-        }
-        // Delete Original Method
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            method.delete();
-        });
-    }
-
-    /**
-     * Helper method that checks whether statement in method needs to be inserted while wanted.refactoring.
-     *
-     * @return true if statement needs insertion.
-     */
-    private boolean isInsertStatement(PsiStatement statement) {
-        if (statement instanceof PsiAssertStatement ||
-                statement instanceof PsiThrowStatement ||
-                statement instanceof PsiExpressionStatement ||
-                statement instanceof PsiYieldStatement ||
-                statement instanceof PsiSynchronizedStatement)
-            return true;
-        else if (statement instanceof PsiIfStatement)
-            return isInsertStatement(((PsiIfStatement) statement).getThenBranch()) ||
-                    isInsertStatement(((PsiIfStatement) statement).getElseBranch());
-        else if (statement instanceof PsiLabeledStatement)
-            return isInsertStatement(((PsiLabeledStatement) statement).getStatement());
-        else if (statement instanceof PsiLoopStatement)
-            return isInsertStatement(((PsiLoopStatement) statement).getBody());
-        else if (statement instanceof PsiSwitchStatement){
-            if (((PsiSwitchStatement) statement).getBody() == null) return false;
-
-            for (PsiStatement innerStatement : ((PsiSwitchStatement) statement).getBody().getStatements()) {
-                if (isInsertStatement(innerStatement) ||
-                        innerStatement instanceof PsiBreakStatement ||
-                        innerStatement instanceof PsiContinueStatement)
-                    return true;
-            }
-            return false;
-        }
-        else if (statement instanceof PsiBlockStatement){
-            for (PsiStatement innerStatement : ((PsiBlockStatement) statement).getCodeBlock().getStatements()) {
-                if (isInsertStatement(innerStatement) ||
-                        innerStatement instanceof PsiBreakStatement ||
-                        innerStatement instanceof PsiContinueStatement)
-                    return true;
-            }
-            return false;
-        }
-
         return false;
     }
 
     /**
-     * Helper method that checks whether candidate method is refactorable using 'Inline Method'.
-     *
-     * Every candidate methods should follow these two requisites:
-     * 1. Methods which is not defined in subclasses
-     * 2. Methods with 1 statement.
-     *
-     * @return true if method is refactorable
+     * Method that performs refactoring.
      */
-    private boolean isCandidate(@NotNull PsiMethod method) {
-        List<PsiClass> classList = TraverseProjectPsi.getMethodsFromProject(project);
-        List<PsiClass> subclassList = FindPsi.findEverySubClass(targetClass, classList);
+    @Override
+    protected void refactor(AnActionEvent e) {
 
+    }
+
+    /**
+     * Method that fetches candidate methods to eliminate.
+     * @param psiElements List of PsiElements
+     * @return
+     */
+    public List<PsiMethod> fetchCandidateMethods(List<PsiElement> psiElements) {
         List<PsiMethod> candidates = new ArrayList<>();
-        for (PsiClass subclass : subclassList) {
-            if (Arrays.asList(subclass.getMethods()).contains(method))
-                return false;
-
-            PsiCodeBlock body = method.getBody();
-            if (body == null) return false;
-
-            // Choosing Methods with One Statement
-            if (body.getStatementCount() > 1) return false;
+        for (PsiElement psiElement : psiElements) {
+            if (psiElement instanceof PsiMethod) {
+                PsiCodeBlock codeBlock = ((PsiMethod) psiElement).getBody();
+                if (codeBlock != null && codeBlock.getStatementCount() == 1) {
+                    return null;
+                }
+            }
         }
-
-        return true;
+        return null;
     }
 }
