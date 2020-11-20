@@ -2,7 +2,7 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
-public class AddForeignMethod extends RefactoringAlgorithm {
+public class AddForeignMethod extends BaseRefactorAction {
 
     /**
      * Returns the possibility of wanted.refactoring for current project with particular strategy.

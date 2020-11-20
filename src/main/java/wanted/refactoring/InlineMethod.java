@@ -2,12 +2,11 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
-import refactoring.RefactoringAlgorithm;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InlineMethod extends RefactoringAlgorithm {
+public class InlineMethod extends BaseRefactorAction {
 
     /**
      * Returns the story name as a string format, for message.
@@ -32,7 +31,7 @@ public class InlineMethod extends RefactoringAlgorithm {
      * Method that performs refactoring.
      */
     @Override
-    protected void refactor() {
+    protected void refactor(AnActionEvent e) {
 
     }
 
