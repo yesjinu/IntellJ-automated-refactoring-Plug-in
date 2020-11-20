@@ -47,8 +47,8 @@ public class FindPsi {
     /**
      * Find reference expression which refers given member
      * search scope: directory of file. i.e, only check files in same package
-     * @param file the file which owen class with member field
-     * @param member psifield to focus
+     * @param file the file which own class with member field
+     * @param member PsiField to find reference
      * @return
      */
     public static List<PsiReferenceExpression> findMemberReference(PsiFile file, PsiField member)

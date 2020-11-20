@@ -3,14 +3,14 @@ package codes.encapsulatefield.test1.output;
 public class EF_other {
 
     public void method1() {
-        EF_owner o = new EF_owner();
-        System.out.println(o.getCount());
+        EF_owner o1 = new EF_owner();
+        System.out.println(o1.getCount());
     }
 
     public void method2()
     {
-        EF_owner o = new EF_owner();
-        o.setCount(2);
-        System.out.println(o.getCount());
+        EF_owner o2 = new EF_owner();
+        o2.setCount(2);
+        System.out.println(o2.getCount());
     }
 }

@@ -63,7 +63,7 @@ public class SelfEncapField extends refactoring.RefactoringAlgorithm {
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
             AddPsi.addMethod(targetClass, addList); // add method in addList to targetClass
-            ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references, member); // encapsulate with getter and setter
+            ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references); // encapsulate with getter and setter
         });
     }
 }

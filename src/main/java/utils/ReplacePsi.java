@@ -12,9 +12,8 @@ public class ReplacePsi {
      * @param getter getter PsiMethod
      * @param setter setter PsiMethod
      * @param expressions Statements that refers 'member'
-     * @param member field to encapsulate
      */
-    public static void encapFied(Project project, PsiMethod getter, PsiMethod setter, List<PsiReferenceExpression> expressions, PsiField member)
+    public static void encapFied(Project project, PsiMethod getter, PsiMethod setter, List<PsiReferenceExpression> expressions)
     {
         for(PsiReferenceExpression old :expressions)
         {

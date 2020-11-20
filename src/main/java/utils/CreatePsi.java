@@ -53,9 +53,9 @@ public class CreatePsi {
      * Method can have only one parameter
      * @param project factory context
      * @param method method to call
-     * @param par parameter of method
-     *        null if there's no parameter
-     * @return  Method Call expression. ex) method(par)
+     * @param par parameter of method, null if there's no parameter
+     * @param qualifier qualifier of method, null if there's no qualifier
+     * @return  Method Call expression. ex) qualifier.method(par)
      */
     public static PsiMethodCallExpression createMethodCall(@NotNull Project project, @NotNull PsiMethod method, PsiElement par, PsiElement qualifier)
     {
@@ -68,16 +68,16 @@ public class CreatePsi {
             param = param.substring(ind+1);
         }
 
-        String caller = "";
-        if(qualifier!=null){ // if there's a qualifier
-            caller = qualifier.getText();
-            int ind = caller.indexOf(':');
-            caller = caller.substring(ind+1) + ".";
+        String qual = "";
+        if(qualifier!=null){ // parse identifier of qualifier
+            qual = qualifier.getText();
+            int ind = qual.indexOf(':');
+            qual = qual.substring(ind+1) + ".";
         }
 
         PsiExpression expression = factory.createExpressionFromText(
-                                caller + method.getName()+"("+param+")",
-                                null);
+                                    qual + method.getName()+"("+param+")",
+                                    null);
 
         return (PsiMethodCallExpression)expression;
     }
