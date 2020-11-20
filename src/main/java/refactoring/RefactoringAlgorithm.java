@@ -3,6 +3,7 @@ package refactoring;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.psi.FileViewProvider;
 
 public abstract class RefactoringAlgorithm extends AnAction {
 
@@ -24,6 +25,7 @@ public abstract class RefactoringAlgorithm extends AnAction {
             refactor();
             Messages.showMessageDialog("Refactoring success", "Wanted Refactoring", null);
         }
+        FileViewProvider a;
     }
 
     /* return story name for message */

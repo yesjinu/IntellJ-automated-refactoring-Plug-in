@@ -60,5 +60,8 @@ public class RemoveUnusedParameter extends RefactoringAlgorithm {
         //방법 2 : parameter list를 새로운 것으로 교체한다.
         //        replace 함수를 이용. PsiParameterList 자체를 새로 만든 것으로 교체한다.
 
+        //        PsiFileFactory::createFileFromText() 메소드를 이용하거나
+        //        psiJavaParserFacade::createParameterFromText() 이용해도 좋을듯
+        // PsiFileFactory
     }
 }
