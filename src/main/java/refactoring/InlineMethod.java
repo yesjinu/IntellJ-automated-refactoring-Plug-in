@@ -152,6 +152,8 @@ public class InlineMethod extends RefactoringAlgorithm {
             }
             return false;
         }
+
+        return false;
     }
 
     /**
