@@ -17,7 +17,7 @@ public class RemoveUnusedParameter extends RefactoringAlgorithm {
     Set<String> referenceUsedInMethod;
     // TODO: Make Container of 'not used parameters'
     //  -> In what datatype?
-    Set<String> unusedParameter = new HashSet<>();
+    Set<PsiParameter> unusedParameter = new HashSet<>();
 
 
 
@@ -39,29 +39,30 @@ public class RemoveUnusedParameter extends RefactoringAlgorithm {
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
         focusMethod = navigator.getMethod();
-        Set<String> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
-        Set<String> referenceUsedInMethod = FindPsi.findReferenceUsedInMethod(focusMethod);
-        boolean refactorFlag = true;
+        Set<PsiParameter> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
+        Set<PsiReference> referenceUsedInMethod = FindPsi.findReferenceUsedInMethod(focusMethod);
 
-        for (String s : parametersOfMethod) {
-            if (!referenceUsedInMethod.contains(s)) {
-                unusedParameter.add(s);
-                refactorFlag = false;
+        for (PsiParameter p : parametersOfMethod) {
+            boolean appearFlag = false;
+            for (PsiReference r : referenceUsedInMethod) {
+                if (p.toString().equals(r.toString())) {
+                    appearFlag = true;
+                    break;
+                }
+            }
+            if (!appearFlag) {
+                unusedParameter.add(p);
             }
         }
-        return refactorFlag;
+
+        return !unusedParameter.isEmpty();
     }
 
     @Override
     protected void refactor() {
         //TODO : 실제로 사용된 parameter만 남기기
-        //방법 1 : 사용하지 않은 parameter를 지운다.
-        //        PsiElement::deleteChildRange 함수를 이용. PsiJavaToken:COMMA부터 PsiParameter:c까지 지우기
-        //방법 2 : parameter list를 새로운 것으로 교체한다.
-        //        replace 함수를 이용. PsiParameterList 자체를 새로 만든 것으로 교체한다.
-
-        //        PsiFileFactory::createFileFromText() 메소드를 이용하거나
-        //        psiJavaParserFacade::createParameterFromText() 이용해도 좋을듯
-        // PsiFileFactory
+        for (PsiParameter p : unusedParameter){
+            p.delete();
+        }
     }
 }

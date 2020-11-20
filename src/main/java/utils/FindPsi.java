@@ -90,12 +90,12 @@ public class FindPsi {
      * @return set of unused parameters
      * @author : JINU NOH
      * */
-    public static Set<String> findParametersOfMethod(PsiMethod focusMethod) {
-        Set<String> result = new HashSet<>();
+    public static Set<PsiParameter> findParametersOfMethod(PsiMethod focusMethod) {
+        Set<PsiParameter> result = new HashSet<>();
 
         // assume class always contains one field
         if (focusMethod.hasParameters()) {
-            result.addAll(Collections.singletonList(Arrays.toString(focusMethod.getParameterList().getParameters())));
+            result.addAll(Arrays.asList(focusMethod.getParameterList().getParameters()));
         }
         return result;
     }
@@ -107,14 +107,13 @@ public class FindPsi {
      * @return set of used reference in method
      * @author : JINU NOH
      * */
-    public static Set<String> findReferenceUsedInMethod(PsiMethod focusMethod) {
-        Set<String> result = new HashSet<>();
-
+    public static Set<PsiReference> findReferenceUsedInMethod(PsiMethod focusMethod) {
+        Set<PsiReference> result = new HashSet<>();
         focusMethod.accept((new JavaRecursiveElementVisitor() {
             @Override
             public void visitReferenceExpression(PsiReferenceExpression expression) {
                 super.visitReferenceExpression(expression);
-                result.add(expression.toString());
+                result.add(expression);
             }
         }));
         return result;
