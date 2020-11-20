@@ -1,4 +1,4 @@
-package refactoring;
+package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -9,13 +9,13 @@ public abstract class RefactoringAlgorithm extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         int result = Messages.showYesNoDialog("Apply "+storyName(), "Wanted Refactoring", null);
-        if(result==0) // perform refactoring
+        if(result==0) // perform wanted.refactoring
         {
             refactorRequest(e);
         }
     }
 
-    /* apply refactoring if it's available */
+    /* apply wanted.refactoring if it's available */
     private void refactorRequest(AnActionEvent e)
     {
         if(!refactorValid(e)){ Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null); }
@@ -29,9 +29,9 @@ public abstract class RefactoringAlgorithm extends AnAction {
     /* return story name for message */
     public abstract String storyName();
 
-    /* return true if refactoring is available */
+    /* return true if wanted.refactoring is available */
     public abstract boolean refactorValid(AnActionEvent e);
 
-    /* perform refactoring */
+    /* perform wanted.refactoring */
     protected abstract void refactor();
 }

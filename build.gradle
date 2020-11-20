@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-group 'edu.postech.csed332.automated-refactoring'
+group 'edu.postech.csed332.automated-wanted.refactoring'
 version '1.0-SNAPSHOT'
 
 repositories {

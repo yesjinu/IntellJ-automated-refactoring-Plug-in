@@ -1,4 +1,4 @@
-package refactoring;
+package wanted.refactoring;
 
 public class ExtractVariable implements RefactoringAlgorithm {
 

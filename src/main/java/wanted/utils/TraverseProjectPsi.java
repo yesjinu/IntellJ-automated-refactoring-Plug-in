@@ -5,7 +5,7 @@
  * @author seha park
  * @author POSTECH CSED332 TAs
  */
-package utils;
+package wanted.utils;
 
 import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;

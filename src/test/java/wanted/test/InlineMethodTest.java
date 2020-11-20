@@ -1,4 +1,4 @@
-package tests;
+package wanted.test;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;

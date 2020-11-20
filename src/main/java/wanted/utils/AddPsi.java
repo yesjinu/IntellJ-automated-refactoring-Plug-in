@@ -3,7 +3,7 @@
  *
  * @author seha park
  */
-package utils;
+package wanted.utils;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;

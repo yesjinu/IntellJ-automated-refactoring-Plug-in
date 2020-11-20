@@ -3,17 +3,17 @@
  *
  * @author Mintae Kim
  */
-package refactoring;
+package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
-import utils.FindPsi;
-import utils.NavigatePsi;
-import utils.ReplacePsi;
-import utils.TraverseProjectPsi;
+import wanted.utils.FindPsi;
+import wanted.utils.NavigatePsi;
+import wanted.utils.ReplacePsi;
+import wanted.utils.TraverseProjectPsi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,10 +36,10 @@ public class InlineMethod extends RefactoringAlgorithm {
     }
 
     /**
-     * Returns the possibility of refactoring for current project with particular strategy.
+     * Returns the possibility of wanted.refactoring for current project with particular strategy.
      *
      * @param e An Actionevent
-     * @return true if refactoring selected method is available, otherwise false.
+     * @return true if wanted.refactoring selected method is available, otherwise false.
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
@@ -57,7 +57,7 @@ public class InlineMethod extends RefactoringAlgorithm {
     }
 
     /**
-     * Method that performs refactoring.
+     * Method that performs wanted.refactoring.
      */
     @Override
     protected void refactor() {
@@ -114,7 +114,7 @@ public class InlineMethod extends RefactoringAlgorithm {
     }
 
     /**
-     * Helper method that checks whether statement in method needs to be inserted while refactoring.
+     * Helper method that checks whether statement in method needs to be inserted while wanted.refactoring.
      *
      * @return true if statement needs insertion.
      */

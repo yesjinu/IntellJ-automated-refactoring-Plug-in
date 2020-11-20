@@ -4,13 +4,12 @@
  * @author seha park
  * @author Mintae Kim
  */
-package utils;
+package wanted.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ReplacePsi {

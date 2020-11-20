@@ -4,7 +4,7 @@
  * @author seha park
  * @author Mintae Kim
  */
-package utils;
+package wanted.utils;
 
 import com.intellij.psi.*;
 import java.util.ArrayList;

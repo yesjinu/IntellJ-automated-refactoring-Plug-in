@@ -5,7 +5,7 @@
  * @author Mintae Kim
  * @author kornilova-1
  */
-package utils;
+package wanted.utils;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
