@@ -1,9 +1,9 @@
-package codes.inlinemethod.test1.input;
+package wanted.inlinemethod.test2.output;
 
 public class PizzaDelivery {
-    final int numberofLateDeliveries;
+    public final int numberofLateDeliveries;
 
-    public PizzaDelivery(int numberofLateDeliveries) {
+    public PizzaDelivery (int numberofLateDeliveries) {
         this.numberofLateDeliveries = numberofLateDeliveries;
     }
 

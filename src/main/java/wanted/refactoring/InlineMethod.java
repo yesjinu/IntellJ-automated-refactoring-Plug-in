@@ -1,4 +1,4 @@
-package refactoring;
+package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.psi.*;
