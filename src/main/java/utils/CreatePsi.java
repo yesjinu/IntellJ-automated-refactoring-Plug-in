@@ -80,4 +80,11 @@ public class CreatePsi {
         String newName = name.substring(0, 1).toUpperCase()+name.substring(1);
         return newName;
     }
+
+    public static PsiStatement copyStatement(@NotNull Project project, PsiStatement statement) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText(statement.getText(), null);
+        return newStatement;
+    }
 }

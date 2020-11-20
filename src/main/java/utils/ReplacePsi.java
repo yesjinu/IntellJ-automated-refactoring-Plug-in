@@ -40,4 +40,31 @@ public class ReplacePsi {
             }
         }
     }
+
+    // Edited by YSJ
+    public static void mergeCondExpr (Project project, PsiIfStatement ifStatement) {
+        PsiStatement elseStatement = ifStatement.getElseBranch();
+        PsiStatement elseElseStatement = ((PsiIfStatement) elseStatement).getElseBranch();
+
+        if (elseElseStatement != null) {
+            PsiStatement newElseStatement = CreatePsi.copyStatement(project, elseElseStatement);
+            elseStatement.replace(newElseStatement);
+        }
+        else {
+            elseStatement.delete();
+        }
+    }
+
+    // Edited by YSJ
+    public static void removeCondExpr (Project project, PsiIfStatement ifStatement) {
+        PsiStatement thenStatement = ifStatement.getThenBranch();
+
+        if (thenStatement != null) {
+            PsiStatement newThenStatement = CreatePsi.copyStatement(project, thenStatement);
+            ifStatement.replace(newThenStatement);
+        }
+        else {
+            ifStatement.delete();
+        }
+    }
 }

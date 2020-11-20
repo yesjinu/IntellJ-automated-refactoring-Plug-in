@@ -1,18 +1,13 @@
 package refactoring;
 
-import com.github.markusbernhardt.proxy.util.PListParser;
-import com.intellij.ide.projectWizard.ModuleTypeCategory;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import org.mozilla.javascript.ast.IfStatement;
 import utils.FindPsi;
 import utils.NavigatePsi;
-
-import java.util.ArrayList;
-import java.util.List;
+import utils.ReplacePsi;
 
 // Edited by YSJ
 public class ConsolidateCondExpr extends refactoring.RefactoringAlgorithm {
@@ -51,6 +46,38 @@ public class ConsolidateCondExpr extends refactoring.RefactoringAlgorithm {
 
     @Override
     protected void refactor() {
+        PsiStatement thenStatement;
+        PsiStatement elseStatement;
+        PsiStatement elseThenStatement;
+
+        String thenText, elseText;
+
+        while (true) {
+            thenStatement = ifStatement.getThenBranch();
+            elseStatement = ifStatement.getElseBranch();
+
+            if (elseStatement == null) break;
+            else if (!(elseStatement instanceof PsiIfStatement)) {
+                thenText = thenStatement.getText();
+                elseText = elseStatement.getText();
+                if (!thenText.equals(elseText)) break;
+
+                WriteCommandAction.runWriteCommandAction(project, ()->{
+                    ReplacePsi.removeCondExpr(project,ifStatement);
+                });
+                break;
+            }
+            else {
+                elseThenStatement = ((PsiIfStatement) elseStatement).getThenBranch();
+                thenText = thenStatement.getText();
+                elseText = elseThenStatement.getText();
+                if (!thenText.equals(elseText)) break;
+
+                WriteCommandAction.runWriteCommandAction(project, ()->{
+                    ReplacePsi.mergeCondExpr(project,ifStatement);
+                });
+            }
+        }
 
     }
 }
