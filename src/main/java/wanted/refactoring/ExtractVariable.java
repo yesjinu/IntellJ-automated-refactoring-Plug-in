@@ -10,7 +10,7 @@ public class ExtractVariable extends BaseRefactorAction {
 
     @Override
     public String storyName() {
-        return null;
+        return "Extract Variable";
     }
 
     @Override
