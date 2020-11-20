@@ -1,5 +1,3 @@
-package codes.selfencapsulatefield.test1.input;
-
 public class SEF_basic {
     private int member;
 
