@@ -42,7 +42,7 @@ public class ReplacePsi {
     }
 
     // Edited by YSJ
-    public static void mergeCondExpr (Project project, PsiIfStatement ifStatement) {
+    public static void mergeCondStatement(Project project, PsiIfStatement ifStatement) {
         PsiStatement elseStatement = ifStatement.getElseBranch();
         PsiStatement elseElseStatement = ((PsiIfStatement) elseStatement).getElseBranch();
 
@@ -56,7 +56,7 @@ public class ReplacePsi {
     }
 
     // Edited by YSJ
-    public static void removeCondExpr (Project project, PsiIfStatement ifStatement) {
+    public static void removeCondStatement(Project project, PsiIfStatement ifStatement) {
         PsiStatement thenStatement = ifStatement.getThenBranch();
 
         if (thenStatement != null) {
@@ -66,5 +66,13 @@ public class ReplacePsi {
         else {
             ifStatement.delete();
         }
+    }
+
+    public static void mergeCondExpr(Project project, PsiIfStatement ifStatement, boolean isFirstTime) {
+        PsiExpression ifCondition = ifStatement.getCondition();
+        PsiExpression elseifCondition = ((PsiIfStatement)(ifStatement.getElseBranch())).getCondition();
+
+        PsiExpression newCondition = CreatePsi.createMergeCondition(project, ifCondition, elseifCondition, isFirstTime);
+        ifCondition.replace(newCondition);
     }
 }

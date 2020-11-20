@@ -52,6 +52,8 @@ public class ConsolidateCondExpr extends refactoring.RefactoringAlgorithm {
 
         String thenText, elseText;
 
+        boolean isFirstTime = true;
+
         while (true) {
             thenStatement = ifStatement.getThenBranch();
             elseStatement = ifStatement.getElseBranch();
@@ -63,7 +65,7 @@ public class ConsolidateCondExpr extends refactoring.RefactoringAlgorithm {
                 if (!thenText.equals(elseText)) break;
 
                 WriteCommandAction.runWriteCommandAction(project, ()->{
-                    ReplacePsi.removeCondExpr(project,ifStatement);
+                    ReplacePsi.removeCondStatement(project,ifStatement);
                 });
                 break;
             }
@@ -73,9 +75,20 @@ public class ConsolidateCondExpr extends refactoring.RefactoringAlgorithm {
                 elseText = elseThenStatement.getText();
                 if (!thenText.equals(elseText)) break;
 
-                WriteCommandAction.runWriteCommandAction(project, ()->{
-                    ReplacePsi.mergeCondExpr(project,ifStatement);
-                });
+                if (isFirstTime) {
+                    WriteCommandAction.runWriteCommandAction(project, ()->{
+                        ReplacePsi.mergeCondExpr(project, ifStatement, true);
+                        ReplacePsi.mergeCondStatement(project,ifStatement);
+                    });
+                }
+                else {
+                    WriteCommandAction.runWriteCommandAction(project, ()->{
+                        ReplacePsi.mergeCondExpr(project, ifStatement, false);
+                        ReplacePsi.mergeCondStatement(project,ifStatement);
+                    });
+                }
+                isFirstTime = false;
+
             }
         }
 

@@ -87,4 +87,15 @@ public class CreatePsi {
         PsiStatement newStatement = factory.createStatementFromText(statement.getText(), null);
         return newStatement;
     }
+
+    public static PsiExpression createMergeCondition(@NotNull Project project, PsiExpression Left, PsiExpression Right, boolean isFirstTime) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        String par;
+        if (isFirstTime) par = "(" + Left.getText() + ")" + " || " + "(" + Right.getText() + ")";
+        else par = Left.getText() + " || " + "(" + Right.getText() + ")";
+
+        PsiExpression newExpression = factory.createExpressionFromText(par, null);
+        return newExpression;
+    }
 }
