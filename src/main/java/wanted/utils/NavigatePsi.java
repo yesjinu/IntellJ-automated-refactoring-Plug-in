@@ -10,7 +10,10 @@ import com.intellij.psi.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// class to navigate Psi structure, use for RefactorValid()
+/**
+ * class to navigate Psi structure, use for RefactorValid()
+ * @author seha Park
+ */
 public class NavigatePsi {
     private static NavigatePsi navigator = null;
     private static Project focusProject;

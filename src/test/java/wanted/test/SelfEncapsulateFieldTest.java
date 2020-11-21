@@ -3,6 +3,10 @@ package wanted.test;
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.SelfEncapField;
 
+/**
+ * Test class for self encapsulate field
+ * @author seha Park
+ */
 public class SelfEncapsulateFieldTest extends LightActionTestCase {
 
     protected AnAction getAction() {
@@ -14,22 +18,22 @@ public class SelfEncapsulateFieldTest extends LightActionTestCase {
         return super.getBasePath() + "/selfEncapField";
     }
 
-    /* simple case */
+    /* Test 1: simple case */
     public void testSelfEncapField1() throws Exception {
         doTest();
     }
 
-    /* complicate case */
+    /* Test 2: complicate case */
     public void testSelfEncapField2() throws Exception {
         doTest();
     }
 
-    /* variable shadowing */
+    /* Test 3: variable shadowing */
     public void testSelfEncapField3() throws Exception {
         doTest();
     }
 
-    /* do not refactor when setter or getter already exist */
+    /* Test 4: do not refactor when setter or getter already exist */
     public void testSelfEncapField4() throws Exception {
         try
         {

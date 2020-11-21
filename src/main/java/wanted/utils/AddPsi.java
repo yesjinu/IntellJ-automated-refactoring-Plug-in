@@ -6,7 +6,10 @@ import com.sun.istack.NotNull;
 
 import java.util.List;
 
-// Class to add Psi Elements
+/**
+ * Class to add Psi Elements
+ * @author seha Park
+ */
 public class AddPsi {
     /**
      * add all elements of addList to target class

@@ -4,7 +4,10 @@ import com.intellij.psi.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// Class to find specific Psi element in given context
+/**
+ * Class to find specific Psi element in given context
+ * @author seha Park
+ */
 public class FindPsi {
     /**
      * Returns list of statements referring to given member from class
@@ -42,7 +45,7 @@ public class FindPsi {
 
     /**
      * Collect reference expression from given element
-     * from 2019 Team 1 example
+     * @author CSED332 2019 Team 1
      * @param element Psi element to check
      * @return PsiReferenceExpression in given statement
      */
@@ -62,7 +65,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiMethodCallExpression Object in current PSI Element
-     *
+     * @author chanyoung Kim
      * @param element the PSI Element.
      * @return List<PsiMethodCallExpression> if element has MethodCallExpressions, empty() otherwise
      */
