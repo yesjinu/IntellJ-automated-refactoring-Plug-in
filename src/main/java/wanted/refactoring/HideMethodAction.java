@@ -7,7 +7,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.PsiJavaFileImpl;
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.*;
 
 import java.util.*;

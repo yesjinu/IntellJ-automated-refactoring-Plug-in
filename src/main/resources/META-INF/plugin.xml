@@ -22,7 +22,7 @@
         <group id="Wanted-Refactoring" text="Wanted_Refactoring">
             <add-to-group group-id="MainMenu" anchor="last"/>
 
-            <action id="Wanted-Refactoring.SEF" class="refactoring.SelfEncapField" text="self encapsulate field"
+            <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="self encapsulate field"
                     description="Data Organize: self encapsulate field"/>
         </group>
     </actions>
