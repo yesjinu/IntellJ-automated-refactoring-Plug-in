@@ -27,9 +27,16 @@ public class TraverseProjectPsi {
             final private List<PsiClass> classList_ptr = classList;
 
             @Override
+            public void visitPackage(PsiPackage pack) {
+                super.visitPackage(pack);
+                for (PsiPackage subPack : pack.getSubPackages()) subPack.accept(this);
+                for (PsiClass subClass : pack.getClasses()) subClass.accept(this);
+            }
+
+            @Override
             public void visitClass(PsiClass aClass) {
-                classList_ptr.add(aClass);
                 super.visitClass(aClass);
+                classList_ptr.add(aClass);
             }
         };
 

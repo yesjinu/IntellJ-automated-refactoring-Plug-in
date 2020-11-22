@@ -173,7 +173,6 @@ public class InlineMethodAction extends BaseRefactorAction {
         List<PsiClass> classList = TraverseProjectPsi.getMethodsFromProject(project);
         List<PsiClass> subclassList = FindPsi.findEverySubClass(targetClass, classList);
 
-        List<PsiMethod> candidates = new ArrayList<>();
         for (PsiClass subclass : subclassList) {
             if (Arrays.asList(subclass.getMethods()).contains(method))
                 return false;

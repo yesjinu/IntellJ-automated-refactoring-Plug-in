@@ -1,4 +1,4 @@
-package wanted.InlineMethod.test2.output;
+package InlineMethod;
 
 public class PizzaDelivery {
     public final int numberofLateDeliveries;
@@ -14,5 +14,16 @@ public class PizzaDelivery {
 
     boolean moreThanFiveLateDeliveries() {
         return numberofLateDeliveries > 5;
+    }
+}
+
+public class HawaiianPizzaDelivery extends PizzaDelivery {
+    public HawaiianPizzaDelivery(int numberofLateDeliveries) {
+        super (numberofLateDeliveries);
+    }
+
+    @Override
+    boolean moreThanFiveLateDeliveries() {
+        return numberofLateDeliveries > 12;
     }
 }

@@ -1,14 +1,29 @@
 package InlineMethod;
 
-class PizzaDelivery {
-    final int numberofLateDeliveries;
+public class PizzaDelivery {
+    public final int numberofLateDeliveries;
 
-    public PizzaDelivery(int numberofLateDeliveries) {
+    public PizzaDelivery (int numberofLateDeliveries) {
         this.numberofLateDeliveries = numberofLateDeliveries;
     }
 
+
     int getRating() {
-        return numberofLateDeliveries > 5 ? 2 : 1;
+        return moreThanFiveLateDeliveries() ? 2 : 1;
     }
 
+    boolean moreThanFiveLateDeliveries() {
+        return numberofLateDeliveries > 5;
+    }
+}
+
+public class HawaiianPizzaDelivery extends PizzaDelivery {
+    public HawaiianPizzaDelivery(int numberofLateDeliveries) {
+        super (numberofLateDeliveries);
+    }
+
+    @Override
+    boolean moreThanFiveLateDeliveries() {
+        return numberofLateDeliveries > 12;
+    }
 }

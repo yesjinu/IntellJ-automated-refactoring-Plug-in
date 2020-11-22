@@ -1,2 +1,3 @@
 rootProject.name = 'automated-wanted.refactoring'
+include 'testcases'
 
