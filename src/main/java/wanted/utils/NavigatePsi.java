@@ -11,8 +11,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.sun.istack.Nullable;
 
 import java.util.ArrayList;
@@ -24,17 +26,22 @@ public class NavigatePsi {
     private static Project focusProject;
     private static PsiFile focusFile;
     private static PsiClass focusClass;
-    private static PsiElement focusElement;
+    private static PsiMethod focusMethod;
 
+    private static Editor editor;
+    private static int caret;
+    
     /**
      * Collect project and psi file from given context
      * @param e
      */
     private NavigatePsi(AnActionEvent e)
     {
+        editor = e.getData(CommonDataKeys.EDITOR);
+
         focusProject = e.getData(PlatformDataKeys.PROJECT);
         focusFile = e.getData(LangDataKeys.PSI_FILE); // ? look for only currently opened file
-
+        
         try
         {
             focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
@@ -43,8 +50,13 @@ public class NavigatePsi {
             // NO class in current file
             focusClass = null;
         }
-
-        focusElement = e.getData(CommonDataKeys.PSI_ELEMENT);
+        try {
+            caret = editor.getCaretModel().getOffset();
+            focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
+        } catch(ArrayIndexOutOfBoundsException exception)
+        {
+            focusMethod = null;
+        }
     }
 
     /**
@@ -83,14 +95,7 @@ public class NavigatePsi {
      */
     @Nullable
     public PsiMethod findFocusMethod() {
-        PsiMethod method = null;
-        if (focusElement instanceof PsiMethod) {
-            final PsiFile containingFile = focusElement.getContainingFile();
-            if (containingFile != null) {
-                method = (PsiMethod) focusElement;
-            }
-        }
-        return method;
+        return focusMethod;
     }
 
     /**

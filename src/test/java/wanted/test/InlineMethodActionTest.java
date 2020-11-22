@@ -1,12 +1,12 @@
 package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
-import wanted.refactoring.HideMethodAction;
+import wanted.refactoring.InlineMethodAction;
 
 public class InlineMethodActionTest extends LightActionTestCase {
 
     protected AnAction getAction() {
-        return new HideMethodAction();
+        return new InlineMethodAction();
     }
 
     @Override
@@ -14,7 +14,7 @@ public class InlineMethodActionTest extends LightActionTestCase {
         return super.getBasePath() + "/InlineMethod";
     }
 
-    public void testHideMethodAction() throws Exception {
+    public void testInlineMethodAction() throws Exception {
         doTest();
     }
 }

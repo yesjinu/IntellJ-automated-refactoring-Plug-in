@@ -1,9 +1,16 @@
 package wanted.refactoring;
 
+import com.intellij.find.findUsages.FindMethodUsagesDialog;
+import com.intellij.find.findUsages.FindUsagesHandler;
+import com.intellij.find.findUsages.FindUsagesHandlerFactory;
+import com.intellij.find.findUsages.FindUsagesHandlerUi;
+import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.search.searches.MethodReferencesSearch;
+import com.intellij.psi.search.searches.ReferencesSearch;
 import org.jetbrains.annotations.NotNull;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
