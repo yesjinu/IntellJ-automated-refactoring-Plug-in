@@ -4,22 +4,24 @@ import com.intellij.find.findUsages.FindMethodUsagesDialog;
 import com.intellij.find.findUsages.FindUsagesHandler;
 import com.intellij.find.findUsages.FindUsagesHandlerFactory;
 import com.intellij.find.findUsages.FindUsagesHandlerUi;
+import com.intellij.ide.hierarchy.method.MethodHierarchyTreeStructure;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.MethodReferencesSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.psi.util.MethodSignatureUtil;
 import org.jetbrains.annotations.NotNull;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 import wanted.utils.TraverseProjectPsi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class InlineMethodAction extends BaseRefactorAction {
     private Project project;
@@ -170,12 +172,16 @@ public class InlineMethodAction extends BaseRefactorAction {
      * @return true if method is refactorable
      */
     private boolean isCandidate(@NotNull PsiMethod method) {
-        List<PsiClass> classList = TraverseProjectPsi.getMethodsFromProject(project);
-        List<PsiClass> subclassList = FindPsi.findEverySubClass(targetClass, classList);
+        // MethodHierarchyTreeStructure treeStructure = new MethodHierarchyTreeStructure(project, method, null);
+        List<PsiClass> subclassList =
+                new ArrayList<>(
+                    ClassInheritorsSearch.search(targetClass, GlobalSearchScope.allScope(project), false).findAll());
 
         for (PsiClass subclass : subclassList) {
-            if (Arrays.asList(subclass.getMethods()).contains(method))
-                return false;
+            for (PsiMethod method_sub : subclass.getMethods()){
+                if (MethodSignatureUtil.areSignaturesEqual(method, method_sub))
+                    return false;
+            }
 
             PsiCodeBlock body = method.getBody();
             if (body == null) return false;

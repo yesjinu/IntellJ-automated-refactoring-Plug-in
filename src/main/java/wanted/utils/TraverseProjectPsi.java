@@ -7,6 +7,7 @@
  */
 package wanted.utils;
 
+import com.intellij.ide.hierarchy.method.MethodHierarchyTreeStructure;
 import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
