@@ -22,6 +22,8 @@
         <group id="Wanted-Refactoring" text="Wanted_Refactoring">
             <add-to-group group-id="MainMenu" anchor="last"/>
 
+            <action id="wanted.refactoring.RemoveUnusedParameterAction" class="wanted.refactoring.RemoveUnusedParameterAction"
+                    text="Remove Unused Parameter"/>
             <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="self encapsulate field"
                     description="Data Organize: self encapsulate field"/>
 

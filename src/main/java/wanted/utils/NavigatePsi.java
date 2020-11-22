@@ -1,3 +1,9 @@
+/**
+ * Class to navigate Psi structure, use for RefactorValid().
+ *
+ * @author seha park
+ * @author Jinu Noh
+ */
 package wanted.utils;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -19,6 +25,7 @@ public class NavigatePsi {
     private static Project focusProject;
     private static PsiFile focusFile;
     private static PsiClass focusClass;
+    private static PsiMethod focusMethod;
 
     /**
      * Collect project and psi file from given context
@@ -32,6 +39,7 @@ public class NavigatePsi {
         try
         {
             focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
+            focusMethod = focusClass.getMethods()[0];
         }catch(ArrayIndexOutOfBoundsException exception)
         {
             // NO class in current file
@@ -98,4 +106,7 @@ public class NavigatePsi {
 
     /* return currently class of current file*/
     public PsiClass findClass(){ return focusClass; }
+
+    /* return first method of focus class */
+    public PsiMethod getMethod(){ return focusMethod; }
 }
