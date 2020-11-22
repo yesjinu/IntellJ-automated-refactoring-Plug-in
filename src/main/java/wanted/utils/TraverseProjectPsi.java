@@ -10,7 +10,6 @@ import java.util.*;
 
 /**
  * Class to Search Psi Class, Methods, ... for whole Project.
- *
  * @author Mintae Kim
  * @author seha park
  * @author POSTECH CSED332 TAs
