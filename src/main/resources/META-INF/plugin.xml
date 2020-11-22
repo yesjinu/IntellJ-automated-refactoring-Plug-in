@@ -24,6 +24,8 @@
 
             <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="self encapsulate field"
                     description="Data Organize: self encapsulate field"/>
+            <action id="Wanted-Refactoring.feature10" class="wanted.refactoring.ReplaceMagicNumber" text="replace megic number"
+                    description="Data Organize: replace magic number"/>
         </group>
     </actions>
 </idea-plugin>
