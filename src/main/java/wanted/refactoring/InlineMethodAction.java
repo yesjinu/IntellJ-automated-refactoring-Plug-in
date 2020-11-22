@@ -64,7 +64,7 @@ public class InlineMethodAction extends BaseRefactorAction {
     protected void refactor(AnActionEvent e) {
         assert isCandidate (method);
 
-        List<PsiReference> references = Arrays.asList(method.getReferences());
+        List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
 
         // Fetching element to replace
         PsiStatement removeMethodStatement = method.getBody().getStatements()[0];
@@ -86,8 +86,10 @@ public class InlineMethodAction extends BaseRefactorAction {
             // Fetching Method Parameter: Replace
             PsiParameterList paramList = method.getParameterList();
             for (PsiReference reference : references) {
-                PsiElement refElement = reference.getElement();
-                PsiExpressionList paramRefList = ((PsiCall) refElement).getArgumentList();
+                PsiElement refElement = reference.getElement().getParent();
+
+                assert refElement instanceof PsiMethodCallExpression;
+                PsiExpressionList paramRefList = ((PsiMethodCallExpression)refElement).getArgumentList();
 
                 // Replace & Delete
                 WriteCommandAction.runWriteCommandAction(project, () -> {
