@@ -1,15 +1,13 @@
-/**
- * Class to create Psi Elements.
- *
- * @author seha park
- */
 package wanted.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 
-
+/**
+ * Class to create Psi Elements.
+ * @author seha park
+ */
 public class CreatePsi {
     /**
      * Create setter method for given member

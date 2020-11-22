@@ -2,6 +2,10 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
+/**
+ * Returns the story name as a string format, for message.
+ * @author Mintae Kim
+ */
 public class ExtractVariable extends BaseRefactorAction {
 
     public boolean isRefactorable() {

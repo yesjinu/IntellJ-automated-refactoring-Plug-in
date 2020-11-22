@@ -1,10 +1,3 @@
-/**
- * Class to navigate Psi structure, use for RefactorValid().
- *
- * @author seha park
- * @author Mintae Kim
- * @author kornilova-1
- */
 package wanted.utils;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -20,7 +13,12 @@ import com.sun.istack.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Class to navigate Psi structure, use for RefactorValid().
+ * @author seha park
+ * @author Mintae Kim
+ * @author kornilova-1
+ */
 public class NavigatePsi {
     private static NavigatePsi navigator = null;
     private static Project focusProject;

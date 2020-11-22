@@ -1,9 +1,3 @@
-/**
- * Class to replace specific Psi Elements.
- *
- * @author seha park
- * @author Mintae Kim
- */
 package wanted.utils;
 
 import com.intellij.openapi.project.Project;
@@ -12,6 +6,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Class to replace specific Psi Elements.
+ * @author seha park
+ * @author Mintae Kim
+ */
 public class ReplacePsi {
     /**
      * Replace getter() and setter()

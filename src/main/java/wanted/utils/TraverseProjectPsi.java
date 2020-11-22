@@ -1,13 +1,5 @@
-/**
- * Class to Search Psi Class, Methods, ... for whole Project.
- *
- * @author Mintae Kim
- * @author seha park
- * @author POSTECH CSED332 TAs
- */
 package wanted.utils;
 
-import com.intellij.ide.hierarchy.method.MethodHierarchyTreeStructure;
 import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -16,6 +8,13 @@ import com.intellij.psi.*;
 
 import java.util.*;
 
+/**
+ * Class to Search Psi Class, Methods, ... for whole Project.
+ *
+ * @author Mintae Kim
+ * @author seha park
+ * @author POSTECH CSED332 TAs
+ */
 public class TraverseProjectPsi {
     /**
      * Returns List of every methods in project

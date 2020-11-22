@@ -1,28 +1,23 @@
 package wanted.refactoring;
 
-import com.intellij.find.findUsages.FindMethodUsagesDialog;
-import com.intellij.find.findUsages.FindUsagesHandler;
-import com.intellij.find.findUsages.FindUsagesHandlerFactory;
-import com.intellij.find.findUsages.FindUsagesHandlerUi;
-import com.intellij.ide.hierarchy.method.MethodHierarchyTreeStructure;
-import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
-import com.intellij.psi.search.searches.MethodReferencesSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
 import org.jetbrains.annotations.NotNull;
-import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
-import wanted.utils.TraverseProjectPsi;
 
 import java.util.*;
 
+/**
+ * Class to eliminate redundant 'Inline Method's.
+ * @author Mintae Kim
+ */
 public class InlineMethodAction extends BaseRefactorAction {
     private Project project;
     private PsiClass targetClass;

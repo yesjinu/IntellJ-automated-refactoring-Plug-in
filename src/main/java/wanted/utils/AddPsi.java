@@ -1,8 +1,3 @@
-/**
- * Class to add Psi Elements.
- *
- * @author seha park
- */
 package wanted.utils;
 
 import com.intellij.psi.PsiClass;
@@ -11,6 +6,10 @@ import com.sun.istack.NotNull;
 
 import java.util.List;
 
+/**
+ * Class to add Psi Elements.
+ * @author seha park
+ */
 public class AddPsi {
     /**
      * add all methods of addList to target class in order

@@ -1,9 +1,3 @@
-/**
- * Class to find specific Psi element in given context.
- *
- * @author seha park
- * @author Mintae Kim
- */
 package wanted.utils;
 
 import com.intellij.psi.*;
@@ -11,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class to find specific Psi element in given context.
+ * @author seha park
+ * @author Mintae Kim
+ */
 public class FindPsi {
     /**
      * Returns list of statements referring to given member
