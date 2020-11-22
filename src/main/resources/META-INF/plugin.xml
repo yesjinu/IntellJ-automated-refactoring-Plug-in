@@ -25,7 +25,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 
-            <action id="wanted.refactoring.RemoveUnusedParameter" class="wanted.refactoring.RemoveUnusedParameter"
+            <action id="wanted.refactoring.RemoveUnusedParameterAction" class="wanted.refactoring.RemoveUnusedParameterAction"
                     text="Remove Unused Parameter"/>
 =======
             <action id="Wanted-Refactoring.SEF" class="refactoring.SelfEncapField" text="self encapsulate field"

@@ -12,7 +12,7 @@ import org.jetbrains.concurrency.Promise;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
+// NEED NOT MODIFY
 public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCase {
     protected void doTest() throws Exception {
         myFixture.configureByFile(getBasePath() + "/before" + getTestName(false) + ".java");

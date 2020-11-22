@@ -54,7 +54,7 @@ public class SelfEncapField extends BaseRefactorAction {
     @Override
     protected void refactor(AnActionEvent e)
     {
-        references = compare.findMemberReference(targetClass, member);
+        references = FindPsi.findMemberReference(targetClass, member);
 
         List<PsiElement> addList = new ArrayList<>();
 
