@@ -66,17 +66,22 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
         return !unusedParameter.isEmpty();
     }
 
+
+    /**
+     * Do refactoring action
+     * @param e An Actionevent
+     */
     @Override
     protected void refactor(AnActionEvent e) {
-        System.out.println("***************************************");
-        System.out.println("parameter of method" + parametersOfMethod);
-        System.out.println("used in method" + referenceUsedInMethod);
-        System.out.println(unusedParameter);
-        System.out.println("***************************************");
+//        System.out.println("***************************************");
+//        System.out.println("parameter of method" + parametersOfMethod);
+//        System.out.println("used in method" + referenceUsedInMethod);
+//        System.out.println(unusedParameter);
+//        System.out.println("***************************************");
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
             for (PsiParameter p : unusedParameter){
-                p.delete(); // <- IncorrectOperationException occurs!
+                p.delete();
             }
         });
     }
