@@ -81,7 +81,14 @@ public class FindPsi {
         return ret;
     }
 
-    // Edited by YSJ
+    /**
+     * Return PsiIfstatement from cursor offset inside of PsiClass
+     * @author seungjae yoo
+     * @param psiClass
+     * @param offset
+     * @return PsiIfStatement which contains cursor
+     *         If various PsiIfStatements are correct, choose narrowest one
+     */
     public static PsiIfStatement findIfStatement(PsiClass psiClass, int offset)
     {
         List<PsiIfStatement> ifStatementList = new ArrayList<>();

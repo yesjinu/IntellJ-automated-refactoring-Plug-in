@@ -9,7 +9,10 @@ import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 
-// Edited by YSJ
+/**
+ * class to provide consolidate conditional expression refactoring
+ * @author seungjae yoo
+ */
 public class ConsolidateCondExpr extends BaseRefactorAction {
 
     private Project project;

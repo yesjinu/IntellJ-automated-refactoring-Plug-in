@@ -44,7 +44,12 @@ public class ReplacePsi {
         }
     }
 
-    // Edited by YSJ
+    /**
+     * Remove elseStatement and bring elseElseStatement of elseStatement out
+     * @author seungjae yoo
+     * @param project
+     * @param ifStatement
+     */
     public static void mergeCondStatement(Project project, PsiIfStatement ifStatement) {
         PsiStatement elseStatement = ifStatement.getElseBranch();
         PsiStatement elseElseStatement = ((PsiIfStatement) elseStatement).getElseBranch();
@@ -58,7 +63,13 @@ public class ReplacePsi {
         }
     }
 
-    // Edited by YSJ
+    /**
+     * Remove ifStatement and bring thenStatement of ifStatement out
+     * @author seungjae yoo
+     * @param project
+     * @param ifStatement
+     *
+     */
     public static void removeCondStatement(Project project, PsiIfStatement ifStatement) {
         PsiStatement thenStatement = ifStatement.getThenBranch();
 
@@ -71,6 +82,13 @@ public class ReplacePsi {
         }
     }
 
+    /**
+     * merge Condition of ifStatement and elseifStatement with || symbol
+     * @author seungjae yoo
+     * @param project
+     * @param ifStatement
+     * @param isFirstTime
+     */
     public static void mergeCondExpr(Project project, PsiIfStatement ifStatement, boolean isFirstTime) {
         PsiExpression ifCondition = ifStatement.getCondition();
         PsiExpression elseifCondition = ((PsiIfStatement)(ifStatement.getElseBranch())).getCondition();
