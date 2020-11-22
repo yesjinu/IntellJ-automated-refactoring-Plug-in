@@ -2,6 +2,7 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import wanted.utils.AddPsi;
 import wanted.utils.FindPsi;
@@ -9,12 +10,14 @@ import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class RemoveUnusedParameterAction extends BaseRefactorAction {
+    public Project project;
     private PsiMethod focusMethod;
     Set<PsiParameter> parametersOfMethod;
-    Set<PsiReference> referenceUsedInMethod;
+    Set<PsiReferenceExpression> referenceUsedInMethod;
     // TODO: Make Container of 'not used parameters'
     //  -> In what datatype?
     Set<PsiParameter> unusedParameter = new HashSet<>();
@@ -38,14 +41,19 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        project = navigator.findProject();
         focusMethod = navigator.getMethod();
         parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
         referenceUsedInMethod = FindPsi.findReferenceUsedInMethod(focusMethod);
 
         for (PsiParameter p : parametersOfMethod) {
             boolean appearFlag = false;
-            for (PsiReference r : referenceUsedInMethod) {
-                if (p.toString().equals(r.toString())) {
+            for (PsiReferenceExpression r : referenceUsedInMethod) {
+//                System.out.println("p -> name identifier" + p.getNameIdentifier());
+//                System.out.println("p -> name" + p.getName());
+                System.out.println(p.getName() + " vs " + r.getQualifiedName());
+
+                if (p.getName().equals(r.getQualifiedName())) {
                     appearFlag = true;
                     break;
                 }
@@ -60,16 +68,17 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
 
     @Override
     protected void refactor(AnActionEvent e) {
-//        WriteCommandAction.runWriteCommandAction(project, ()->{
-//            AddPsi.addMethod(targetClass, addList); // add method in addList to targetClass
-//            ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references, member); // encapsulate with getter and setter
-//        });
+        System.out.println("***************************************");
+        System.out.println("parameter of method" + parametersOfMethod);
+        System.out.println("used in method" + referenceUsedInMethod);
+        System.out.println(unusedParameter);
+        System.out.println("***************************************");
 
-
-        //TODO : 실제로 사용된 parameter만 남기기
-        for (PsiParameter p : unusedParameter){
-            p.delete(); // <- IncorrectOperationException occurs!
-        }
+        WriteCommandAction.runWriteCommandAction(project, ()->{
+            for (PsiParameter p : unusedParameter){
+                p.delete(); // <- IncorrectOperationException occurs!
+            }
+        });
     }
 
 }

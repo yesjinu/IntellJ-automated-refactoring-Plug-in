@@ -111,8 +111,8 @@ public class FindPsi {
      * @return set of used reference in method
      * @author : JINU NOH
      * */
-    public static Set<PsiReference> findReferenceUsedInMethod(PsiMethod focusMethod) {
-        Set<PsiReference> result = new HashSet<>();
+    public static Set<PsiReferenceExpression> findReferenceUsedInMethod(PsiMethod focusMethod) {
+        Set<PsiReferenceExpression> result = new HashSet<>();
         focusMethod.accept((new JavaRecursiveElementVisitor() {
             @Override
             public void visitReferenceExpression(PsiReferenceExpression expression) {
