@@ -160,5 +160,31 @@ public class FindPsi {
         });
         return ret;
     }
+
+    /**
+     * Return PsiIfstatement from cursor offset inside of PsiClass
+     * @author seungjae yoo
+     * @param psiClass
+     * @param offset
+     * @return PsiIfStatement which contains cursor
+     *         If various PsiIfStatements are correct, choose narrowest one
+     */
+    public static PsiIfStatement findIfStatement(PsiClass psiClass, int offset)
+    {
+        List<PsiIfStatement> ifStatementList = new ArrayList<>();
+
+        JavaRecursiveElementVisitor v = new JavaRecursiveElementVisitor(){
+                @Override
+                public void visitIfStatement(PsiIfStatement statement)
+                {
+                    if(statement.getTextRange().contains(offset)) ifStatementList.add(statement);
+                    super.visitIfStatement(statement);
+                }
+        };
+        psiClass.accept(v);
+
+        if (ifStatementList.isEmpty()) return null;
+        else return ifStatementList.get(ifStatementList.size()-1);
+    }
 }
 

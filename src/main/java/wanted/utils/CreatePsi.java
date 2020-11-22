@@ -85,4 +85,38 @@ public class CreatePsi {
         String newName = name.substring(0, 1).toUpperCase()+name.substring(1);
         return newName;
     }
+
+    /**
+     * Return same statement which is copied
+     * @author seungjae yoo
+     * @param project
+     * @param statement
+     * @return newStatement which is same with statement
+     */
+    public static PsiStatement copyStatement(@NotNull Project project, PsiStatement statement) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText(statement.getText(), null);
+        return newStatement;
+    }
+
+    /**
+     * Return merged conditionExpression with || symbol
+     * @author seungjae yoo
+     * @param project
+     * @param Left
+     * @param Right
+     * @param isFirstTime
+     * @return newExpression which is "Left || Right"
+     */
+    public static PsiExpression createMergeCondition(@NotNull Project project, PsiExpression Left, PsiExpression Right, boolean isFirstTime) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        String par;
+        if (isFirstTime) par = "(" + Left.getText() + ")" + " || " + "(" + Right.getText() + ")";
+        else par = Left.getText() + " || " + "(" + Right.getText() + ")";
+
+        PsiExpression newExpression = factory.createExpressionFromText(par, null);
+        return newExpression;
+    }
 }
