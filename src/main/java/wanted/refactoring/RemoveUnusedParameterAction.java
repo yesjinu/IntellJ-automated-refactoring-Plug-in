@@ -51,7 +51,7 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
             for (PsiReferenceExpression r : referenceUsedInMethod) {
 //                System.out.println("p -> name identifier" + p.getNameIdentifier());
 //                System.out.println("p -> name" + p.getName());
-                System.out.println(p.getName() + " vs " + r.getQualifiedName());
+//                System.out.println(p.getName() + " vs " + r.getQualifiedName());
 
                 if (p.getName().equals(r.getQualifiedName())) {
                     appearFlag = true;
