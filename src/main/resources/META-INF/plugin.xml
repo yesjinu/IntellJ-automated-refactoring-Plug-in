@@ -22,11 +22,11 @@
         <group id="Wanted-Refactoring" text="Wanted_Refactoring">
             <add-to-group group-id="MainMenu" anchor="last"/>
 
-            <action id="Wanted-Refactoring.SEF" class="refactoring.SelfEncapField" text="self encapsulate field"
+            <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="self encapsulate field"
                     description="Data Organize: self encapsulate field"/>
 
             <!-- Edited by YSJ -->
-            <action id="Wanted-Refactoring.CCE" class="refactoring.ConsolidateCondExpr" text="consolidate conditional expression"
+            <action id="Wanted-Refactoring.CCE" class="wanted.refactoring.ConsolidateCondExpr" text="consolidate conditional expression"
                     description="Simplifying Conditional Expressions: consolidate conditional expression"/>
         </group>
     </actions>
