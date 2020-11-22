@@ -9,13 +9,17 @@ package wanted.utils;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// class to navigate Psi structure, use for RefactorValid()
+/**
+ * class to navigate Psi structure, use for RefactorValid()
+ * @author seha Park
+ */
 public class NavigatePsi {
     private static NavigatePsi navigator = null;
     private static Project focusProject;
@@ -60,7 +64,7 @@ public class NavigatePsi {
      * Returns list of private members from focused class
      * @return list of private fields
      */
-    public List<PsiField> findPrivateField()
+    public List<PsiField> findPrivateField() throws ProcessCanceledException
     {
         List<PsiField> ret = new ArrayList<>();
 
@@ -68,6 +72,8 @@ public class NavigatePsi {
         {
             if(f.getModifierList().hasModifierProperty("private")){ ret.add(f); }
         }
+
+
 
         return ret;
     }

@@ -1,5 +1,3 @@
-package codes.selfencapsulatefield.test1.output;
-
 public class SEF_basic {
     private int member;
 
@@ -18,12 +16,12 @@ public class SEF_basic {
         setMember(x);
     }
 
-    public int getMember()
+    protected int getMember()
     {
         return member;
     }
 
-    public void setMember(int newValue)
+    protected void setMember(int newValue)
     {
         member = newValue;
     }

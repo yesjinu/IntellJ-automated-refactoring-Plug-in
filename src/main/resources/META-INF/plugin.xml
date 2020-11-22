@@ -23,11 +23,15 @@
             <add-to-group group-id="MainMenu" anchor="last"/>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             <action id="wanted.refactoring.RemoveUnusedParameter" class="wanted.refactoring.RemoveUnusedParameter"
                     text="Remove Unused Parameter"/>
 =======
             <action id="Wanted-Refactoring.SEF" class="refactoring.SelfEncapField" text="self encapsulate field"
+=======
+            <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="self encapsulate field"
+>>>>>>> 16c9f932c0a0a7e7adbc8b36b263c8abe5810069
                     description="Data Organize: self encapsulate field"/>
 >>>>>>> 84b00f1945564cdadd79b641f5562a5c09967123
         </group>

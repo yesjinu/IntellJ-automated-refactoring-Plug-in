@@ -9,7 +9,10 @@ import com.intellij.psi.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/* class to provide self encapsulate field refactoring */
+/**
+ * class to provide self encapsulate field refactoring
+ * @author seha park
+ */
 public class SelfEncapField extends BaseRefactorAction {
     private Project project;
     private PsiClass targetClass;

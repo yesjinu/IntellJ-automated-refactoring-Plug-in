@@ -1,5 +1,3 @@
-package codes.selfencapsulatefield.etc;
-
 public class SEF_ex_synonym {
     private int member;
 

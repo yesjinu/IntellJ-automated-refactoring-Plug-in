@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * Class to find specific Psi element in given context
+ * @author seha Park
+ */
 public class FindPsi {
     private Project focusProject;
     private PsiFile focusFile;
@@ -66,9 +71,9 @@ public class FindPsi {
     }
 
     /**
-     * Collect reference expression from given statement
-     * from 2019 Team 1 example
-     * @param element Psi element to check
+     * Collect reference expression from given element
+     * @author CSED332 2019 Team 1
+     * @param statement Psi element to check
      * @return PsiReferenceExpression in given statement
      */
     public static List<PsiReferenceExpression> findReference(PsiStatement statement) {
@@ -140,7 +145,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiMethodCallExpression Object in current PSI Element
-     *
+     * @author chanyoung Kim
      * @param element the PSI Element.
      * @return List<PsiMethodCallExpression> if element has MethodCallExpressions, empty() otherwise
      */

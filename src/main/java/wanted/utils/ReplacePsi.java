@@ -4,7 +4,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import java.util.List;
 
-// Class to replace specific Psi Elements
+/**
+ * Class to replace specific Psi Elements
+ * @author seha Park
+ */
 public class ReplacePsi {
     /**
      * Replace getter() and setter()

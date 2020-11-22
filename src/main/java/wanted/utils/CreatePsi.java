@@ -4,7 +4,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 
-// Class to create Psi Elements
+/**
+ * Class to create Psi Elements
+ * @author seha Park
+ */
 public class CreatePsi {
     /**
      * Create setter method for given member

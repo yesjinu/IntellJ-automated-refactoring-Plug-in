@@ -41,7 +41,7 @@ public class HideMethodAction extends BaseRefactorAction {
         Map<PsiMethod, PsiClass> methodMap = new HashMap<>();
 
         for (PsiClass aClass : classes) {
-            List<PsiMethodCallExpression> methodCallExpressions = compare.findPsiMethodCallExpression(aClass);
+            List<PsiMethodCallExpression> methodCallExpressions = FindPsi.findPsiMethodCallExpression(aClass);
 
             methodCallExpressions.forEach(methodCallExpression -> callMap.put(methodCallExpression, aClass));
 
