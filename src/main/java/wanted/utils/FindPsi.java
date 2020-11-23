@@ -7,12 +7,14 @@ import java.util.List;
 
 /**
  * Class to find specific Psi element in given context.
+ *
  * @author seha park
  * @author Mintae Kim
  */
 public class FindPsi {
     /**
      * Returns list of statements referring to given member
+     *
      * @param focusClass search scope
      * @param member
      * @return list of statements
@@ -48,6 +50,7 @@ public class FindPsi {
     /**
      * Collect reference expression from given element
      * from 2019 Team 1 example
+     *
      * @param element Psi element to check
      * @return PsiReferenceExpression in given statement
      */
@@ -85,6 +88,7 @@ public class FindPsi {
 
     /**
      * Searching for every subclasses
+     *
      * @param superclass Superclass
      * @param classList List of all classes in project
      * @return List of all subclasses extends superclass

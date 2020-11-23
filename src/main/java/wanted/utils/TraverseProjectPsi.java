@@ -10,6 +10,7 @@ import java.util.*;
 
 /**
  * Class to Search Psi Class, Methods, ... for whole Project.
+ *
  * @author Mintae Kim
  * @author seha park
  * @author POSTECH CSED332 TAs
@@ -17,6 +18,7 @@ import java.util.*;
 public class TraverseProjectPsi {
     /**
      * Returns List of every methods in project
+     *
      * @return classList List of all methods
      */
     public static List<PsiClass> getMethodsFromProject (Project focusProject) {

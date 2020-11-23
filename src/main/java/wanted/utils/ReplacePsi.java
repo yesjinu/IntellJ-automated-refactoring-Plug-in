@@ -10,12 +10,14 @@ import java.util.List;
 
 /**
  * Class to replace specific Psi Elements.
+ *
  * @author seha park
  * @author Mintae Kim
  */
 public class ReplacePsi {
     /**
      * Replace getter() and setter()
+     *
      * @param project context
      * @param getter getter PsiMethod
      * @param setter setter PsiMethod

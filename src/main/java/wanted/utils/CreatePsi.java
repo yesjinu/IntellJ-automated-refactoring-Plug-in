@@ -6,12 +6,14 @@ import com.sun.istack.NotNull;
 
 /**
  * Class to create Psi Elements.
+ *
  * @author seha park
  * @author Mintae Kim
  */
 public class CreatePsi {
     /**
      * Create setter method for given member
+     *
      * @param project factory context
      * @param member member to build setter
      * @return PsiMethod with name setMember
@@ -33,6 +35,7 @@ public class CreatePsi {
 
     /**
      * Create getter method for given member
+     *
      * @param project factory context
      * @param member member to build getter
      * @return PsiMethod with name getMember
@@ -55,6 +58,7 @@ public class CreatePsi {
     /**
      * Create MethodCallExpression for given method and parameter
      * Method can have only one parameter
+     *
      * @param project factory context
      * @param method method to call
      * @param par parameter of method

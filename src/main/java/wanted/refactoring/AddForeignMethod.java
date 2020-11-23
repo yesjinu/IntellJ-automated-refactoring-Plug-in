@@ -6,6 +6,7 @@ public class AddForeignMethod extends BaseRefactorAction {
 
     /**
      * Returns the possibility of wanted.refactoring for current project with particular strategy.
+     *
      * @param e An Actionevent
      * @return true if wanted.refactoring is available, otherwise false.
      */
@@ -17,6 +18,7 @@ public class AddForeignMethod extends BaseRefactorAction {
 
     /**
      * Returns the story name as a string format, for message.
+     *
      * @return story name "Inline Method"
      */
     @Override

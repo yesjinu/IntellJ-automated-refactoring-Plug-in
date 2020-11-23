@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Class to provide self encapsulate field refactoring.
+ *
  * @author seha park
  */
 public class SelfEncapField extends BaseRefactorAction {

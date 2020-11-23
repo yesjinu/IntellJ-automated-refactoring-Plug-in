@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Class to navigate Psi structure, use for RefactorValid().
+ *
  * @author seha park
  * @author Mintae Kim
  * @author kornilova-1

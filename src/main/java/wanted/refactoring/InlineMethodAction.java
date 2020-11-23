@@ -8,7 +8,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
-import com.intellij.psi.util.PsiMatcherExpression;
 import org.jetbrains.annotations.NotNull;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
@@ -17,6 +16,7 @@ import java.util.*;
 
 /**
  * Class to eliminate redundant 'Inline Method's.
+ *
  * @author Mintae Kim
  */
 public class InlineMethodAction extends BaseRefactorAction {
@@ -28,6 +28,7 @@ public class InlineMethodAction extends BaseRefactorAction {
 
     /**
      * Returns the story name as a string format, for message.
+     *
      * @return story name "Inline Method"
      */
     @Override
@@ -37,6 +38,7 @@ public class InlineMethodAction extends BaseRefactorAction {
 
     /**
      * Returns the possibility of refactoring for current project with particular strategy.
+     *
      * @param e An ActionEvent
      * @return true if refactoring is available, otherwise false.
      */
@@ -166,6 +168,7 @@ public class InlineMethodAction extends BaseRefactorAction {
 
     /**
      * Helper method that checks whether expression in statement needs to be inserted while wanted.refactoring.
+     *
      * @precond No Non-insertable parameters in PsiCallExpression
      * @precond PsiCallExpression & PsiSwitchExpression returns always true
      * @return false if Assign, Prefix, Postfix Expression is used. (TBD in later steps)
