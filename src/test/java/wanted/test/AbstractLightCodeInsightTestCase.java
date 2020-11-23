@@ -2,8 +2,10 @@ package wanted.test;
 
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import com.intellij.testFramework.PlatformTestUtil;
 import com.intellij.testFramework.fixtures.JavaCodeInsightTestFixture;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import com.intellij.testFramework.fixtures.impl.JavaCodeInsightTestFixtureImpl;
@@ -50,22 +52,10 @@ public abstract class AbstractLightCodeInsightTestCase extends LightJavaCodeInsi
     }
 
     // TODO
-    protected void checkResultByFiles(final String @NotNull ... expectedFiles) throws IOException {
-        for (String expectedFile: expectedFiles)
-        {
-            try {
-                myFixture.checkResultByFile(expectedFile, true);
-            } catch (ComparisonFailure ex) {
-                String actualFileText = myFixture.getFile().getText();
-                actualFileText = actualFileText.replace("java.lang.", "");
+    protected void checkResultByFiles(final String afterPath, final String beforePath) throws IOException {
+        VirtualFile expectedDir = LocalFileSystem.getInstance().findFileByPath(getTestDataPath()+afterPath);
+        VirtualFile actualDir = myFixture.findFileInTempDir(beforePath);
 
-                final String path = getTestDataPath() + "/" + expectedFile;
-                String expectedFileText = StringUtil.convertLineSeparators(FileUtil.loadFile(new File(path)));
-
-                if (!expectedFileText.replaceAll("\\s+", "").equals(actualFileText.replaceAll("\\s+", ""))) {
-                    assertEquals(expectedFileText, actualFileText);
-                }
-            }
-        }
+        PlatformTestUtil.assertDirectoriesEqual(expectedDir, actualDir);
     }
 }

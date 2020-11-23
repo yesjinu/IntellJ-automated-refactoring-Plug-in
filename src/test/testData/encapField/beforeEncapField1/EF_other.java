@@ -1,7 +1,6 @@
-package encapTest1
+package wanted.test.beforeEncapField1;
 
 public class EF_other {
-    before / other
 
     public void method1() {
         EF_owner o1 = new EF_owner();

@@ -18,4 +18,9 @@ public class EncapFieldTest extends LightActionTestCase {
     public void testEncapField1() throws Exception {
         doDirTest();
     }
+
+    /* Test 2: complicate case */
+    public void testEncapField2() throws Exception {
+        doDirTest();
+    }
 }

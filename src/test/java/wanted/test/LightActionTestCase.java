@@ -7,14 +7,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import org.jetbrains.concurrency.Promise;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,15 +22,15 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
 
     // TODO
     protected void doDirTest() throws Exception {
-        String beforePath = getBasePath() + "/before" + getTestName(false) + "/";
+        //String beforePath = getBasePath() + "/before" + getTestName(false) + "/";
+        String beforePath = "java/wanted/test"+ "/before" + getTestName(false) + "/";
         String afterPath = getBasePath() + "/after" + getTestName(false) + "/";
 
         String[] beforeFiles = {beforePath + "EF_owner.java", beforePath + "EF_other.java"};
-        String[] afterFiles = {afterPath + "EF_owner.java", afterPath + "EF_other.java"};
 
         myFixture.configureByFiles(beforeFiles);
         performActionTest();
-        checkResultByFiles(afterFiles);
+        checkResultByFiles(afterPath, beforePath);
     }
 
     private void performActionTest() throws TimeoutException, ExecutionException {

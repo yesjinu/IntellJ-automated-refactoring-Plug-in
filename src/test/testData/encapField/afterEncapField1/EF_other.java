@@ -1,7 +1,7 @@
-package encapTest1
+package wanted.test.beforeEncapField1;
 
 public class EF_other {
-    after / other
+
     public void method1() {
         EF_owner o1 = new EF_owner();
         System.out.println(o1.getCount());
