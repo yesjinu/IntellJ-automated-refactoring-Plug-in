@@ -4,10 +4,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiBlockStatement;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiIfStatement;
-import com.intellij.psi.PsiStatement;
+import com.intellij.psi.*;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
@@ -38,6 +35,7 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
         ifStatement = FindPsi.findIfStatement(targetClass, offset);
         if (ifStatement == null) return false;
+        while (ifStatement.getParent() instanceof PsiIfStatement) ifStatement = (PsiIfStatement) ifStatement.getParent();
 
         List<PsiStatement> statementList = new ArrayList<>();
         PsiStatement nowStatement = ifStatement;
