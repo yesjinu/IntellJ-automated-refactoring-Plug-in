@@ -30,6 +30,8 @@
             <!-- Edited by YSJ -->
             <action id="Wanted-Refactoring.CCE" class="wanted.refactoring.ConsolidateCondExpr" text="consolidate conditional expression"
                     description="Simplifying Conditional Expressions: consolidate conditional expression"/>
+            <action id="Wanted-Refactoring.CDCF" class="wanted.refactoring.ConsolidateDupCondFrag" text="consolidate duplicate conditional fragments"
+                    description="Simplifying Conditional Expressions: consolidate duplicate conditional fragments"/>
         </group>
     </actions>
 </idea-plugin>
