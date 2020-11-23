@@ -1,9 +1,3 @@
-/**
- * Class to find specific Psi element in given context.
- *
- * @author seha park
- * @author Mintae Kim
- */
 package wanted.utils;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -17,10 +11,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
- * Class to find specific Psi element in given context
+ * Class to find specific Psi element in given context.
+ *
  * @author seha Park
+ * @author Mintae Kim
+ * @author JINU NOH
+ * @author chanyoung Kim
+ * @author seungjae yoo
+ * @author CSED332 2019 Team 1
  */
 public class FindPsi {
     private Project focusProject;
@@ -41,6 +40,7 @@ public class FindPsi {
     /**
      * Returns list of statements referring to given member
      *
+     * @param focusClass search scope
      * @param member
      * @return list of statements
      */
@@ -72,7 +72,7 @@ public class FindPsi {
 
     /**
      * Collect reference expression from given element
-     * @author CSED332 2019 Team 1
+     * 
      * @param statement Psi element to check
      * @return PsiReferenceExpression in given statement
      */
@@ -90,10 +90,10 @@ public class FindPsi {
 
     /**
      * method that returns set of parameters that passed to the method
+     * 
      * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
-     * @return set of unused parameters
-     * @author : JINU NOH
-     * */
+     * @return set of unused parameters 
+     */
     public static Set<PsiParameter> findParametersOfMethod(PsiMethod focusMethod) {
         Set<PsiParameter> result = new HashSet<>();
 
@@ -107,10 +107,10 @@ public class FindPsi {
 
     /**
      * returns set of reference expressions(symbols) in a method
+     * 
      * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
      * @return set of used reference in method
-     * @author : JINU NOH
-     * */
+     */
     public static Set<PsiReferenceExpression> findReferenceUsedInMethod(PsiMethod focusMethod) {
         Set<PsiReferenceExpression> result = new HashSet<>();
         focusMethod.accept((new JavaRecursiveElementVisitor() {
@@ -122,11 +122,6 @@ public class FindPsi {
         }));
         return result;
     }
-
-    /**
-     * Searching for every
-     */
-    // TODO: Implement Someting @seha park
 
     /**
      * Searching for every subclasses
@@ -145,7 +140,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiMethodCallExpression Object in current PSI Element
-     * @author chanyoung Kim
+     * 
      * @param element the PSI Element.
      * @return List<PsiMethodCallExpression> if element has MethodCallExpressions, empty() otherwise
      */
@@ -163,7 +158,7 @@ public class FindPsi {
 
     /**
      * Return PsiIfstatement from cursor offset inside of PsiClass
-     * @author seungjae yoo
+     * 
      * @param psiClass
      * @param offset
      * @return PsiIfStatement which contains cursor
@@ -185,6 +180,20 @@ public class FindPsi {
 
         if (ifStatementList.isEmpty()) return null;
         else return ifStatementList.get(ifStatementList.size()-1);
+    }
+    /**
+     * Searching for every subclasses
+     *
+     * @param superclass Superclass
+     * @param classList List of all classes in project
+     * @return List of all subclasses extends superclass
+     */
+    public static List<PsiClass> findEverySubClass (PsiClass superclass, List<PsiClass> classList) {
+        List<PsiClass> subclassList = new ArrayList<>();
+        for (PsiClass psiClass : classList)
+            if (Arrays.asList(psiClass.getSupers()).contains(superclass))
+                subclassList.add(psiClass);
+        return subclassList;
     }
 }
 

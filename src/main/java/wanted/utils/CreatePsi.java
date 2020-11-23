@@ -5,12 +5,16 @@ import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 
 /**
- * Class to create Psi Elements
+ * Class to create Psi Elements.
+ *
  * @author seha Park
+ * @author Mintae Kim
+ * @author seungjae yoo
  */
 public class CreatePsi {
     /**
      * Create setter method for given member
+     *
      * @param project factory context
      * @param member member to build setter
      * @return PsiMethod with name setMember
@@ -32,6 +36,7 @@ public class CreatePsi {
 
     /**
      * Create getter method for given member
+     *
      * @param project factory context
      * @param member member to build getter
      * @return PsiMethod with name getMember
@@ -54,6 +59,7 @@ public class CreatePsi {
     /**
      * Create MethodCallExpression for given method and parameter
      * Method can have only one parameter
+     *
      * @param project factory context
      * @param method method to call
      * @param par parameter of method
@@ -88,7 +94,7 @@ public class CreatePsi {
 
     /**
      * Return same statement which is copied
-     * @author seungjae yoo
+     * 
      * @param project
      * @param statement
      * @return newStatement which is same with statement
@@ -102,7 +108,7 @@ public class CreatePsi {
 
     /**
      * Return merged conditionExpression with || symbol
-     * @author seungjae yoo
+     * 
      * @param project
      * @param Left
      * @param Right
@@ -118,5 +124,19 @@ public class CreatePsi {
 
         PsiExpression newExpression = factory.createExpressionFromText(par, null);
         return newExpression;
+    }
+
+    /**
+     * Method which creates new Duplicate PsiExpression object for replacement.
+     * 
+     * @param project Project
+     * @param psiExpression Target PsiExpression to duplicate
+     * @return Newly copied PsiExpression Object
+     */
+    public static PsiExpression createDuplicateExpression (@NotNull Project project, @NotNull PsiExpression psiExpression) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
+        return newElement;
     }
 }

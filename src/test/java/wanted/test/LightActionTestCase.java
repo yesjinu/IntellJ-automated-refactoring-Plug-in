@@ -15,9 +15,11 @@ import java.util.concurrent.TimeoutException;
 // NEED NOT MODIFY
 public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCase {
     protected void doTest() throws Exception {
-        myFixture.configureByFile(getBasePath() + "/before" + getTestName(false) + ".java");
+        // myFixture.configureByFile(getBasePath() + "/before" + getTestName(false) + ".java");
+        myFixture.configureByFile(getBasePath() + "/input.java");
         performActionTest();
-        checkResultByFile(getBasePath() + "/after" + getTestName(false) + ".java");
+        // checkResultByFile(getBasePath() + "/after" + getTestName(false) + ".java");
+        checkResultByFile(getBasePath() + "/output.java");
     }
 
     private void performActionTest() throws TimeoutException, ExecutionException {

@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * class to provide self encapsulate field refactoring
- * @author seha park
+ * Class to provide self encapsulate field refactoring.
+ *
+ * @author seha Park
  */
 public class SelfEncapField extends BaseRefactorAction {
     private Project project;
