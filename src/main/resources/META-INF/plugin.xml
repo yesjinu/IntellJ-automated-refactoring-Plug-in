@@ -35,5 +35,7 @@
                     description="Data Organize: self encapsulate field"/>
 >>>>>>> 84b00f1945564cdadd79b641f5562a5c09967123
         </group>
+        <action id="wanted.refactoring.ParameterizeWholeObjectAction" class="wanted.refactoring.ParameterizeWholeObjectAction"
+                text="Parameterize Whole Object" description="Parameterize Whole Object"/>
     </actions>
 </idea-plugin>
