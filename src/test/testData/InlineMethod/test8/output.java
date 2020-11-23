@@ -8,11 +8,6 @@ class PizzaDelivery {
     }
 
     int getRating() {
-        moreThanFiveLateDeliveries(32);
-    }
-
-    void moreThanFiveLateDeli<caret>veries(int int_rand) {
-        doSomething(int_rand);
     }
 
     void doSomething(int int_random)

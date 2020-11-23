@@ -8,6 +8,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
+import com.intellij.psi.util.PsiMatcherExpression;
 import org.jetbrains.annotations.NotNull;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
@@ -106,7 +107,7 @@ public class InlineMethodAction extends BaseRefactorAction {
         else {
             // Remove
             for (PsiReference reference : references) {
-                PsiElement refElement = reference.getElement();
+                PsiElement refElement = reference.getElement().getParent();
                 WriteCommandAction.runWriteCommandAction(project, () -> {
                     // Replace statement
                     refElement.delete();
@@ -128,12 +129,11 @@ public class InlineMethodAction extends BaseRefactorAction {
     private boolean isInsertStatement(PsiStatement statement) {
         if (statement instanceof PsiAssertStatement ||
                 statement instanceof PsiThrowStatement ||
-                statement instanceof PsiExpressionStatement ||
                 statement instanceof PsiYieldStatement ||
                 statement instanceof PsiSynchronizedStatement)
             return true;
         else if (statement instanceof PsiIfStatement)
-            return isInsertStatement(((PsiIfStatement) statement).getThenBranch()) ||
+            return isInsertStatement(((PsiIfStatement) statement).getThenBranch()) &&
                     isInsertStatement(((PsiIfStatement) statement).getElseBranch());
         else if (statement instanceof PsiLabeledStatement)
             return isInsertStatement(((PsiLabeledStatement) statement).getStatement());
@@ -141,26 +141,61 @@ public class InlineMethodAction extends BaseRefactorAction {
             return isInsertStatement(((PsiLoopStatement) statement).getBody());
         else if (statement instanceof PsiSwitchStatement){
             if (((PsiSwitchStatement) statement).getBody() == null) return false;
-
             for (PsiStatement innerStatement : ((PsiSwitchStatement) statement).getBody().getStatements()) {
-                if (isInsertStatement(innerStatement) ||
+                if (!(isInsertStatement(innerStatement) ||
                         innerStatement instanceof PsiBreakStatement ||
-                        innerStatement instanceof PsiContinueStatement)
-                    return true;
+                        innerStatement instanceof PsiContinueStatement))
+                    return false;
             }
-            return false;
+            return true;
         }
         else if (statement instanceof PsiBlockStatement){
             for (PsiStatement innerStatement : ((PsiBlockStatement) statement).getCodeBlock().getStatements()) {
-                if (isInsertStatement(innerStatement) ||
+                if (!(isInsertStatement(innerStatement) ||
                         innerStatement instanceof PsiBreakStatement ||
-                        innerStatement instanceof PsiContinueStatement)
-                    return true;
+                        innerStatement instanceof PsiContinueStatement))
+                    return false;
             }
-            return false;
+            return true;
         }
-
+        else if (statement instanceof PsiExpressionStatement){
+            return isInsertExpression(((PsiExpressionStatement) statement).getExpression());
+        }
         return false;
+    }
+
+    /**
+     * Helper method that checks whether expression in statement needs to be inserted while wanted.refactoring.
+     * @precond No Non-insertable parameters in PsiCallExpression
+     * @precond PsiCallExpression & PsiSwitchExpression returns always true
+     * @return false if Assign, Prefix, Postfix Expression is used. (TBD in later steps)
+     * @return true if expression needs insertion.
+     */
+    private boolean isInsertExpression(PsiExpression expression) {
+        if (expression instanceof PsiConditionalExpression)
+            return isInsertExpression(((PsiConditionalExpression) expression).getCondition()) &&
+                    isInsertExpression(((PsiConditionalExpression) expression).getThenExpression()) &&
+                    isInsertExpression(((PsiConditionalExpression) expression).getElseExpression());
+        else if (expression instanceof PsiAssignmentExpression)
+            return false;
+        else if (expression instanceof PsiBinaryExpression)
+            return isInsertExpression(((PsiBinaryExpression) expression).getLOperand()) &&
+                    isInsertExpression(((PsiBinaryExpression) expression).getROperand());
+        else if (expression instanceof PsiParenthesizedExpression)
+            return isInsertExpression(((PsiParenthesizedExpression) expression).getExpression());
+        else if (expression instanceof PsiPolyadicExpression) {
+            for (PsiExpression exp : ((PsiPolyadicExpression) expression).getOperands()) {
+                if (!isInsertExpression(exp)) return false;
+            }
+            return true;
+        }
+        else if (expression instanceof PsiPostfixExpression)
+            return false;
+        else if (expression instanceof PsiPrefixExpression)
+            return false;
+        else if (expression instanceof PsiUnaryExpression)
+            return isInsertExpression(((PsiUnaryExpression) expression).getOperand());
+        else return true;
     }
 
     /**
