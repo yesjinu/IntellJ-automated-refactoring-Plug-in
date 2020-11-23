@@ -90,6 +90,10 @@ public class InlineMethodAction extends BaseRefactorAction {
 
                 // Replace Statement
                 WriteCommandAction.runWriteCommandAction(project, () -> {
+                    // Checking Method Calls ending with semicolons
+                    if (refElement.getNextSibling().getText().equals(";"))
+                        refElement.getNextSibling().delete();
+
                     PsiElement expAppliedElement = refElement.replace(replaceElement);
 
                     // replace vars in replaceElement with Map paramList -> paramRefList

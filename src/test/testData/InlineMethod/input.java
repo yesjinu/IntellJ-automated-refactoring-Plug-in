@@ -8,11 +8,15 @@ class PizzaDelivery {
     }
 
     int getRating() {
-        boolean b = false;
-        return moreThanFiveLateDeliveries(b) ? 2 : 1;
+        moreThanFiveLateDeliveries(32);
     }
 
-    boolean moreThanFiveLateDeliveries(boolean bx) {
-        return (numbe<caret>rofLateDeliveries > 5 && bx);
+    void moreThanFiveLateDeli<caret>veries(int int_rand) {
+        doSomething(int_rand);
+    }
+
+    void doSomething(int int_random)
+    {
+        return;
     }
 }

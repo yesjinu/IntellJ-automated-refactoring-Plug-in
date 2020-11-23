@@ -85,9 +85,7 @@ public class ReplacePsi {
             for (int i = 0; i < paramList.getParametersCount(); i++) {
                 if (resolveEntry.getText().equals(paramArray[i].getName())) {
                     PsiExpression newExp = CreatePsi.createDuplicateExpression(project, paramRefArray[i]);
-                    WriteCommandAction.runWriteCommandAction(project, () -> {
-                        resolveEntry.replace(newExp);
-                    });
+                    resolveEntry.replace(newExp);
                     break;
                 }
             }
