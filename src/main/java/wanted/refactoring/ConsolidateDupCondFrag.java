@@ -2,6 +2,7 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiBlockStatement;
 import com.intellij.psi.PsiClass;
@@ -9,6 +10,7 @@ import com.intellij.psi.PsiIfStatement;
 import com.intellij.psi.PsiStatement;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
+import wanted.utils.ReplacePsi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,21 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
             nowStatement = ((PsiIfStatement) nowStatement).getElseBranch();
         }
         statementList.add(nowStatement);
+
+        while (isDupStatementFirst(statementList)) {
+            WriteCommandAction.runWriteCommandAction(project, ()->{
+                ReplacePsi.pulloutFirstCondExpr(project, ifStatement, statementList);
+            });
+        }
+
+        while (isDupStatementLast(statementList)) {
+            WriteCommandAction.runWriteCommandAction(project, ()->{
+                ReplacePsi.pulloutLastCondExpr(project, ifStatement, statementList);
+            });
+        }
+        WriteCommandAction.runWriteCommandAction(project, ()->{
+            ReplacePsi.removeUselessCondition(project, ifStatement);
+        });
     }
 
     private boolean isDupStatementFirst(List<PsiStatement> statementList) {

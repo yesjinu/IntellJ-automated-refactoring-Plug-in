@@ -119,4 +119,12 @@ public class CreatePsi {
         PsiExpression newExpression = factory.createExpressionFromText(par, null);
         return newExpression;
     }
+
+    // Edited by YSJ
+    public static PsiStatement createEmptyBlockStatement(@NotNull Project project) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText("{}", null);
+        return newStatement;
+    }
 }
