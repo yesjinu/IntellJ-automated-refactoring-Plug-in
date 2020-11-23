@@ -1,9 +1,11 @@
 package wanted.utils;
 
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,26 +55,43 @@ public class ReplacePsi {
      * @param element Target PsiElement to refactor
      * @param paramList List of PsiMethod parameters
      * @param paramRefList List of expressions for calling target PsiMethod
+     * @return PsiElement with altered PsiTree
      */
-    public static void replaceParamToArgs(PsiElement element, PsiParameterList paramList, PsiExpressionList paramRefList) {
+    public static PsiElement replaceParamToArgs(Project project, PsiElement element, PsiParameterList paramList, PsiExpressionList paramRefList) {
         assert paramList.getParametersCount() == paramRefList.getExpressionCount();
         PsiParameter [] paramArray = paramList.getParameters();
         PsiExpression [] paramRefArray = paramRefList.getExpressions();
 
+        List<PsiElement> resolveList = new ArrayList<>();
         JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
+            final List<PsiElement> resolveList_inner = resolveList;
+
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                super.visitElement(element);
-
+                if (element instanceof PsiIdentifier) return;
                 for (int i = 0; i < paramList.getParametersCount(); i++) {
-                    if (element.isEquivalentTo(paramArray[i])) {
-                        element.replace(paramRefArray[i]);
+                    if (element.getText().equals(paramArray[i].getName())) {
+                        resolveList_inner.add(element);
                         break;
                     }
                 }
+                super.visitElement(element);
             }
         };
 
         element.accept(visitor);
+
+        for (PsiElement resolveEntry : resolveList) {
+            for (int i = 0; i < paramList.getParametersCount(); i++) {
+                if (resolveEntry.getText().equals(paramArray[i].getName())) {
+                    PsiExpression newExp = CreatePsi.createDuplicateExpression(project, paramRefArray[i]);
+                    WriteCommandAction.runWriteCommandAction(project, () -> {
+                        resolveEntry.replace(newExp);
+                    });
+                    break;
+                }
+            }
+        }
+        return element;
     }
 }

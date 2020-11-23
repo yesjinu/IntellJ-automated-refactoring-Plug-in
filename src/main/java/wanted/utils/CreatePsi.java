@@ -7,6 +7,7 @@ import com.sun.istack.NotNull;
 /**
  * Class to create Psi Elements.
  * @author seha park
+ * @author Mintae Kim
  */
 public class CreatePsi {
     /**
@@ -84,5 +85,12 @@ public class CreatePsi {
         String name = member.getName(); // make first character uppercase
         String newName = name.substring(0, 1).toUpperCase()+name.substring(1);
         return newName;
+    }
+
+    public static PsiExpression createDuplicateExpression (@NotNull Project project, @NotNull PsiExpression psiExpression) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
+        return newElement;
     }
 }

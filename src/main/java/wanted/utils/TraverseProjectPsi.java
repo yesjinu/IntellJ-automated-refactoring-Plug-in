@@ -27,15 +27,17 @@ public class TraverseProjectPsi {
 
             @Override
             public void visitPackage(PsiPackage pack) {
-                super.visitPackage(pack);
                 for (PsiPackage subPack : pack.getSubPackages()) subPack.accept(this);
                 for (PsiClass subClass : pack.getClasses()) subClass.accept(this);
+
+                super.visitPackage(pack);
             }
 
             @Override
             public void visitClass(PsiClass aClass) {
-                super.visitClass(aClass);
                 classList_ptr.add(aClass);
+
+                super.visitClass(aClass);
             }
         };
 

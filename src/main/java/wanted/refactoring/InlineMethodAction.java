@@ -36,7 +36,7 @@ public class InlineMethodAction extends BaseRefactorAction {
 
     /**
      * Returns the possibility of refactoring for current project with particular strategy.
-     * @param e An Actionevent
+     * @param e An ActionEvent
      * @return true if refactoring is available, otherwise false.
      */
     @Override
@@ -88,12 +88,14 @@ public class InlineMethodAction extends BaseRefactorAction {
                 assert refElement instanceof PsiMethodCallExpression;
                 PsiExpressionList paramRefList = ((PsiMethodCallExpression)refElement).getArgumentList();
 
-                // Replace & Delete
+                // Replace Statement
                 WriteCommandAction.runWriteCommandAction(project, () -> {
-                    // Replace statement
-                    refElement.replace(replaceElement);
+                    PsiElement expAppliedElement = refElement.replace(replaceElement);
+
                     // replace vars in replaceElement with Map paramList -> paramRefList
-                    ReplacePsi.replaceParamToArgs(refElement, paramList, paramRefList);
+                    expAppliedElement.replace(
+                            ReplacePsi.replaceParamToArgs(project, expAppliedElement, paramList, paramRefList)
+                    );
                 });
             }
         }
