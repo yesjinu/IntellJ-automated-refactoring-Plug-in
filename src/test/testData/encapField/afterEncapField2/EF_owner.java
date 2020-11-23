@@ -1,5 +1,3 @@
-package codes.encapsulatefield.test2.output;
-
 public class EF_owner {
     private int value;
 

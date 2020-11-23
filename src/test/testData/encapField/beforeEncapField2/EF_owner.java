@@ -1,5 +1,3 @@
-package codes.encapsulatefield.test2.input;
-
 public class EF_owner {
     public int value;
 

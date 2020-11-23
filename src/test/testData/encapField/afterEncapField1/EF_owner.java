@@ -1,5 +1,3 @@
-package wanted.test.beforeEncapField1;
-
 public class EF_owner {
     private int count;
 
@@ -8,7 +6,11 @@ public class EF_owner {
         count = 0;
     }
 
-    public int getCount(){ return count; }
+    public int getCount() {
+        return count;
+    }
 
-    public void setCount(int newValue){ count = newValue; }
+    public void setCount(int newValue) {
+        count = newValue;
+    }
 }

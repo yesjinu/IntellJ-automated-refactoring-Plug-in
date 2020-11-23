@@ -1,5 +1,3 @@
-package codes.encapsulatefield.test2.input;
-
 public class EF_user1 {
     private EF_owner o = new EF_owner();
 

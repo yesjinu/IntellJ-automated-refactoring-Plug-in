@@ -1,5 +1,3 @@
-package wanted.test.beforeEncapField1;
-
 public class EF_other {
 
     public void method1() {

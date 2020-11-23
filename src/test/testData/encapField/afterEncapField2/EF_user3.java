@@ -1,5 +1,3 @@
-package codes.encapsulatefield.test2.output;
-
 public class EF_user3 {
     private double value;
 

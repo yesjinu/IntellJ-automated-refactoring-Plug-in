@@ -20,15 +20,23 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
         checkResultByFile(getBasePath() + "/after" + getTestName(false) + ".java");
     }
 
-    // TODO
-    protected void doDirTest() throws Exception {
-        //String beforePath = getBasePath() + "/before" + getTestName(false) + "/";
-        String beforePath = "java/wanted/test"+ "/before" + getTestName(false) + "/";
+    /**
+     * Test function for multiple files
+     * @param files names of files in BasePath()+before<testName>/
+     * @throws Exception
+     */
+    protected void doTestDirectory(String[] files) throws Exception {
+        String beforePath = getBasePath() + "/before" + getTestName(false) + "/";
         String afterPath = getBasePath() + "/after" + getTestName(false) + "/";
 
-        String[] beforeFiles = {beforePath + "EF_owner.java", beforePath + "EF_other.java"};
+        String[] inputFiles = new String[files.length]; // add path
+        for(int i=0; i<files.length; i++)
+        {
+            inputFiles[i] = beforePath + files[i];
+        }
 
-        myFixture.configureByFiles(beforeFiles);
+        myFixture.configureByFiles(inputFiles);
+
         performActionTest();
         checkResultByFiles(afterPath, beforePath);
     }
