@@ -5,7 +5,6 @@ public class advance {
     public double method1()
     {
         double i = 0;  // Irrelevant
-        int j = 3;
 
         double x = CONSTANT1; // DeclarationStatement
 
@@ -17,7 +16,7 @@ public class advance {
         { i++; } //  - BlockStatement - CodeBlock - ExpressionStatement - PostfixExpression
         else{ i = CONSTANT1-1; } //  - BlockStatement - CodeBlock - ExpressionStatement - AssignmentExpression
 
-        switch(j) // SwitchStatement - keyword
+        switch(i) // SwitchStatement - keyword
         {
             case 0: i = CONSTANT1;
         }

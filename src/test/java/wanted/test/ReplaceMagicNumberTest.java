@@ -23,4 +23,10 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
     public void testReplaceMagicNumber2() throws Exception {
         doTest();
     }
+
+    /* Test 3: refactor only if it is worth it */
+    public void testReplaceMagicNumber3() throws Exception {
+        doTest();
+    }
+
 }

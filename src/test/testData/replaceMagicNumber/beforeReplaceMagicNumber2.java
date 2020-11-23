@@ -2,7 +2,6 @@ public class advance {
     public double method1()
     {
         double i = 0;  // Irrelevant
-        int j = 3;
 
         double x = 39876.5432; // DeclarationStatement
 
@@ -14,7 +13,7 @@ public class advance {
         { i++; } //  - BlockStatement - CodeBlock - ExpressionStatement - PostfixExpression
         else{ i = 39876.5432-1; } //  - BlockStatement - CodeBlock - ExpressionStatement - AssignmentExpression
 
-        switch(j) // SwitchStatement - keyword
+        switch(i) // SwitchStatement - keyword
         {
             case 0: i = 39876.5432;
         }
