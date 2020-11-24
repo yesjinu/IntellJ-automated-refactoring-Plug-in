@@ -56,7 +56,7 @@ public class FindPsi {
                     continue;
                 }
 
-                List<PsiReferenceExpression> refers = findReference(s);
+                Set<PsiReferenceExpression> refers = findReferenceExpression(s);
                 for (PsiReferenceExpression r : refers) {
                     if (r.isReferenceTo(member)) {
                         ret.add(r);
@@ -103,24 +103,6 @@ public class FindPsi {
     }
 
     /**
-     * Collect reference expression from given element
-     * 
-     * @param statement Psi element to check
-     * @return PsiReferenceExpression in given statement
-     */
-    public static List<PsiReferenceExpression> findReference(PsiStatement statement) {
-        List<PsiReferenceExpression> ret = new ArrayList<>();
-        statement.accept(new JavaRecursiveElementVisitor() {
-            @Override
-            public void visitReferenceExpression(PsiReferenceExpression expression) {
-                super.visitReferenceExpression(expression);
-                ret.add(expression);
-            }
-        });
-        return ret;
-    }
-
-    /**
      * method that returns set of parameters that passed to the method
      * 
      * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
@@ -136,16 +118,15 @@ public class FindPsi {
         return result;
     }
 
-
     /**
      * returns set of reference expressions(symbols) in a method
-     * 
-     * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
-     * @return set of used reference in method
+     *
+     * @param focusElement : 검사하고 싶은 요소 (PsiElement)
+     * @return set of used reference in PsiElement
      */
-    public static Set<PsiReferenceExpression> findReferenceUsedInMethod(PsiMethod focusMethod) {
+    public static Set<PsiReferenceExpression> findReferenceExpression(PsiElement focusElement) {
         Set<PsiReferenceExpression> result = new HashSet<>();
-        focusMethod.accept((new JavaRecursiveElementVisitor() {
+        focusElement.accept((new JavaRecursiveElementVisitor() {
             @Override
             public void visitReferenceExpression(PsiReferenceExpression expression) {
                 super.visitReferenceExpression(expression);
@@ -212,5 +193,7 @@ public class FindPsi {
                 subclassList.add(psiClass);
         return subclassList;
     }
+
+
 }
 
