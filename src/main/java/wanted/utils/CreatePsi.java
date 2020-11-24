@@ -91,14 +91,6 @@ public class CreatePsi {
         return (PsiMethodCallExpression)expression;
     }
 
-    /* capitalize name of given member */
-    public static String capitalize(PsiField member)
-    {
-        String name = member.getName(); // make first character uppercase
-        String newName = name.substring(0, 1).toUpperCase()+name.substring(1);
-        return newName;
-    }
-
     /**
      * Return same statement which is copied
      * 
@@ -145,5 +137,14 @@ public class CreatePsi {
 
         PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
         return newElement;
+    }
+
+
+    /* capitalize name of given member */
+    public static String capitalize(PsiField member)
+    {
+        String name = member.getName(); // make first character uppercase
+        String newName = name.substring(0, 1).toUpperCase()+name.substring(1);
+        return newName;
     }
 }

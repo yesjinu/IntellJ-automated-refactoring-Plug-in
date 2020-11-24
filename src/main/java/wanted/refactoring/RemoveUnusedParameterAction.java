@@ -13,6 +13,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Class to remove unused parameters
+ *
+ * @author Jinu Noh
+ */
 public class RemoveUnusedParameterAction extends BaseRefactorAction {
     public Project project;
     private PsiMethod focusMethod;

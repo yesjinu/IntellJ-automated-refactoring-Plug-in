@@ -9,6 +9,11 @@ import wanted.utils.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to provide encapsulate field refactoring.
+ *
+ * @author seha Park
+ */
 public class EncapField extends BaseRefactorAction {
     private Project project;
     private PsiClass targetClass;
