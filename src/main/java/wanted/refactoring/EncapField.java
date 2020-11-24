@@ -43,6 +43,8 @@ public class EncapField extends BaseRefactorAction {
 
         // ! only encapsulate one member
         member = members.get(0);
+        //member = FindPsi.findMemberByCaret(file, e); // -> caret version
+        //if(!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ return false; }
 
         // check if there's getMember or setMember
         String newName = CreatePsi.capitalize(member);
