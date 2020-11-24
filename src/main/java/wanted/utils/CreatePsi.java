@@ -120,7 +120,12 @@ public class CreatePsi {
         return newExpression;
     }
 
-    // Edited by YSJ
+    /**
+     * Return empty block statement
+     * @author seungjae yoo
+     * @param project
+     * @return
+     */
     public static PsiStatement createEmptyBlockStatement(@NotNull Project project) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 

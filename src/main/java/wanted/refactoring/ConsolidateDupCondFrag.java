@@ -12,6 +12,10 @@ import wanted.utils.ReplacePsi;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * class to provide consolidate duplicate conditional fragments refactoring
+ * @author seungjae yoo
+ */
 public class ConsolidateDupCondFrag extends BaseRefactorAction {
 
     private Project project;
@@ -77,6 +81,13 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         });
     }
 
+    /**
+     * Determine whether first statement of each condition is same
+     * @author seungjae yoo
+     * @param statementList
+     * @return true if first statement is same for every condition
+     *         false otherwise
+     */
     private boolean isDupStatementFirst(List<PsiStatement> statementList) {
         PsiStatement nowStatement;
         PsiStatement standardStatement = statementList.get(0);
@@ -98,6 +109,13 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         return true;
     }
 
+    /**
+     * Determine whether last statement of each condition is same
+     * @author seungjae yoo
+     * @param statementList
+     * @return true if last statement is same for every condition
+     *         false otherwise
+     */
     private boolean isDupStatementLast(List<PsiStatement> statementList) {
         PsiStatement nowStatement;
         PsiStatement standardStatement = statementList.get(0);

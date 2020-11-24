@@ -97,7 +97,13 @@ public class ReplacePsi {
         ifCondition.replace(newCondition);
     }
 
-    // Edited by YSJ
+    /**
+     * pull out first statement in each conditions
+     * @author seungjae yoo
+     * @param project
+     * @param ifStatement
+     * @param statementList
+     */
     public static void pulloutFirstCondExpr(Project project, PsiIfStatement ifStatement, List<PsiStatement> statementList) {
 
         PsiStatement standardStatement = statementList.get(0);
@@ -118,7 +124,13 @@ public class ReplacePsi {
         }
     }
 
-    // Edited by YSJ
+    /**
+     * pull out last statement in each conditions
+     * @author seungjae yoo
+     * @param project
+     * @param ifStatement
+     * @param statementList
+     */
     public static void pulloutLastCondExpr(Project project, PsiIfStatement ifStatement, List<PsiStatement> statementList) {
         PsiStatement standardStatement = statementList.get(0);
         if (standardStatement instanceof PsiBlockStatement) {
@@ -140,7 +152,12 @@ public class ReplacePsi {
         }
     }
 
-    // Edited by YSJ
+    /**
+     * remove conditions that don't have any statements inside
+     * @author seungjae yoo
+     * @param project
+     * @param ifStatement
+     */
     public static void removeUselessCondition(Project project, PsiIfStatement ifStatement) {
         PsiStatement statement = ifStatement;
         PsiElement parentStatement;
