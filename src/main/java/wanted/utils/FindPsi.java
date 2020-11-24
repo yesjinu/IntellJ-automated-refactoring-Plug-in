@@ -1,10 +1,12 @@
 package wanted.utils;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.util.PsiTreeUtil;
 
 import java.util.*;
 import java.util.ArrayList;
@@ -194,6 +196,19 @@ public class FindPsi {
         return subclassList;
     }
 
+    /**
+     * retrieve member field from caret
+     * @param f PsiFile context
+     * @param e action event
+     * @return PsiField
+     */
+    public static PsiField findMemberByCaret(PsiFile f, AnActionEvent e)
+    {
+        PsiField ret;
+        int caret = e.getData(CommonDataKeys.EDITOR).getCaretModel().getOffset();
+        ret = PsiTreeUtil.getParentOfType(f.findElementAt(caret), PsiField.class);
+        return ret;
+    }
 
 }
 
