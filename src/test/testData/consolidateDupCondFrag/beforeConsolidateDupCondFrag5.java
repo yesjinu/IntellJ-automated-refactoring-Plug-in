@@ -1,16 +1,25 @@
 public class CDCFdata {
+
+    public void sum() {
+        a = 1;
+    }
+
     public void CDCF() {
         int i = 1;
         int j, k;
-        j = 1;
         if (i == 1) {
+            j = 2;
+            sum();
             k = 1;
+
         }
         else if (i == 2) {
-            k = 2;
+            sum();
+            k = 1;
         }
         else {
-            k = 3;
+            sum();
+            k = 1;<caret>
         }
     }
 }
