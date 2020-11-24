@@ -24,6 +24,7 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
      * Test function for multiple files
      * @param files names of files in BasePath()+before<testName>/
      * @throws Exception
+     * caution: there should be no package statement for each file
      */
     protected void doTestDirectory(String[] files) throws Exception {
         String beforePath = getBasePath() + "/before" + getTestName(false) + "/";

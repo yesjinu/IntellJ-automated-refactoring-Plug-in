@@ -56,7 +56,6 @@ public abstract class AbstractLightCodeInsightTestCase extends LightJavaCodeInsi
      * @param afterPath Path of expected output files
      * @param beforePath Path of input files
      * @throws IOException
-     * @author seha Park
      * caution: this test checks for whitespace
      */
     protected void checkResultByFiles(final String afterPath, final String beforePath) throws IOException {
