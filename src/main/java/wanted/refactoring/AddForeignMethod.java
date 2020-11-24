@@ -26,8 +26,6 @@ public class AddForeignMethod extends BaseRefactorAction {
         return "Add Foreign Method";
     }
 
-
-
     /**
      * Method that performs wanted.refactoring.
      */

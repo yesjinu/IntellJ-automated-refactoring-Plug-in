@@ -71,6 +71,39 @@ public class FindPsi {
     }
 
     /**
+     * Find reference expression which refers given member
+     * search scope: directory of file. i.e, only check files in same package
+     * @param file the file which own class with member field
+     * @param member PsiField to find reference
+     * @return
+     */
+    public static List<PsiReferenceExpression> findMemberReference(PsiFile file, PsiField member)
+    {
+        List<PsiReferenceExpression> ret = new ArrayList<>();
+
+        List<PsiFile> files = Arrays.asList(file.getContainingDirectory().getFiles());
+
+        for(PsiFile f : files)
+        {
+            if(f.equals(file)){ continue; } // do not check itself
+            else
+            {
+                PsiClass[] classes;
+                if(f instanceof PsiClassOwner)
+                {
+                    classes = ((PsiClassOwner)f).getClasses();
+                    for(PsiClass c : classes)
+                    {
+                        ret.addAll(findMemberReference(c, member));
+                    }
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    /**
      * Collect reference expression from given element
      * 
      * @param statement Psi element to check

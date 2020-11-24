@@ -23,12 +23,9 @@ public class ReplacePsi {
      * @param getter getter PsiMethod
      * @param setter setter PsiMethod
      * @param expressions Statements that refers 'member'
-     * @param member field to encapsulate
      */
-    public static void encapFied(Project project, PsiMethod getter, PsiMethod setter, List<PsiReferenceExpression> expressions, PsiField member)
+    public static void encapFied(Project project, PsiMethod getter, PsiMethod setter, List<PsiReferenceExpression> expressions)
     {
-        PsiMethodCallExpression callGetter = CreatePsi.createMethodCall(project, getter, null);
-
         for(PsiReferenceExpression old :expressions)
         {
             if(old.getParent() instanceof PsiAssignmentExpression)
@@ -37,16 +34,18 @@ public class ReplacePsi {
                 if(assignment.getLExpression().isEquivalentTo(old)) // assignment to member
                 {
                     PsiElement newValue = assignment.getRExpression();
-                    PsiMethodCallExpression callSetter = CreatePsi.createMethodCall(project, setter, newValue);
+                    PsiMethodCallExpression callSetter = CreatePsi.createMethodCall(project, setter, newValue, old.getQualifier());
                     (old.getParent()).replace(callSetter);
                 }
                 else
                 {
+                    PsiMethodCallExpression callGetter = CreatePsi.createMethodCall(project, getter, null, old.getQualifier());
                     old.replace(callGetter);
                 }
             }
             else
             {
+                PsiMethodCallExpression callGetter = CreatePsi.createMethodCall(project, getter, null, old.getQualifier());
                 old.replace(callGetter);
             }
         }
@@ -115,8 +114,8 @@ public class ReplacePsi {
      */
     public static PsiElement replaceParamToArgs(Project project, PsiElement element, PsiParameterList paramList, PsiExpressionList paramRefList) {
         assert paramList.getParametersCount() == paramRefList.getExpressionCount();
-        PsiParameter [] paramArray = paramList.getParameters();
-        PsiExpression [] paramRefArray = paramRefList.getExpressions();
+        PsiParameter[] paramArray = paramList.getParameters();
+        PsiExpression[] paramRefArray = paramRefList.getExpressions();
 
         List<PsiElement> resolveList = new ArrayList<>();
         JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
@@ -147,5 +146,24 @@ public class ReplacePsi {
             }
         }
         return element;
+    }
+
+
+    /** Edit modifier of member
+     * @param member selected member
+     * @param removeValues modifier to be removed
+     * @param addValues modifier to be added
+     */
+    public static void changeModifier(PsiField member, List<String> removeValues, List<String> addValues)
+    {
+        for(String removeValue :removeValues)
+        {
+            member.getModifierList().setModifierProperty(removeValue, false);
+        }
+
+        for(String addValue :addValues)
+        {
+            member.getModifierList().setModifierProperty(addValue, true);
+        }
     }
 }

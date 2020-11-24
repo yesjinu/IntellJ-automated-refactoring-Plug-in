@@ -2,9 +2,10 @@ package wanted.test;
 
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import com.intellij.testFramework.HeavyPlatformTestCase;
+import com.intellij.testFramework.PlatformTestUtil;
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase;
 import junit.framework.ComparisonFailure;
 
@@ -45,5 +46,26 @@ public abstract class AbstractLightCodeInsightTestCase extends LightJavaCodeInsi
                 assertEquals(expectedFileText, actualFileText);
             }
         }
+    }
+
+    /**
+     * Compare files under afterPath and beforePath
+     * @param afterPath Path of expected output files
+     * @param beforePath Path of input files
+     * @throws IOException
+     * @author seha Park
+     * caution: this test checks for whitespace
+     */
+    protected void checkResultByFiles(final String afterPath, final String beforePath) throws IOException {
+        VirtualFile expectedDir = LocalFileSystem.getInstance().findFileByPath(getTestDataPath()+afterPath);
+        VirtualFile actualDir = myFixture.findFileInTempDir(beforePath);
+
+        try{
+            PlatformTestUtil.assertDirectoriesEqual(expectedDir, actualDir);
+        } catch(NullPointerException e)
+        {
+            // nothing
+        }
+
     }
 }

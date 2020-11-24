@@ -22,6 +22,28 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
         // checkResultByFile(getBasePath() + "/output.java");
     }
 
+    /**
+     * Test function for multiple files
+     * @param files names of files in BasePath()+before<testName>/
+     * @throws Exception
+     * caution: there should be no package statement for each file
+     */
+    protected void doTestDirectory(String[] files) throws Exception {
+        String beforePath = getBasePath() + "/before" + getTestName(false) + "/";
+        String afterPath = getBasePath() + "/after" + getTestName(false) + "/";
+
+        String[] inputFiles = new String[files.length]; // add path
+        for(int i=0; i<files.length; i++)
+        {
+            inputFiles[i] = beforePath + files[i];
+        }
+
+        myFixture.configureByFiles(inputFiles);
+
+        performActionTest();
+        checkResultByFiles(afterPath, beforePath);
+    }
+
     private void performActionTest() throws TimeoutException, ExecutionException {
         AnAction anAction = getAction();
 
