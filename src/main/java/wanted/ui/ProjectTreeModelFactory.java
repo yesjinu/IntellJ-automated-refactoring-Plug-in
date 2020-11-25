@@ -212,7 +212,32 @@ class ProjectTreeModelFactory {
     private static Set<PsiClass> getRootClasses(Project project) {
         final Set<PsiClass> rootClasses = new HashSet<>();
 
-        // TODO: To be Added
+        PsiElementVisitor visitor = new PsiElementVisitor() {
+            @Override
+            public void visitFile(PsiFile file) {
+                if (file instanceof PsiJavaFile) {
+                    rootClasses.addAll(Arrays.asList(((PsiJavaFile) file).getClasses()));
+                }
+            }
+            @Override
+            public void visitDirectory(PsiDirectory dir) {
+                final PsiPackage psiPackage = JavaDirectoryService.getInstance().getPackage(dir);
+                if (psiPackage != null && !PackageUtil.isPackageDefault(psiPackage)) {
+
+                }
+                else {
+                    Arrays.stream(dir.getSubdirectories()).forEach(sd -> sd.accept(this));
+                    Arrays.stream(dir.getFiles()).forEach(f -> f.accept(this));
+                }
+            }
+        };
+
+        ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
+        PsiManager psiManager = PsiManager.getInstance(project);
+        Arrays.stream(rootManager.getContentSourceRoots())
+                .map(psiManager::findDirectory)
+                .filter(Objects::nonNull)
+                .forEach(dir -> dir.accept(visitor));
 
         return rootClasses;
     }
