@@ -241,29 +241,44 @@ public class FindPsi {
         return result;
     }
 
-
-
-    public static List<PsiExpression> findChildPsiExpressions(PsiElement element) {
+    /**
+     * Return the List containing PsiExpression Object in current PsiElement
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiExpression> if element has PsiExpression, empty() otherwise
+     */
+    public static List<PsiExpression> findPsiExpressions(PsiElement element) {
         List<PsiExpression> result = new ArrayList<>();
-        element.accept(new JavaElementVisitor() {
+        element.accept(new JavaRecursiveElementVisitor() {
             @Override
             public void visitExpression(PsiExpression element) {
+                super.visitExpression(element);
                 result.add(element);
             }
         });
         return result;
     }
 
-
-
-    public static List<PsiLocalVariable> findChildPsiLocalVariables(PsiElement element) {
-        List<PsiLocalVariable> result = new ArrayList<>();
+    /**
+     * Return the List containing PsiExpression Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiExpression> if element has PsiExpression, empty() otherwise
+     */
+    public static List<PsiExpression> findChildPsiExpressions(PsiElement element) {
+        List<PsiExpression> result = new ArrayList<>();
         for (PsiElement elem : element.getChildren()) {
-            if (elem instanceof PsiLocalVariable) result.add((PsiLocalVariable) elem);
+            if (elem instanceof PsiExpression) result.add((PsiExpression) elem);
         }
         return result;
     }
 
+    /**
+     * Return the List containing PsiLocalVariable Object in current PsiElement
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiLocalVariable> if element has PsiLocalVariable, empty() otherwise
+     */
     public static List<PsiLocalVariable> findPsiLocalVariables(PsiElement element) {
         List<PsiLocalVariable> result = new ArrayList<>();
         element.accept(new JavaRecursiveElementVisitor() {
@@ -275,6 +290,115 @@ public class FindPsi {
         });
         return result;
     }
+
+    /**
+     * Return the List containing PsiLocalVariable Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiLocalVariable> if element has PsiLocalVariable, empty() otherwise
+     */
+    public static List<PsiLocalVariable> findChildPsiLocalVariables(PsiElement element) {
+        List<PsiLocalVariable> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiLocalVariable) result.add((PsiLocalVariable) elem);
+        }
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiTypeElement Object in current PsiElement
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiTypeElement> if element has PsiTypeElement, empty() otherwise
+     */
+    public static List<PsiTypeElement> findPsiTypeElements(PsiElement element) {
+        List<PsiTypeElement> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitTypeElement(PsiTypeElement element) {
+                super.visitTypeElement(element);
+                result.add(element);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiTypeElement Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiTypeElement> if element has PsiTypeElement, empty() otherwise
+     */
+    public static List<PsiTypeElement> findChildPsiTypeElements(PsiElement element) {
+        List<PsiTypeElement> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiTypeElement) result.add((PsiTypeElement) elem);
+        }
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiNewExpression Object in current PsiElement
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiNewExpression> if element has PsiNewExpression, empty() otherwise
+     */
+    public static List<PsiNewExpression> findPsiNewExpressions(PsiElement element) {
+        List<PsiNewExpression> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitNewExpression(PsiNewExpression element) {
+                super.visitNewExpression(element);
+                result.add(element);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiNewExpression Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiNewExpression> if element has PsiNewExpression, empty() otherwise
+     */
+    public static List<PsiNewExpression> findChildPsiNewExpressions(PsiElement element) {
+        List<PsiNewExpression> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiNewExpression) result.add((PsiNewExpression) elem);
+        }
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiJavaCodeReferenceElement Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiJavaCodeReferenceElement> if element has PsiJavaCodeReferenceElement, empty() otherwise
+     */
+    public static List<PsiJavaCodeReferenceElement> findChildPsiJavaCodeReferenceElements(PsiElement element) {
+        List<PsiJavaCodeReferenceElement> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiJavaCodeReferenceElement) result.add((PsiJavaCodeReferenceElement) elem);
+        }
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiKeyword Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiKeyword> if element has PsiKeyword, empty() otherwise
+     */
+    public static List<PsiKeyword> findChildPsiKeywords(PsiElement element) {
+        List<PsiKeyword> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiKeyword) result.add((PsiKeyword) elem);
+        }
+        return result;
+    }
+
+
+
 
 
 }
