@@ -46,12 +46,14 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
         parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
         referenceUsedInMethod = FindPsi.findReferenceUsedInMethod(focusMethod);
 
+        if (parametersOfMethod.isEmpty()) return false;
+        if (referenceUsedInMethod.isEmpty()) return true;
         for (PsiParameter p : parametersOfMethod) {
             boolean appearFlag = false;
             for (PsiReferenceExpression r : referenceUsedInMethod) {
 //                System.out.println("p -> name identifier" + p.getNameIdentifier());
 //                System.out.println("p -> name" + p.getName());
-                System.out.println(p.getName() + " vs " + r.getQualifiedName());
+//                System.out.println(p.getName() + " vs " + r.getQualifiedName());
 
                 if (p.getName().equals(r.getQualifiedName())) {
                     appearFlag = true;
