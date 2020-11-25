@@ -1,4 +1,4 @@
-package wanted.test;
+package wanted.test.base;
 
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;

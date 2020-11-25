@@ -22,9 +22,7 @@ import java.util.*;
 public class InlineMethodAction extends BaseRefactorAction {
     private Project project;
     private PsiClass targetClass;
-    private PsiField member;
     private PsiMethod method;
-    private List<PsiReferenceExpression> statements;
 
     /**
      * Returns the story name as a string format, for message.

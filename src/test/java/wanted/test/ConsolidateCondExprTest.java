@@ -2,6 +2,7 @@ package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.ConsolidateCondExpr;
+import wanted.test.base.LightActionTestCase;
 
 /**
  * Test class for consolidate conditional expression

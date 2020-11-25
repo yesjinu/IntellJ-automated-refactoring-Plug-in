@@ -15,15 +15,13 @@ import wanted.utils.ReplacePsi;
  * @author seungjae yoo
  */
 public class ConsolidateCondExpr extends BaseRefactorAction {
-
     private Project project;
     private PsiClass targetClass;
 
     private PsiIfStatement ifStatement;
 
-    @Override
     public String storyName() {
-        return "Consolidate Conditional Exp";
+        return "Consolidate Conditional Expression";
     }
 
     @Override

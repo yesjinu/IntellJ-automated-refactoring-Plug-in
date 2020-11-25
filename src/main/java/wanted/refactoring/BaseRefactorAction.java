@@ -51,7 +51,6 @@ public abstract class BaseRefactorAction extends AnAction {
         }
     }
 
-    /* return story name for message */
     public abstract String storyName();
 
     /* return true if refactoring is available */

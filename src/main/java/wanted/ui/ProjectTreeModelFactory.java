@@ -4,15 +4,15 @@ import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.light.LightPsiClassBase;
+import kotlin.random.Random;
 import wanted.refactoring.ConsolidateCondExpr;
+import wanted.refactoring.InlineMethodAction;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * TODO: ProjectTreeModelFactory Explanation
@@ -24,37 +24,112 @@ import java.util.Set;
 class ProjectTreeModelFactory {
 
     /**
-     * Create a tree model that describes the structure of a java project. This method use JavaElementVisitor to
-     * traverse the Java hierarchy of each root package in the source directory, and to create a tree. Each node is an
-     * instance of {@link DefaultMutableTreeNode} that can have a user object. The user object of root is the project
-     * itself, and other nodes have corresponding instances of PsiPackage, PsiClass, PsiMethod, and PsiField.
+     * Create a tree model that describes the 'Refactoring' structure of a java project.
+     * This method use JavaRecursiveElementVisitor to traverse the whole project with the Java hierarchy
+     * from each root package in the source directory to the one tiny single statement,
+     * and finds out whether every particular 'Refactoring Techinque' is applicable or not.
+     *
+     * Instance of {@link DefaultMutableTreeNode} that can have a user object. The user object of root is the project
+     * itself, and other nodes have corresponding instances of 'Refactoring Techinque's,
+     * which has corresponding 'PsiElement's as a child. (refactoring applicable)
      *
      * @param project a project
      * @return a tree model to describe the structure of project
      */
     public static TreeModel createProjectTreeModel(Project project) {
-        // TODO
-
         // the root node of the tree
         final DefaultMutableTreeNode root = new DefaultMutableTreeNode(project);
-
-        final DefaultMutableTreeNode rootCCE = new DefaultMutableTreeNode("Consolidate Conditional Expression");
-        root.add(rootCCE);
+        final Map<String, DefaultMutableTreeNode> rootRef = new HashMap<>();
 
         // traverse CCE
         final JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
             @Override
+            public void visitPackage(PsiPackage pack) {
+                for (PsiPackage subPack : pack.getSubPackages()) subPack.accept(this);
+                for (PsiClass subClass : pack.getClasses()) subClass.accept(this);
+            }
+
+            @Override
             public void visitIfStatement(PsiIfStatement ifStatement) {
                 super.visitIfStatement(ifStatement);
                 if (ConsolidateCondExpr.refactorValid(ifStatement)) {
-                    System.out.println(1111);
-                    rootCCE.add(new DefaultMutableTreeNode(ifStatement));
+                    addTreeNodes(root, rootRef, "CCE", ifStatement);
                 }
             }
         };
 
+        getRootPackages(project).forEach(aPackage -> aPackage.accept(visitor));
+        getRootClasses(project).forEach(aClass -> aClass.accept(visitor));
         return new DefaultTreeModel(root);
     }
+
+    /**
+     * Method that fetches Refactoring Method name by ID.
+     *
+     * @param id
+     * @return Corresponding Refactoring name (story name)
+     */
+    private static String getNameByID (String id) {
+        switch (id) {
+            // Scope: Class
+            // TODO: ADD
+
+            // Scope: Method
+            case "IM":
+                return new InlineMethodAction().storyName();
+            // TODO: ADD
+
+            // Scope: Statement
+            case "CCE":
+                return new ConsolidateCondExpr().storyName();
+            // TODO: ADD
+
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Create
+     *
+     * @param root Root node of this JTree
+     * @param rootRef Map with ID Keys and corresponding 'Refactoring Technique' Nodes
+     * @param id Refactoring ID
+     * @param psiElement Target PsiElement to add
+     */
+    private static void addTreeNodes (
+            DefaultMutableTreeNode root,
+            Map<String, DefaultMutableTreeNode> rootRef,
+            String id,
+            PsiElement psiElement) {
+
+        DefaultMutableTreeNode rootRefNode = rootRef.get(id);
+        if (rootRefNode == null)
+            addRefactoringTechniques(root, rootRef, id);
+
+        rootRefNode = rootRef.get(id);
+        rootRefNode.add(
+                new DefaultMutableTreeNode (psiElement));
+    }
+
+    /**
+     * Adding new 'Refactoring Techinque' node to the root.
+     *
+     * @param root Root node of this JTree
+     * @param rootRef Map with ID Keys and corresponding 'Refactoring Technique' Nodes
+     * @param id Refactoring ID
+     */
+    private static void addRefactoringTechniques (
+            DefaultMutableTreeNode root,
+            Map<String, DefaultMutableTreeNode> rootRef,
+            String id) {
+
+        DefaultMutableTreeNode rootRefNode =
+                new DefaultMutableTreeNode (getNameByID (id));
+        rootRef.put(id, rootRefNode);
+        root.add(rootRefNode);
+    }
+
 
     /**
      * Returns the root package(s) in the source directory of a project. The default package will not be considered, as
@@ -85,6 +160,21 @@ class ProjectTreeModelFactory {
                 .forEach(dir -> dir.accept(visitor));
 
         return rootPackages;
+    }
+
+    /**
+     * Returns set of classes in the default package
+     * (which is not considered in {@link ProjectTreeModelFactory#getRootPackages(Project)}
+     *
+     * @param project A Project
+     * @return Set of PsiClass containing default package classes
+     */
+    private static Set<PsiClass> getRootClasses(Project project) {
+        final Set<PsiClass> rootClasses = new HashSet<>();
+
+        // TODO: To be Added
+
+        return rootClasses;
     }
 }
 
