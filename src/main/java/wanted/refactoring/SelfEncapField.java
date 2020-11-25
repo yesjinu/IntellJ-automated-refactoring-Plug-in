@@ -1,5 +1,8 @@
 package wanted.refactoring;
 
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.psi.util.PsiTreeUtil;
 import wanted.utils.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -39,7 +42,9 @@ public class SelfEncapField extends BaseRefactorAction {
         if(members.isEmpty()){ return false; }
 
         // ! only encapsulate one member
-        member = members.get(0);
+        member = members.get(0); // -> traverse version
+        //member = FindPsi.findMemberByCaret(navigator.findFile(), e); // caret version
+        //if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // fail if member is not private
 
         // check if there's getMember or setMember
         String newName = CreatePsi.capitalize(member);

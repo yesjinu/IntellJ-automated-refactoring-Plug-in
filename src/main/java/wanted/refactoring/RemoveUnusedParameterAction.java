@@ -49,7 +49,7 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
         project = navigator.findProject();
         focusMethod = navigator.findMethod();
         parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
-        referenceUsedInMethod = FindPsi.findReferenceUsedInMethod(focusMethod);
+        referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
 
         for (PsiParameter p : parametersOfMethod) {
             boolean appearFlag = false;
