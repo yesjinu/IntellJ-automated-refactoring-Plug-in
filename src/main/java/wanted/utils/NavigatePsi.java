@@ -47,12 +47,12 @@ public class NavigatePsi {
         try
         {
             focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
-            focusMethod = focusClass.getMethods()[0];
         }catch(ArrayIndexOutOfBoundsException exception)
         {
             // NO class in current file
             focusClass = null;
         }
+
         try {
             caret = editor.getCaretModel().getOffset();
             focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
@@ -109,17 +109,6 @@ public class NavigatePsi {
         return ret;
     }
 
-
-    /**
-     * Fetching current method in AnActionEvent.
-     * 
-     * @return Current Focusing Method, null if currently not in method.
-     */
-    @Nullable
-    public PsiMethod findFocusMethod() {
-        return focusMethod;
-    }
-
     /**
      * Check whether methods with given names are already implemented in class
      * 
@@ -127,7 +116,7 @@ public class NavigatePsi {
      * @return names of methods that haven't implemented in current class
      *         if all entries of methods are already implemented, return empty list
      */
-    public List<String> findMethod(List<String> methods)
+    public List<String> findMethodByName(List<String> methods)
     {
         List<String> ret = methods;
         for(PsiMethod m: focusClass.getMethods())
@@ -151,5 +140,5 @@ public class NavigatePsi {
     public PsiClass findClass(){ return focusClass; }
 
     /* return first method of focus class */
-    public PsiMethod getMethod(){ return focusMethod; }
+    public PsiMethod findMethod(){ return focusMethod; }
 }

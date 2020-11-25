@@ -51,7 +51,7 @@ public class InlineMethodAction extends BaseRefactorAction {
         targetClass = navigator.findClass();
         if (targetClass == null) return false;
 
-        method = navigator.findFocusMethod();
+        method = navigator.findMethod();
         if (method == null) return false;
 
         return isCandidate(method);

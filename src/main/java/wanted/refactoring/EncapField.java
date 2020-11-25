@@ -49,7 +49,7 @@ public class EncapField extends BaseRefactorAction {
         List<String> methods = new ArrayList<>();
         methods.add("get"+newName); methods.add("set"+newName);
 
-        List<String> methodToImpl = navigator.findMethod(methods);
+        List<String> methodToImpl = navigator.findMethodByName(methods);
         if(methodToImpl.size()!=2){ return false; } // there's either getMember or setMember already
 
         return true;
