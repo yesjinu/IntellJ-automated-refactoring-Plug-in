@@ -45,7 +45,8 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
         focusMethod = navigator.getMethod();
         parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
         referenceUsedInMethod = FindPsi.findReferenceUsedInMethod(focusMethod);
-
+//        PsiReference a;
+//        a.isReferenceTo()
         for (PsiParameter p : parametersOfMethod) {
             boolean appearFlag = false;
             for (PsiReferenceExpression r : referenceUsedInMethod) {
@@ -53,8 +54,10 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
 //                System.out.println("p -> name" + p.getName());
 //                System.out.println(p.getName() + " vs " + r.getQualifiedName());
 
-                if (p.getName().equals(r.getQualifiedName())) {
+//                if (p.getName().equals(r.getQualifiedName())) {
+                if (r.isReferenceTo(p)) {
                     appearFlag = true;
+
                     break;
                 }
             }

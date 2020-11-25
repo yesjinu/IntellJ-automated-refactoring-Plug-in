@@ -14,18 +14,33 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class ParameterizeWholeObjectAction extends BaseRefactorAction{
-    private Project project;
-    private PsiClass focusClass;
-    private PsiMethod focusMethod;
+/**
+ * @author Jinu Noh
+ */
 
+public class ParameterizeWholeObjectAction extends BaseRefactorAction{
+    public Project project;
+    private PsiClass focusClass;
+
+    List<PsiMethodCallExpression> methodCallsInClass;
+    List<PsiIdentifier> varFromGetter;
+
+
+
+
+
+    /**
+     * Returns the story name as a string format, for message.
+     * @return story name "Parameterize Whole Object"
+     */
     @Override
     public String storyName() {
         return "Parameterize Whole Object";
     }
 
-    /** TODO
-     * 1. focusMethod의 parameter 부분을 검사
+    /**
+     * 1. focusClass의 method call 부분을 전부 검사
+     *      1) get method를 사용해서 값을 얻어낸 경우를 전부 저장
      * 2. parameter 리스트를 순회하며 하나의 object의 getter로부터 받아온 값이 2개 이상인 경우 체크
      *      1) o.getA(), o.getB()
      *      2) a, b
@@ -38,10 +53,21 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
-
         project = navigator.findProject();
-        file = navigator.findFile();
+        focusClass = navigator.findClass();
 
+        methodCallsInClass = FindPsi.findPsiMethodCallExpression(focusClass);
+        // 클래스 안의 모든 method 콜을 검사
+        for (PsiMethodCallExpression m : methodCallsInClass) {
+            // getter 함수이면
+            if (m.toString().contains("get")) {
+//                varFromGetter.add()
+            }
+        }
+
+
+
+        return true;
     }
 
     @Override

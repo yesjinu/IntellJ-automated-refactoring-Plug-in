@@ -91,7 +91,7 @@ public class FindPsi {
     /**
      * method that returns set of parameters that passed to the method
      * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
-     * @return set of unused parameters
+     * @return set of parameters
      * @author : JINU NOH
      * */
     public static Set<PsiParameter> findParametersOfMethod(PsiMethod focusMethod) {
@@ -123,10 +123,6 @@ public class FindPsi {
         return result;
     }
 
-    /**
-     * Searching for every
-     */
-    // TODO: Implement Someting @seha park
 
     /**
      * Searching for every subclasses

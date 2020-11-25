@@ -38,6 +38,7 @@ public class NavigatePsi {
 
         try
         {
+            // 파일의 첫번째 클래스, 첫번째 메소드만 받아온다는 한계가 있음 @Noh Jinu
             focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
             focusMethod = focusClass.getMethods()[0];
         }catch(ArrayIndexOutOfBoundsException exception)
