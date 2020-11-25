@@ -30,11 +30,6 @@ import java.util.Optional;
 class ProjectStructureTree extends Tree {
 
     private static final Icon projectIcon = MetalIconFactory.getTreeHardDriveIcon();
-    private static final Icon packageIcon = MetalIconFactory.getTreeFolderIcon();
-    private static final Icon classIcon = MetalIconFactory.getTreeComputerIcon();
-    private static final Icon methodIcon = MetalIconFactory.getFileChooserDetailViewIcon();
-    private static final Icon fieldIcon = MetalIconFactory.getVerticalSliderThumbIcon();
-    private static final Icon defaultIcon = MetalIconFactory.getTreeLeafIcon();
 
     /**
      * Creates a project structure tree for a given project.
@@ -49,32 +44,19 @@ class ProjectStructureTree extends Tree {
             @Override
             public void customizeCellRenderer(@NotNull JTree tree, Object value, boolean selected,
                                               boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                // hint: use the setIcon method to assign icons, and the append method to add text
+                // TODO
                 if (value instanceof DefaultMutableTreeNode) {
                     Object v = ((DefaultMutableTreeNode) value).getUserObject();
-                    if (v instanceof Project) {
+                    if (v instanceof PsiIfStatement) {
+                        setIcon(projectIcon);
+                        append(String.valueOf(((PsiIfStatement) v).getTextOffset()));
+                    }
+                    else if (v instanceof String){
+                        append((String) v);
+                    }
+                    else if (v instanceof Project) {
                         setIcon(projectIcon);
                         append(((Project) v).getName());
-                    }
-                    else if (v instanceof PsiPackage) {
-                        setIcon(packageIcon);
-                        append(((PsiPackage) v).getName());
-                    }
-                    else if (v instanceof PsiClass) {
-                        setIcon(classIcon);
-                        append(((PsiClass) v).getName());
-                    }
-                    else if (v instanceof PsiMethod) {
-                        setIcon(methodIcon);
-                        append(((PsiMethod) v).getName());
-                    }
-                    else if (v instanceof PsiField) {
-                        setIcon(fieldIcon);
-                        append(((PsiField) v).getName());
-                    }
-                    else {
-                        setIcon(defaultIcon);
-                        append(v.toString());
                     }
                 }
 
@@ -86,19 +68,14 @@ class ProjectStructureTree extends Tree {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    // TODO: implement the double-click behavior here
-                    // hint: use the navigate method of the classes PsiMethod and PsiField
+                    // TODO
                     TreePath treePath = getPathForLocation(e.getX(), e.getY());
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
                     Object element = node.getUserObject();
 
                     if (element != null) {
-                        if (element instanceof PsiMethod) {
-                            System.out.println("PsiMethod");
-                            ((PsiMethod) element).navigate(true);
-                        } else if (element instanceof PsiField) {
-                            System.out.println("PsiField");
-                            ((PsiField) element).navigate(true);
+                        if (element instanceof NavigatablePsiElement) {
+                            ((NavigatablePsiElement) element).navigate(true);
                         }
                     }
                 }

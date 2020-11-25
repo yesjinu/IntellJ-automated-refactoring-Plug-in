@@ -38,8 +38,12 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
         ifStatement = FindPsi.findIfStatement(targetClass, offset);
         if (ifStatement == null) return false;
 
-        PsiStatement thenStatement = ifStatement.getThenBranch();
-        PsiStatement elseStatement = ifStatement.getElseBranch();
+        return refactorValid(ifStatement);
+    }
+
+    public static boolean refactorValid(PsiIfStatement s) {
+        PsiStatement thenStatement = s.getThenBranch();
+        PsiStatement elseStatement = s.getElseBranch();
         if (elseStatement == null) return false;
         else if (elseStatement instanceof PsiIfStatement) elseStatement = ((PsiIfStatement) elseStatement).getThenBranch();
 

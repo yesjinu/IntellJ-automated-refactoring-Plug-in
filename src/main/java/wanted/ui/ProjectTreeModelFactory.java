@@ -4,6 +4,7 @@ import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
+import wanted.refactoring.ConsolidateCondExpr;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -32,52 +33,26 @@ class ProjectTreeModelFactory {
      * @return a tree model to describe the structure of project
      */
     public static TreeModel createProjectTreeModel(Project project) {
+        // TODO
+
         // the root node of the tree
         final DefaultMutableTreeNode root = new DefaultMutableTreeNode(project);
 
-        // The visitor to traverse the Java hierarchy and to construct the tree
-        final JavaElementVisitor visitor = new JavaElementVisitor() {
-            private DefaultMutableTreeNode parent = root;
+        final DefaultMutableTreeNode rootCCE = new DefaultMutableTreeNode("Consolidate Conditional Expression");
+        root.add(rootCCE);
 
+        // traverse CCE
+        final JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
             @Override
-            public void visitPackage(PsiPackage pack) {
-                DefaultMutableTreeNode child = new DefaultMutableTreeNode(pack);
-                parent.add(child);
-
-                DefaultMutableTreeNode temp = parent;
-                parent = child;
-                for (PsiPackage subPack : pack.getSubPackages()) subPack.accept(this);
-                for (PsiClass subClass : pack.getClasses()) subClass.accept(this);
-                parent = temp;
-            }
-
-            @Override
-            public void visitClass(PsiClass aClass) {
-                DefaultMutableTreeNode child = new DefaultMutableTreeNode(aClass);
-                parent.add(child);
-
-                DefaultMutableTreeNode temp = parent;
-                parent = child;
-                for (PsiMethod subMethod : aClass.getMethods()) subMethod.accept(this);
-                for (PsiField subField : aClass.getFields()) subField.accept(this);
-                parent = temp;
-            }
-
-            @Override
-            public void visitMethod(PsiMethod method) {
-                DefaultMutableTreeNode child = new DefaultMutableTreeNode(method);
-                parent.add(child);
-            }
-
-            @Override
-            public void visitField(PsiField field) {
-                DefaultMutableTreeNode child = new DefaultMutableTreeNode(field);
-                parent.add(child);
+            public void visitIfStatement(PsiIfStatement ifStatement) {
+                super.visitIfStatement(ifStatement);
+                if (ConsolidateCondExpr.refactorValid(ifStatement)) {
+                    System.out.println(1111);
+                    rootCCE.add(new DefaultMutableTreeNode(ifStatement));
+                }
             }
         };
 
-        // apply the visitor for each root package in the source directory
-        getRootPackages(project).forEach(aPackage -> aPackage.accept(visitor));
         return new DefaultTreeModel(root);
     }
 
