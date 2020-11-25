@@ -15,6 +15,7 @@
     <depends>com.intellij.java</depends>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <toolWindow id="Project Structure" anchor="right" factoryClass="wanted.ui.MyToolWindowFactory"/>
     </extensions>
 
     <actions>

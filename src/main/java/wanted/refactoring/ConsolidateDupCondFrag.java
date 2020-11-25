@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * class to provide consolidate duplicate conditional fragments refactoring
+ *
  * @author seungjae yoo
  */
 public class ConsolidateDupCondFrag extends BaseRefactorAction {

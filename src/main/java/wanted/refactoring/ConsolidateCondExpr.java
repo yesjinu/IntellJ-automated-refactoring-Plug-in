@@ -11,6 +11,7 @@ import wanted.utils.ReplacePsi;
 
 /**
  * class to provide consolidate conditional expression refactoring
+ *
  * @author seungjae yoo
  */
 public class ConsolidateCondExpr extends BaseRefactorAction {
