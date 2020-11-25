@@ -14,7 +14,40 @@ public class InlineMethodActionTest extends LightActionTestCase {
         return super.getBasePath() + "/InlineMethod";
     }
 
-    public void testInlineMethodAction() throws Exception {
-        doTest();
+    public void testInlineMethodAction1() throws Exception {
+        doTest_io(1);
+    }
+
+    public void testInlineMethodAction2() throws Exception {
+        try {
+            doTest_io(2);
+        }
+        catch(RuntimeException e){
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
+    }
+
+    public void testInlineMethodAction3() throws Exception {
+        doTest_io(3);
+    }
+
+    public void testInlineMethodAction4() throws Exception {
+        doTest_io(4);
+    }
+
+    public void testInlineMethodAction5() throws Exception {
+        doTest_io(5);
+    }
+
+    public void testInlineMethodAction6() throws Exception {
+        doTest_io(6);
+    }
+
+    public void testInlineMethodAction7() throws Exception {
+        doTest_io(7);
+    }
+
+    public void testInlineMethodAction8() throws Exception {
+        doTest_io(8);
     }
 }
