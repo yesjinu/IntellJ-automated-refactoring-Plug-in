@@ -152,7 +152,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         if (behindReList.size() != 1) return false;
 
         PsiExpressionList el = elList.get(0);
-        List<PsiExpression> eList = FindPsi.findChildPsiExpressions(exp);
+        List<PsiExpression> eList = FindPsi.findChildPsiExpressions(el);
         if (eList.size() != 0) return false;
 
         PsiReferenceExpression BackRe = behindReList.get(0);
