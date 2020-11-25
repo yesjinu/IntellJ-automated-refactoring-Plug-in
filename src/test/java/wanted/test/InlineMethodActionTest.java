@@ -50,4 +50,13 @@ public class InlineMethodActionTest extends LightActionTestCase {
     public void testInlineMethodAction8() throws Exception {
         doTest_io(8);
     }
+
+    public void testInlineMethodAction9() throws Exception {
+        try {
+            doTest_io(9);
+        }
+        catch(RuntimeException e){
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
+    }
 }

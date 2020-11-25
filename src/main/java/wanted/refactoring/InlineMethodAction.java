@@ -222,14 +222,15 @@ public class InlineMethodAction extends BaseRefactorAction {
                     return false;
             }
 
-            PsiCodeBlock body = method.getBody();
-            if (body == null) return false;
 
-            // Choosing Methods with One Statement
-            if (body.getStatementCount() > 1) return false;
         }
+
+        PsiCodeBlock body = method.getBody();
+        if (body == null) return false;
+
+        // Choosing Methods with One Statement
+        if (body.getStatementCount() > 1) return false;
 
         return true;
     }
-
 }
