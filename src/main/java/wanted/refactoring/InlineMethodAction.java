@@ -10,6 +10,7 @@ import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
 import org.jetbrains.annotations.NotNull;
+import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 
@@ -62,12 +63,9 @@ public class InlineMethodAction extends BaseRefactorAction {
      * @return true if method is refactorable
      */
     public static boolean refactorValid(Project project, @NotNull PsiMethod method) {
-        PsiElement targetClass = method;
-        while (!(targetClass instanceof PsiClass)) {
-            targetClass = targetClass.getParent();
-            if (targetClass == null)
-                return false;
-        }
+        PsiElement targetClass = FindPsi.getContainingClass(method);
+        if (targetClass == null) return false;
+
         List<PsiClass> subclassList;
 
         // MethodHierarchyTreeStructure treeStructure = new MethodHierarchyTreeStructure(project, method, null);

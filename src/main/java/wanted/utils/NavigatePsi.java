@@ -59,6 +59,7 @@ public class NavigatePsi {
             try {
                 caret = editor.getCaretModel().getOffset();
                 focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
+                // focusMethod = FindPsi.getContainingMethod(focusClass, caret);
             } catch (ArrayIndexOutOfBoundsException exception) {
                 focusMethod = null;
             }
@@ -73,9 +74,7 @@ public class NavigatePsi {
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e)
     {
-        if(navigator==null){ navigator = new NavigatePsi(e); }
-        else if(focusFile!=e.getData(LangDataKeys.PSI_FILE)){ navigator = new NavigatePsi(e); }
-
+        navigator = new NavigatePsi(e);
         return navigator;
     }
 
