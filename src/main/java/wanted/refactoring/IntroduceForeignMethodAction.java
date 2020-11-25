@@ -27,7 +27,6 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
     List<PsiClass> psiClasses;
     Map<PsiMethod, PsiClass> psiMethodMap;
     Map<PsiDeclarationStatement, PsiMethod> psiDclStateMap;
-    Map<PsiDeclarationStatement, PsiExpressionList> psiTargetMap;
 
     String variableName;
     String utilityClassType;
@@ -74,7 +73,6 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
          * */
         params = new HashMap<>();
         paramCounts = new HashMap<>();
-        psiTargetMap = new HashMap<>();
         possible = new ArrayList<>();
         for (PsiDeclarationStatement stm : psiDclStateMap.keySet()) {
             List<PsiLocalVariable> lvList = FindPsi.findChildPsiLocalVariables(stm);
@@ -115,7 +113,6 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
             if (params.get(stm).size() == paramCounts.get(stm) && utilityClassName != null) {
                 possible.add(stm);
-                psiTargetMap.put(stm, el);
             }
         }
 
@@ -157,8 +154,8 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
         PsiReferenceExpression BackRe = behindReList.get(0);
         if (isVaildParameter(BackRe, stm)) {
-            utilityClassName = frontRe.getText();
-            String param = params.get(stm).remove(params.get(stm).size() - 1);
+            utilityClassName = BackRe.getText();
+            String param = FindPsi.findChildPsiIdentifiers(frontRe).get(0).getText();
             params.get(stm).add("arg." + param + "()");
             return true;
         }
@@ -178,7 +175,6 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
                 PsiTypeElement innerTe = innerTeList.get(0);
                 if (innerTe.getText().equals(utilityClassType)) {
-                    params.get(stm).add(exp.getText());
                     return true;
                 }
                 else return false;
@@ -192,7 +188,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         PsiJavaToken token = FindPsi.findChildPsiJavaTokens(exp).get(0);
 
         PsiExpression left = expList.get(0);
-        PsiExpression right = expList.get(0);
+        PsiExpression right = expList.get(1);
 
         String param = "";
 
@@ -200,7 +196,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
             param += params.get(stm).remove(params.get(stm).size() - 1) + token.getText();
             if (isVaildParameter(right, stm)) {
                 param += params.get(stm).remove(params.get(stm).size() - 1);
-                params.get(stm).add("arg." + param + "()");
+                params.get(stm).add(param);
             }
         }
         return false;
@@ -219,20 +215,17 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
             for (PsiDeclarationStatement stm : possible) {
-                PsiExpressionList expList = psiTargetMap.get(stm);
-                List<PsiExpression> exps = FindPsi.findChildPsiExpressions(expList);
-                for (PsiExpression exp : exps) {
-                    exp.delete();
-                }
-                PsiExpression _exp = factory.createExpressionFromText(utilityClassName, null);
-                expList.add(_exp);
-
                 PsiMethod mtd = psiDclStateMap.get(stm);
                 PsiClass cls = psiMethodMap.get(mtd);
 
+                String statement = utilityClassType + " " + variableName + " = " + variableName
+                        + "(" + utilityClassName + ");";
+                PsiStatement _stm = factory.createStatementFromText(statement, null);
+                stm.replace(_stm);
+
                 String strMethod = "private static " + utilityClassType + " " + variableName + "(" + utilityClassType
                                     + " arg) { return new " + utilityClassType + "("
-                                    + StringUtils.join(params.get(stm), ", ") + ") }";
+                                    + StringUtils.join(params.get(stm), ", ") + "); }";
                 PsiMethod _mtd = factory.createMethodFromText(strMethod, null);
                 cls.addBefore(_mtd, cls.getLastChild());
             }
