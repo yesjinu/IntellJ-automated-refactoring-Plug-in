@@ -93,7 +93,7 @@ public class CreatePsi {
 
     /**
      * Return same statement which is copied
-     * 
+     *
      * @param project
      * @param statement
      * @return newStatement which is same with statement
@@ -107,7 +107,7 @@ public class CreatePsi {
 
     /**
      * Return merged conditionExpression with || symbol
-     * 
+     *
      * @param project
      * @param Left
      * @param Right
@@ -127,7 +127,7 @@ public class CreatePsi {
 
     /**
      * Method which creates new Duplicate PsiExpression object for replacement.
-     * 
+     *
      * @param project Project
      * @param psiExpression Target PsiExpression to duplicate
      * @return Newly copied PsiExpression Object
@@ -146,5 +146,18 @@ public class CreatePsi {
         String name = member.getName(); // make first character uppercase
         String newName = name.substring(0, 1).toUpperCase()+name.substring(1);
         return newName;
+    }
+
+    /**
+     * Return empty block statement
+     *
+     * @param project
+     * @return
+     */
+    public static PsiStatement createEmptyBlockStatement(@NotNull Project project) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText("{}", null);
+        return newStatement;
     }
 }
