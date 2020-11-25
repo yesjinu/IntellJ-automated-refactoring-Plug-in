@@ -1,8 +1,8 @@
 package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
-import wanted.refactoring.HideMethodAction;
 import wanted.refactoring.IntroduceForeignMethodAction;
+import wanted.test.base.LightActionTestCase;
 
 
 public class IntroduceForeignMethodActionTest extends LightActionTestCase {
