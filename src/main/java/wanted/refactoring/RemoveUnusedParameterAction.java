@@ -51,6 +51,8 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
         parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
         referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
 
+        if (parametersOfMethod.isEmpty()) return false;
+        if (referenceUsedInMethod.isEmpty()) return true;
         for (PsiParameter p : parametersOfMethod) {
             boolean appearFlag = false;
             for (PsiReferenceExpression r : referenceUsedInMethod) {
