@@ -13,6 +13,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Class to remove unused parameters
+ *
+ * @author Jinu Noh
+ */
 public class RemoveUnusedParameterAction extends BaseRefactorAction {
     public Project project;
     private PsiMethod focusMethod;
@@ -42,18 +47,18 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
         project = navigator.findProject();
-        focusMethod = navigator.getMethod();
+        focusMethod = navigator.findMethod();
         parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
-        referenceUsedInMethod = FindPsi.findReferenceUsedInMethod(focusMethod);
-//        PsiReference a;
-//        a.isReferenceTo()
+        referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
+
+        if (parametersOfMethod.isEmpty()) return false;
+        if (referenceUsedInMethod.isEmpty()) {
+            unusedParameter.addAll(parametersOfMethod);
+            return true;
+        }
         for (PsiParameter p : parametersOfMethod) {
             boolean appearFlag = false;
             for (PsiReferenceExpression r : referenceUsedInMethod) {
-//                System.out.println("p -> name identifier" + p.getNameIdentifier());
-//                System.out.println("p -> name" + p.getName());
-//                System.out.println(p.getName() + " vs " + r.getQualifiedName());
-
 //                if (p.getName().equals(r.getQualifiedName())) {
                 if (r.isReferenceTo(p)) {
                     appearFlag = true;

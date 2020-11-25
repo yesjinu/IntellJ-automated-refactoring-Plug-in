@@ -2,6 +2,7 @@ package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.SelfEncapField;
+import wanted.test.base.LightActionTestCase;
 
 /**
  * Test class for self encapsulate field
@@ -42,4 +43,9 @@ public class SelfEncapsulateFieldTest extends LightActionTestCase {
             // nothing
         }
     }
+
+    /* Test 5: test using caret */
+    //public void testSelfEncapField5() throws Exception {
+    //    doTest();
+    //}
 }

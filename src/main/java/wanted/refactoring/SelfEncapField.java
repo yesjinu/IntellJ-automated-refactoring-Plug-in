@@ -1,5 +1,8 @@
 package wanted.refactoring;
 
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.psi.util.PsiTreeUtil;
 import wanted.utils.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -10,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * class to provide self encapsulate field refactoring
- * @author seha park
+ * Class to provide self encapsulate field refactoring.
+ *
+ * @author seha Park
  */
 public class SelfEncapField extends BaseRefactorAction {
     private Project project;
@@ -38,14 +42,16 @@ public class SelfEncapField extends BaseRefactorAction {
         if(members.isEmpty()){ return false; }
 
         // ! only encapsulate one member
-        member = members.get(0);
+        member = members.get(0); // -> traverse version
+        //member = FindPsi.findMemberByCaret(navigator.findFile(), e); // caret version
+        //if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // fail if member is not private
 
         // check if there's getMember or setMember
         String newName = CreatePsi.capitalize(member);
         List<String> methods = new ArrayList<>();
         methods.add("get"+newName); methods.add("set"+newName);
 
-        List<String> methodToImpl = navigator.findMethod(methods);
+        List<String> methodToImpl = navigator.findMethodByName(methods);
         if(methodToImpl.size()!=2){ return false; } // there's either getMember or setMember already
 
         return true;
@@ -59,14 +65,14 @@ public class SelfEncapField extends BaseRefactorAction {
         List<PsiElement> addList = new ArrayList<>();
 
         // create getter and setter
-        PsiMethod getMember = CreatePsi.createGetMethod(project, member, "protected");
+        PsiMethod getMember = CreatePsi.createGetMethod(project, member, PsiModifier.PROTECTED);
         addList.add(getMember);
-        PsiMethod setMember = CreatePsi.createSetMethod(project, member, "protected");
+        PsiMethod setMember = CreatePsi.createSetMethod(project, member, PsiModifier.PROTECTED);
         addList.add(setMember);
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
             AddPsi.addMethod(targetClass, addList); // add method in addList to targetClass
-            ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references, member); // encapsulate with getter and setter
+            ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references); // encapsulate with getter and setter
         });
     }
 }

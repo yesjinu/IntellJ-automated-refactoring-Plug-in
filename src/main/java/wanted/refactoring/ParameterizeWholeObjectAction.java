@@ -48,7 +48,6 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
      * 3. parameter 2개 (혹은 그 이상) 제거 후, parameter로 object를 넣기
      * 4. method에 해당 parameter의 getMethod() 넣기. (getMethod가 있는 경우만 생각)
      * 5. method 호출부 찾아서 변경하기
-     *
     */
     @Override
     public boolean refactorValid(AnActionEvent e) {
