@@ -50,6 +50,15 @@ class ProjectTreeModelFactory {
                 for (PsiClass subClass : pack.getClasses()) subClass.accept(this);
             }
 
+            // TODO: ADD
+            @Override
+            public void visitClass(PsiClass psiClass) {
+                super.visitClass(psiClass);
+
+
+            }
+
+            // TODO: ADD
             @Override
             public void visitMethod(PsiMethod method) {
                 super.visitMethod(method);
@@ -60,6 +69,7 @@ class ProjectTreeModelFactory {
                 }
             }
 
+            // TODO: ADD
             @Override
             public void visitIfStatement(PsiIfStatement ifStatement) {
                 super.visitIfStatement(ifStatement);

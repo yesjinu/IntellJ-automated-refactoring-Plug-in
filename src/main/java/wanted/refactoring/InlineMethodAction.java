@@ -2,6 +2,7 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -63,11 +64,16 @@ public class InlineMethodAction extends BaseRefactorAction {
     public static boolean refactorValid(Project project, @NotNull PsiMethod method) {
         PsiElement targetClass = method;
         while (!(targetClass instanceof PsiClass)) targetClass = targetClass.getParent();
+        List<PsiClass> subclassList;
 
         // MethodHierarchyTreeStructure treeStructure = new MethodHierarchyTreeStructure(project, method, null);
-        List<PsiClass> subclassList =
-                new ArrayList<>(
-                        ClassInheritorsSearch.search((PsiClass) targetClass, GlobalSearchScope.allScope(project), false).findAll());
+        try {
+            subclassList =
+                    new ArrayList<>(
+                            ClassInheritorsSearch.search((PsiClass) targetClass, GlobalSearchScope.allScope(project), false).findAll());
+        } catch (IndexNotReadyException e) {
+            return false;
+        }
 
         for (PsiClass subclass : subclassList) {
             for (PsiMethod method_sub : subclass.getMethods()){
@@ -82,6 +88,9 @@ public class InlineMethodAction extends BaseRefactorAction {
         // Choosing Methods with One Statement
         if (body.getStatementCount() > 1) return false;
 
+        // Checking if Reference Exists (Except link)
+        // TODO: @link { }
+        if (method.getReferences().length == 0) return false;
         return true;
     }
 

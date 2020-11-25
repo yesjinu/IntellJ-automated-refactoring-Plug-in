@@ -44,19 +44,33 @@ class ProjectStructureTree extends Tree {
             @Override
             public void customizeCellRenderer(@NotNull JTree tree, Object value, boolean selected,
                                               boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                // TODO
                 if (value instanceof DefaultMutableTreeNode) {
                     Object v = ((DefaultMutableTreeNode) value).getUserObject();
-                    if (v instanceof PsiIfStatement) {
-                        setIcon(projectIcon);
-                        append(String.valueOf(((PsiIfStatement) v).getTextOffset()));
-                    }
-                    else if (v instanceof String){
-                        append((String) v);
-                    }
-                    else if (v instanceof Project) {
+                    if (v instanceof Project) { // Project
                         setIcon(projectIcon);
                         append(((Project) v).getName());
+                    }
+                    else if (v instanceof String){ // Category: Refactoring
+                        setIcon(projectIcon);
+                        append((String) v);
+                    }
+                    else if (v instanceof PsiClass) {
+                        setIcon(projectIcon);
+
+                        if (((PsiClass) v).getName() == null) { // Anonymous Class
+                            append("Anonymous class");
+                        } else {
+                            append(((PsiClass) v).getName());
+                        }
+                    }
+                    else if (v instanceof PsiMethod) {
+                        setIcon(projectIcon);
+                        append(((PsiMethod) v).getName());
+                    }
+                    else if (v instanceof PsiStatement) {
+                        setIcon(projectIcon);
+                        // TODO: Change
+                        append(String.valueOf(((PsiStatement) v).getTextOffset()));
                     }
                 }
 
