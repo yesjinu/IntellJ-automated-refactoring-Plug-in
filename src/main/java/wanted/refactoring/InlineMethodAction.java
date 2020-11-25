@@ -21,7 +21,6 @@ import java.util.*;
  */
 public class InlineMethodAction extends BaseRefactorAction {
     private Project project;
-    private PsiClass targetClass;
     private PsiMethod method;
 
     /**
@@ -46,13 +45,44 @@ public class InlineMethodAction extends BaseRefactorAction {
 
         project = navigator.findProject();
 
-        targetClass = navigator.findClass();
-        if (targetClass == null) return false;
-
         method = navigator.findMethod();
         if (method == null) return false;
 
-        return isCandidate(method);
+        return refactorValid(project, method);
+    }
+
+    /**
+     * Helper method that checks whether candidate method is refactorable using 'Inline Method'.
+     *
+     * Every candidate methods should follow these two requisites:
+     * 1. Methods which is not defined in subclasses
+     * 2. Methods with 1 statement.
+     *
+     * @return true if method is refactorable
+     */
+    public static boolean refactorValid(Project project, @NotNull PsiMethod method) {
+        PsiElement targetClass = method;
+        while (!(targetClass instanceof PsiClass)) targetClass = targetClass.getParent();
+
+        // MethodHierarchyTreeStructure treeStructure = new MethodHierarchyTreeStructure(project, method, null);
+        List<PsiClass> subclassList =
+                new ArrayList<>(
+                        ClassInheritorsSearch.search((PsiClass) targetClass, GlobalSearchScope.allScope(project), false).findAll());
+
+        for (PsiClass subclass : subclassList) {
+            for (PsiMethod method_sub : subclass.getMethods()){
+                if (MethodSignatureUtil.areSignaturesEqual(method, method_sub))
+                    return false;
+            }
+        }
+
+        PsiCodeBlock body = method.getBody();
+        if (body == null) return false;
+
+        // Choosing Methods with One Statement
+        if (body.getStatementCount() > 1) return false;
+
+        return true;
     }
 
     /**
@@ -60,7 +90,7 @@ public class InlineMethodAction extends BaseRefactorAction {
      */
     @Override
     protected void refactor(AnActionEvent e) {
-        assert isCandidate (method);
+        assert refactorValid (project, method);
 
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
 
@@ -197,38 +227,5 @@ public class InlineMethodAction extends BaseRefactorAction {
         else if (expression instanceof PsiUnaryExpression)
             return isInsertExpression(((PsiUnaryExpression) expression).getOperand());
         else return true;
-    }
-
-    /**
-     * Helper method that checks whether candidate method is refactorable using 'Inline Method'.
-     *
-     * Every candidate methods should follow these two requisites:
-     * 1. Methods which is not defined in subclasses
-     * 2. Methods with 1 statement.
-     *
-     * @return true if method is refactorable
-     */
-    private boolean isCandidate(@NotNull PsiMethod method) {
-        // MethodHierarchyTreeStructure treeStructure = new MethodHierarchyTreeStructure(project, method, null);
-        List<PsiClass> subclassList =
-                new ArrayList<>(
-                    ClassInheritorsSearch.search(targetClass, GlobalSearchScope.allScope(project), false).findAll());
-
-        for (PsiClass subclass : subclassList) {
-            for (PsiMethod method_sub : subclass.getMethods()){
-                if (MethodSignatureUtil.areSignaturesEqual(method, method_sub))
-                    return false;
-            }
-
-
-        }
-
-        PsiCodeBlock body = method.getBody();
-        if (body == null) return false;
-
-        // Choosing Methods with One Statement
-        if (body.getStatementCount() > 1) return false;
-
-        return true;
     }
 }

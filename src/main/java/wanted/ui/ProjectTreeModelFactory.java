@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.impl.light.LightPsiClassBase;
 import kotlin.random.Random;
 import wanted.refactoring.ConsolidateCondExpr;
+import wanted.refactoring.ConsolidateDupCondFrag;
 import wanted.refactoring.InlineMethodAction;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -41,7 +42,7 @@ class ProjectTreeModelFactory {
         final DefaultMutableTreeNode root = new DefaultMutableTreeNode(project);
         final Map<String, DefaultMutableTreeNode> rootRef = new HashMap<>();
 
-        // traverse CCE
+        // traverse
         final JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
             @Override
             public void visitPackage(PsiPackage pack) {
@@ -50,10 +51,38 @@ class ProjectTreeModelFactory {
             }
 
             @Override
+            public void visitMethod(PsiMethod method) {
+                super.visitMethod(method);
+
+                // IM
+                if (InlineMethodAction.refactorValid(project, method)) {
+                    addTreeNodes(root, rootRef, "IM", method);
+                }
+            }
+
+            @Override
             public void visitIfStatement(PsiIfStatement ifStatement) {
                 super.visitIfStatement(ifStatement);
+
+                // CCE
                 if (ConsolidateCondExpr.refactorValid(ifStatement)) {
                     addTreeNodes(root, rootRef, "CCE", ifStatement);
+                }
+
+                // CDCF
+                PsiElement s = ifStatement;
+                while (s.getParent() instanceof PsiIfStatement) s = s.getParent();
+                if (ConsolidateDupCondFrag.refactorValid((PsiIfStatement) s)) {
+                    boolean adding = true;
+                    if (rootRef.get("CDCF") != null) {
+                        for (int i = 0; i < rootRef.get("CDCF").getChildCount(); i++) {
+                            if (((DefaultMutableTreeNode)rootRef.get("CDCF").getChildAt(i)).getUserObject() == s) {
+                                adding = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (adding) addTreeNodes(root, rootRef, "CDCF", s);
                 }
             }
         };
@@ -82,6 +111,9 @@ class ProjectTreeModelFactory {
             // Scope: Statement
             case "CCE":
                 return new ConsolidateCondExpr().storyName();
+
+            case "CDCF":
+                return new ConsolidateDupCondFrag().storyName();
             // TODO: ADD
 
             default:

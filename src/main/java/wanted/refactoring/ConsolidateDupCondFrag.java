@@ -42,8 +42,12 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         if (ifStatement == null) return false;
         while (ifStatement.getParent() instanceof PsiIfStatement) ifStatement = (PsiIfStatement) ifStatement.getParent();
 
+        return refactorValid(ifStatement);
+    }
+
+    public static boolean refactorValid(PsiIfStatement s) {
         List<PsiStatement> statementList = new ArrayList<>();
-        PsiStatement nowStatement = ifStatement;
+        PsiStatement nowStatement = s;
         while (nowStatement instanceof PsiIfStatement) {
             statementList.add(((PsiIfStatement) nowStatement).getThenBranch());
             nowStatement = ((PsiIfStatement) nowStatement).getElseBranch();
@@ -89,7 +93,7 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
      * @return true if first statement is same for every condition
      *         false otherwise
      */
-    private boolean isDupStatementFirst(List<PsiStatement> statementList) {
+    private static boolean isDupStatementFirst(List<PsiStatement> statementList) {
         PsiStatement nowStatement;
         PsiStatement standardStatement = statementList.get(0);
 
@@ -117,7 +121,7 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
      * @return true if last statement is same for every condition
      *         false otherwise
      */
-    private boolean isDupStatementLast(List<PsiStatement> statementList) {
+    private static boolean isDupStatementLast(List<PsiStatement> statementList) {
         PsiStatement nowStatement;
         PsiStatement standardStatement = statementList.get(0);
 
