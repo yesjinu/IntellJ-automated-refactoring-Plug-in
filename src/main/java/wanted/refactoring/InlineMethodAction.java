@@ -90,7 +90,8 @@ public class InlineMethodAction extends BaseRefactorAction {
 
         // Checking if Reference Exists (Except link)
         // TODO: @link { }
-        if (method.getReferences().length == 0) return false;
+        List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
+        if (references.size() == 0) return false;
         return true;
     }
 
