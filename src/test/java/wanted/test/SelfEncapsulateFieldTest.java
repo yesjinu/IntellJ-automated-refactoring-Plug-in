@@ -42,4 +42,9 @@ public class SelfEncapsulateFieldTest extends LightActionTestCase {
             // nothing
         }
     }
+
+    /* Test 5: test using caret */
+    //public void testSelfEncapField5() throws Exception {
+    //    doTest();
+    //}
 }

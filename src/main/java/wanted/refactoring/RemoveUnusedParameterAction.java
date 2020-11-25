@@ -13,6 +13,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Class to remove unused parameters
+ *
+ * @author Jinu Noh
+ */
 public class RemoveUnusedParameterAction extends BaseRefactorAction {
     public Project project;
     private PsiMethod focusMethod;
@@ -42,9 +47,9 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
         project = navigator.findProject();
-        focusMethod = navigator.getMethod();
+        focusMethod = navigator.findMethod();
         parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
-        referenceUsedInMethod = FindPsi.findReferenceUsedInMethod(focusMethod);
+        referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
 
         for (PsiParameter p : parametersOfMethod) {
             boolean appearFlag = false;

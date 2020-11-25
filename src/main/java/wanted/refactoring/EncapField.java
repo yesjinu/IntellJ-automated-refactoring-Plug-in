@@ -1,32 +1,30 @@
 package wanted.refactoring;
 
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.psi.util.PsiTreeUtil;
-import wanted.utils.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import wanted.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class to provide self encapsulate field refactoring.
+ * Class to provide encapsulate field refactoring.
  *
  * @author seha Park
  */
-public class SelfEncapField extends BaseRefactorAction {
+public class EncapField extends BaseRefactorAction {
     private Project project;
     private PsiClass targetClass;
     private PsiField member;
+    private PsiFile file;
     private List<PsiReferenceExpression> references;
 
     @Override
     public String storyName()
     {
-        return "Self Encapsulation Field";
+        return "Encapsulation Field";
     }
 
     @Override
@@ -35,16 +33,18 @@ public class SelfEncapField extends BaseRefactorAction {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
+        file = navigator.findFile();
+
         targetClass = navigator.findClass();
         if(targetClass==null){ return false; }
 
-        List<PsiField> members = navigator.findPrivateField();
+        List<PsiField> members = navigator.findPublicField(); // find public field
         if(members.isEmpty()){ return false; }
 
         // ! only encapsulate one member
-        member = members.get(0); // -> traverse version
-        //member = FindPsi.findMemberByCaret(navigator.findFile(), e); // caret version
-        //if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // fail if member is not private
+        member = members.get(0);
+        //member = FindPsi.findMemberByCaret(file, e); // -> caret version
+        //if(!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ return false; }
 
         // check if there's getMember or setMember
         String newName = CreatePsi.capitalize(member);
@@ -60,18 +60,25 @@ public class SelfEncapField extends BaseRefactorAction {
     @Override
     protected void refactor(AnActionEvent e)
     {
-        references = FindPsi.findMemberReference(targetClass, member);
+       references = FindPsi.findMemberReference(file, member);
 
-        List<PsiElement> addList = new ArrayList<>();
+       List<PsiElement> addList = new ArrayList<>();
 
         // create getter and setter
-        PsiMethod getMember = CreatePsi.createGetMethod(project, member, PsiModifier.PROTECTED);
+        PsiMethod getMember = CreatePsi.createGetMethod(project, member, PsiModifier.PUBLIC);
         addList.add(getMember);
-        PsiMethod setMember = CreatePsi.createSetMethod(project, member, PsiModifier.PROTECTED);
+        PsiMethod setMember = CreatePsi.createSetMethod(project, member, PsiModifier.PUBLIC);
         addList.add(setMember);
+
+        // create modifier
+        List<String> removeValue = new ArrayList<>();
+        removeValue.add(PsiModifier.PUBLIC);
+        List<String> addValue = new ArrayList<>();
+        addValue.add(PsiModifier.PRIVATE);
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
             AddPsi.addMethod(targetClass, addList); // add method in addList to targetClass
+            ReplacePsi.changeModifier(member, removeValue, addValue); // replace modifier
             ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references); // encapsulate with getter and setter
         });
     }

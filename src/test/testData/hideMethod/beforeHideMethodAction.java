@@ -1,3 +1,5 @@
+package hideMethod;
+
 class a {
     public void aF() { }
 }
