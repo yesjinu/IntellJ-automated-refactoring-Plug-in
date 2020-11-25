@@ -2,15 +2,12 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.PsiJavaFileImpl;
 import wanted.utils.FindPsi;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Add the method to a client class and pass an object of the utility class to it as an argument.
@@ -28,6 +25,12 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
     List<PsiClass> psiClasses;
     Map<PsiMethod, PsiClass> psiMethodMap;
     Map<PsiDeclarationStatement, PsiMethod> psiDclStateMap;
+
+    String variableName;
+    String utilityClassType;
+    Map<PsiDeclarationStatement, List<String>> params;
+    Map<PsiDeclarationStatement, Integer> paramCounts;
+    List<PsiDeclarationStatement> possible;
 
     @Override
     public boolean refactorValid(AnActionEvent e)
@@ -65,14 +68,140 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
          * 2. PsiNewExpression의 존재를 확인한다.
          *    PsiNewExpression 내부의 PsiExpressionList 내
          * */
-        for (PsiDeclarationStatement statement : psiDclStateMap.keySet()) {
-            PsiLocalVariable localVariable = FindPsi.findChildPsiLocalVariables(statement).get(0);
-            PsiTypeElement typeElement =
+        params = new HashMap<>();
+        paramCounts = new HashMap<>();
+        possible = new ArrayList<>();
+        for (PsiDeclarationStatement stm : psiDclStateMap.keySet()) {
+            List<PsiLocalVariable> lvList = FindPsi.findChildPsiLocalVariables(stm);
+            if (lvList.size() != 1) continue;
+
+            PsiLocalVariable lv = lvList.get(0);
+            List<PsiTypeElement> teList = FindPsi.findChildPsiTypeElements(lv);
+            if (teList.size() != 1) continue;
+
+            List<PsiIdentifier> iList = FindPsi.findChildPsiIdentifiers(lv);
+            if (iList.size() != 1) continue;
+            variableName = iList.get(0).getText();
+
+            PsiTypeElement te = teList.get(0);
+            if (FindPsi.findChildPsiJavaCodeReferenceElements(te).size() != 1) continue;
+            utilityClassType = te.getText();
+
+            List<PsiNewExpression> neList = FindPsi.findChildPsiNewExpressions(te);
+            if (neList.size() != 1) continue;
+
+            PsiNewExpression ne = neList.get(0);
+            List<PsiJavaCodeReferenceElement> jcreList = FindPsi.findChildPsiJavaCodeReferenceElements(te);
+            if (jcreList.size() != 1) continue;
+            PsiJavaCodeReferenceElement jcre = jcreList.get(0);
+            if (!jcre.getText().equals(utilityClassType)) continue;
+            List<PsiExpressionList> elList = FindPsi.findChildPsiExpressionLists(ne);
+            if (elList.size() != 1) continue;
+
+            PsiExpressionList el = elList.get(0);
+            List<PsiExpression> eList = FindPsi.findChildPsiExpressions(el);
+            if (eList.size() == 0) continue;
+
+            paramCounts.put(stm, eList.size());
+            params.put(stm, new ArrayList<>());
+            for (PsiExpression exp : eList) {
+                if(!isVaildParameter(exp, stm)) break;
+            }
+
+            if (params.get(stm).size() == paramCounts.get(stm))
+                possible.add(stm);
         }
 
-        return true;
+        return !possible.isEmpty();
     }
 
+    private boolean isVaildParameter(PsiExpression exp, PsiDeclarationStatement stm) {
+        if (exp instanceof PsiMethodCallExpression) {
+            return isVaildParameter((PsiMethodCallExpression) exp, stm);
+        }
+        else if (exp instanceof PsiBinaryExpression) {
+            return isVaildParameter((PsiBinaryExpression) exp, stm);
+        }
+        else if (exp instanceof PsiReferenceExpression) {
+            return isVaildParameter((PsiReferenceExpression) exp, stm);
+        }
+        else if (exp instanceof PsiLiteralExpression) {
+            return isVaildParameter((PsiLiteralExpression) exp, stm);
+        }
+
+        return false;
+    }
+
+
+    private boolean isVaildParameter(PsiMethodCallExpression exp, PsiDeclarationStatement stm) {
+        List<PsiReferenceExpression> frontReList = FindPsi.findChildPsiReferenceExpressions(exp);
+        if (frontReList.size() != 1) return false;
+
+        List<PsiExpressionList> elList = FindPsi.findChildPsiExpressionLists(exp);
+        if (elList.size() != 1) return false;
+
+        PsiReferenceExpression frontRe = frontReList.get(0);
+        List<PsiReferenceExpression> behindReList = FindPsi.findChildPsiReferenceExpressions(frontRe);
+        if (behindReList.size() != 1) return false;
+
+        PsiExpressionList el = elList.get(0);
+        List<PsiExpression> eList = FindPsi.findChildPsiExpressions(exp);
+        if (eList.size() != 0) return false;
+
+        PsiReferenceExpression BackRe = behindReList.get(0);
+        if (isVaildParameter(BackRe, stm)) {
+            String param = params.get(stm).remove(params.get(stm).size() - 1);
+            params.get(stm).add("arg." + param + "()");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isVaildParameter(PsiReferenceExpression exp, PsiDeclarationStatement stm) {
+        PsiMethod m = psiDclStateMap.get(stm);
+        PsiClass c = psiMethodMap.get(m);
+
+        List<PsiField> fList = FindPsi.findPsiFields(c);
+        for (PsiField f : fList) {
+            if (!f.getName().equals(exp.getText())) continue;
+            else {
+                List<PsiTypeElement> innerTeList = FindPsi.findChildPsiTypeElements(f);
+                if (innerTeList.size() != 1) return false;
+
+                PsiTypeElement innerTe = innerTeList.get(0);
+                if (innerTe.getText().equals(utilityClassType)) {
+                    params.get(stm).add(exp.getText());
+                    return true;
+                }
+                else return false;
+            }
+        }
+        return false;
+    }
+
+    private boolean isVaildParameter(PsiBinaryExpression exp, PsiDeclarationStatement stm) {
+        List<PsiExpression> expList = FindPsi.findChildPsiExpressions(exp);
+        PsiJavaToken token = FindPsi.findChildPsiJavaTokens(exp).get(0);
+
+        PsiExpression left = expList.get(0);
+        PsiExpression right = expList.get(0);
+
+        String param = "";
+
+        if (isVaildParameter(left, stm)) {
+            param += params.get(stm).remove(params.get(stm).size() - 1) + token.getText();
+            if (isVaildParameter(right, stm)) {
+                param += params.get(stm).remove(params.get(stm).size() - 1);
+                params.get(stm).add("arg." + param + "()");
+            }
+        }
+        return false;
+    }
+
+    private boolean isVaildParameter(PsiLiteralExpression exp, PsiDeclarationStatement stm) {
+        params.get(stm).add(exp.getText());
+        return true;
+    }
 
     @Override
     protected void refactor(AnActionEvent e)

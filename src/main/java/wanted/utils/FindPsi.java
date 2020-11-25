@@ -206,6 +206,24 @@ public class FindPsi {
     }
 
     /**
+     * Return the List containing PsiField Object in current PsiElement
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiField> if element has PsiField, empty() otherwise
+     */
+    public static List<PsiField> findPsiFields(PsiElement element) {
+        List<PsiField> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitField(PsiField elem) {
+                super.visitField(elem);
+                result.add(elem);
+            }
+        });
+        return result;
+    }
+
+    /**
      * Return the List containing PsiMethod Object in current PsiElement
      * @author Chanyoung Kim
      * @param element the PsiElement.
@@ -397,9 +415,89 @@ public class FindPsi {
         return result;
     }
 
+    /**
+     * Return the List containing PsiExpressionList Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiExpressionList> if element has PsiExpressionList, empty() otherwise
+     */
+    public static List<PsiExpressionList> findChildPsiExpressionLists(PsiElement element) {
+        List<PsiExpressionList> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiExpressionList) result.add((PsiExpressionList) elem);
+        }
+        return result;
+    }
 
+    /**
+     * Return the List containing PsiReferenceExpression Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiReferenceExpression> if element has PsiReferenceExpression, empty() otherwise
+     */
+    public static List<PsiReferenceExpression> findChildPsiReferenceExpressions(PsiElement element) {
+        List<PsiReferenceExpression> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiReferenceExpression) result.add((PsiReferenceExpression) elem);
+        }
+        return result;
+    }
 
+    /**
+     * Return the List containing PsiBinaryExpression Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiBinaryExpression> if element has PsiBinaryExpression, empty() otherwise
+     */
+    public static List<PsiBinaryExpression> findChildPsiBinaryExpressions(PsiElement element) {
+        List<PsiBinaryExpression> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiBinaryExpression) result.add((PsiBinaryExpression) elem);
+        }
+        return result;
+    }
 
+    /**
+     * Return the List containing PsiLiteralExpression Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiLiteralExpression> if element has PsiLiteralExpression, empty() otherwise
+     */
+    public static List<PsiLiteralExpression> findChildPsiLiteralExpressions(PsiElement element) {
+        List<PsiLiteralExpression> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiLiteralExpression) result.add((PsiLiteralExpression) elem);
+        }
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiIdentifier Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiIdentifier> if element has PsiIdentifier, empty() otherwise
+     */
+    public static List<PsiIdentifier> findChildPsiIdentifiers(PsiElement element) {
+        List<PsiIdentifier> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiIdentifier) result.add((PsiIdentifier) elem);
+        }
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiJavaToken Object in current PsiElement children
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiJavaToken> if element has PsiJavaToken, empty() otherwise
+     */
+    public static List<PsiJavaToken> findChildPsiJavaTokens(PsiElement element) {
+        List<PsiJavaToken> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiJavaToken) result.add((PsiJavaToken) elem);
+        }
+        return result;
+    }
 
 }
 
