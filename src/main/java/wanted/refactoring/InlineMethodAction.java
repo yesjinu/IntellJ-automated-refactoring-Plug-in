@@ -63,7 +63,11 @@ public class InlineMethodAction extends BaseRefactorAction {
      */
     public static boolean refactorValid(Project project, @NotNull PsiMethod method) {
         PsiElement targetClass = method;
-        while (!(targetClass instanceof PsiClass)) targetClass = targetClass.getParent();
+        while (!(targetClass instanceof PsiClass)) {
+            targetClass = targetClass.getParent();
+            if (targetClass == null)
+                return false;
+        }
         List<PsiClass> subclassList;
 
         // MethodHierarchyTreeStructure treeStructure = new MethodHierarchyTreeStructure(project, method, null);
@@ -132,8 +136,10 @@ public class InlineMethodAction extends BaseRefactorAction {
                 // Replace Statement
                 WriteCommandAction.runWriteCommandAction(project, () -> {
                     // Checking Method Calls ending with semicolons
-                    if (refElement.getNextSibling().getText().equals(";"))
-                        refElement.getNextSibling().delete();
+                    if (refElement.getNextSibling() != null) {
+                        if (refElement.getNextSibling().getText().equals(";"))
+                            refElement.getNextSibling().delete();
+                    }
 
                     PsiElement expAppliedElement = refElement.replace(replaceElement);
 
