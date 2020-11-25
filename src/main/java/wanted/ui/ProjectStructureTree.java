@@ -1,5 +1,7 @@
 package wanted.ui;
 
+import com.intellij.openapi.fileEditor.OpenFileDescriptor;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.ColoredTreeCellRenderer;
@@ -12,6 +14,7 @@ import javax.swing.plaf.metal.MetalIconFactory;
 import javax.swing.tree.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.LineNumberReader;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +73,14 @@ class ProjectStructureTree extends Tree {
                     else if (v instanceof PsiStatement) {
                         setIcon(projectIcon);
                         // TODO: Change
-                        append(String.valueOf(((PsiStatement) v).getTextOffset()));
+                        String fileName = ((PsiStatement) v).getContainingFile().getName();
+                        String fileText = ((PsiStatement) v).getContainingFile().getText();
+                        int offset = ((PsiStatement) v).getTextOffset();
+                        int line = 1;
+                        for (int i = 0; i < offset; i++) {
+                            if (fileText.charAt(i) == '\n') line++;
+                        }
+                        append("[" + fileName + "]" + " Line " + String.valueOf(line));
                     }
                 }
 
@@ -90,6 +100,12 @@ class ProjectStructureTree extends Tree {
                     if (element != null) {
                         if (element instanceof NavigatablePsiElement) {
                             ((NavigatablePsiElement) element).navigate(true);
+                        }
+                        else if (element instanceof PsiStatement) {
+                            VirtualFile f = ((PsiStatement) element).getContainingFile().getVirtualFile();
+                            int offset = ((PsiStatement) element).getTextOffset();
+                            OpenFileDescriptor fd = new OpenFileDescriptor(project, f, offset);
+                            fd.navigate(true);
                         }
                     }
                 }
