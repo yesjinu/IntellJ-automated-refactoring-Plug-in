@@ -43,22 +43,26 @@ public class NavigatePsi {
 
         focusProject = e.getData(PlatformDataKeys.PROJECT);
         focusFile = e.getData(LangDataKeys.PSI_FILE); // ? look for only currently opened file
-        
-        try
-        {
-            focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
-        }catch(ArrayIndexOutOfBoundsException exception)
-        {
-            // NO class in current file
-            focusClass = null;
-        }
 
-        try {
-            caret = editor.getCaretModel().getOffset();
-            focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
-        } catch(ArrayIndexOutOfBoundsException exception)
-        {
+        if (focusFile == null) {
+            focusClass = null;
             focusMethod = null;
+        }
+        else {
+            try {
+                focusClass = ((PsiClassOwner) focusFile).getClasses()[0];
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                // NO class in current file
+                focusClass = null;
+            }
+
+            try {
+                caret = editor.getCaretModel().getOffset();
+                focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
+                // focusMethod = FindPsi.getContainingMethod(focusClass, caret);
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                focusMethod = null;
+            }
         }
     }
 
@@ -70,9 +74,7 @@ public class NavigatePsi {
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e)
     {
-        if(navigator==null){ navigator = new NavigatePsi(e); }
-        else if(focusFile!=e.getData(LangDataKeys.PSI_FILE)){ navigator = new NavigatePsi(e); }
-
+        navigator = new NavigatePsi(e);
         return navigator;
     }
 

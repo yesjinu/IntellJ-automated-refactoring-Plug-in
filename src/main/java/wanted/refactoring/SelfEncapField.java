@@ -1,8 +1,5 @@
 package wanted.refactoring;
 
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.psi.util.PsiTreeUtil;
 import wanted.utils.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;

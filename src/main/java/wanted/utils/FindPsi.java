@@ -7,7 +7,6 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.ArrayList;
@@ -24,22 +23,6 @@ import java.util.List;
  * @author CSED332 2019 Team 1
  */
 public class FindPsi {
-    private Project focusProject;
-    private PsiFile focusFile;
-    private PsiClass focusClass;
-    private PsiMethod focusMethod;
-
-    /* get focusProject, File, Class from given event */
-    public FindPsi(AnActionEvent e) {
-        focusProject = e.getData(PlatformDataKeys.PROJECT);
-        focusFile = e.getData(LangDataKeys.PSI_FILE);
-        // assume file always contains one class which has only one method
-        assert focusFile != null;
-        focusClass = ((PsiClassOwner) focusFile).getClasses()[0];
-        if (Arrays.stream(focusClass.getMethods()).count() > 0) {
-            focusMethod = focusClass.getMethods()[0];
-        }
-    }
 
     /**
      * Returns list of statements referring to given member
@@ -183,6 +166,7 @@ public class FindPsi {
         if (ifStatementList.isEmpty()) return null;
         else return ifStatementList.get(ifStatementList.size()-1);
     }
+
     /**
      * Searching for every subclasses
      *
@@ -212,5 +196,14 @@ public class FindPsi {
         return ret;
     }
 
+    public static PsiClass getContainingClass (PsiMethod method) {
+        PsiElement targetClass = method;
+        while (!(targetClass instanceof PsiClass)) {
+            targetClass = targetClass.getParent();
+            if (targetClass == null)
+                return null;
+        }
+        return (PsiClass)targetClass;
+    }
 }
 

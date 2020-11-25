@@ -2,6 +2,7 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -9,6 +10,7 @@ import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
 import org.jetbrains.annotations.NotNull;
+import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 
@@ -21,10 +23,7 @@ import java.util.*;
  */
 public class InlineMethodAction extends BaseRefactorAction {
     private Project project;
-    private PsiClass targetClass;
-    private PsiField member;
     private PsiMethod method;
-    private List<PsiReferenceExpression> statements;
 
     /**
      * Returns the story name as a string format, for message.
@@ -48,13 +47,54 @@ public class InlineMethodAction extends BaseRefactorAction {
 
         project = navigator.findProject();
 
-        targetClass = navigator.findClass();
-        if (targetClass == null) return false;
-
         method = navigator.findMethod();
         if (method == null) return false;
 
-        return isCandidate(method);
+        return refactorValid(project, method);
+    }
+
+    /**
+     * Helper method that checks whether candidate method is refactorable using 'Inline Method'.
+     *
+     * Every candidate methods should follow these two requisites:
+     * 1. Methods which is not defined in subclasses
+     * 2. Methods with 1 statement.
+     *
+     * @return true if method is refactorable
+     */
+    public static boolean refactorValid(Project project, @NotNull PsiMethod method) {
+        PsiElement targetClass = FindPsi.getContainingClass(method);
+        if (targetClass == null) return false;
+
+        List<PsiClass> subclassList;
+
+        // MethodHierarchyTreeStructure treeStructure = new MethodHierarchyTreeStructure(project, method, null);
+        try {
+            subclassList =
+                    new ArrayList<>(
+                            ClassInheritorsSearch.search((PsiClass) targetClass, GlobalSearchScope.allScope(project), false).findAll());
+        } catch (IndexNotReadyException e) {
+            return false;
+        }
+
+        for (PsiClass subclass : subclassList) {
+            for (PsiMethod method_sub : subclass.getMethods()){
+                if (MethodSignatureUtil.areSignaturesEqual(method, method_sub))
+                    return false;
+            }
+        }
+
+        PsiCodeBlock body = method.getBody();
+        if (body == null) return false;
+
+        // Choosing Methods with One Statement
+        if (body.getStatementCount() > 1) return false;
+
+        // Checking if Reference Exists (Except link)
+        // TODO: @link { }
+        List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
+        if (references.size() == 0) return false;
+        return true;
     }
 
     /**
@@ -62,7 +102,7 @@ public class InlineMethodAction extends BaseRefactorAction {
      */
     @Override
     protected void refactor(AnActionEvent e) {
-        assert isCandidate (method);
+        assert refactorValid (project, method);
 
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
 
@@ -94,8 +134,10 @@ public class InlineMethodAction extends BaseRefactorAction {
                 // Replace Statement
                 WriteCommandAction.runWriteCommandAction(project, () -> {
                     // Checking Method Calls ending with semicolons
-                    if (refElement.getNextSibling().getText().equals(";"))
-                        refElement.getNextSibling().delete();
+                    if (refElement.getNextSibling() != null) {
+                        if (refElement.getNextSibling().getText().equals(";"))
+                            refElement.getNextSibling().delete();
+                    }
 
                     PsiElement expAppliedElement = refElement.replace(replaceElement);
 
@@ -199,38 +241,5 @@ public class InlineMethodAction extends BaseRefactorAction {
         else if (expression instanceof PsiUnaryExpression)
             return isInsertExpression(((PsiUnaryExpression) expression).getOperand());
         else return true;
-    }
-
-    /**
-     * Helper method that checks whether candidate method is refactorable using 'Inline Method'.
-     *
-     * Every candidate methods should follow these two requisites:
-     * 1. Methods which is not defined in subclasses
-     * 2. Methods with 1 statement.
-     *
-     * @return true if method is refactorable
-     */
-    private boolean isCandidate(@NotNull PsiMethod method) {
-        // MethodHierarchyTreeStructure treeStructure = new MethodHierarchyTreeStructure(project, method, null);
-        List<PsiClass> subclassList =
-                new ArrayList<>(
-                    ClassInheritorsSearch.search(targetClass, GlobalSearchScope.allScope(project), false).findAll());
-
-        for (PsiClass subclass : subclassList) {
-            for (PsiMethod method_sub : subclass.getMethods()){
-                if (MethodSignatureUtil.areSignaturesEqual(method, method_sub))
-                    return false;
-            }
-
-
-        }
-
-        PsiCodeBlock body = method.getBody();
-        if (body == null) return false;
-
-        // Choosing Methods with One Statement
-        if (body.getStatementCount() > 1) return false;
-
-        return true;
     }
 }

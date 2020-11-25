@@ -8,6 +8,7 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 
 import org.jetbrains.concurrency.Promise;
+import wanted.test.base.AbstractLightCodeInsightTestCase;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
