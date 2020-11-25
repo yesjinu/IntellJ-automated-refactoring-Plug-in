@@ -145,20 +145,20 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiMethodCallExpression Object in current PSI Element
-     * @author chanyoung Kim
+     * @author Chanyoung Kim
      * @param element the PSI Element.
      * @return List<PsiMethodCallExpression> if element has MethodCallExpressions, empty() otherwise
      */
-    public static List<PsiMethodCallExpression> findPsiMethodCallExpression(PsiElement element) {
-        List<PsiMethodCallExpression> ret = new ArrayList<>();
+    public static List<PsiMethodCallExpression> findPsiMethodCallExpressions(PsiElement element) {
+        List<PsiMethodCallExpression> result = new ArrayList<>();
         element.accept(new JavaRecursiveElementVisitor() {
             @Override
             public void visitMethodCallExpression(PsiMethodCallExpression expression) {
                 super.visitMethodCallExpression(expression);
-                ret.add(expression);
+                result.add(expression);
             }
         });
-        return ret;
+        return result;
     }
 
     /**
@@ -186,5 +186,96 @@ public class FindPsi {
         if (ifStatementList.isEmpty()) return null;
         else return ifStatementList.get(ifStatementList.size()-1);
     }
+
+    /**
+     * Return the List containing PsiClass Object in current PsiElement
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiClass> if element has PsiClass, empty() otherwise
+     */
+    public static List<PsiClass> findPsiClasses(PsiElement element) {
+        List<PsiClass> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitClass(PsiClass c) {
+                super.visitClass(c);
+                result.add(c);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiMethod Object in current PsiElement
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiMethod> if element has PsiMethod, empty() otherwise
+     */
+    public static List<PsiMethod> findPsiMethods(PsiElement element) {
+        List<PsiMethod> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitMethod(PsiMethod m) {
+                super.visitMethod(m);
+                result.add(m);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiDeclarationStatement Object in current PsiElement
+     * @author Chanyoung Kim
+     * @param element the PsiElement.
+     * @return List<PsiDeclarationStatement> if element has PsiDeclarationStatement, empty() otherwise
+     */
+    public static List<PsiDeclarationStatement> findPsiDeclarationStatements(PsiElement element) {
+        List<PsiDeclarationStatement> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitDeclarationStatement(PsiDeclarationStatement element) {
+                super.visitDeclarationStatement(element);
+                result.add(element);
+            }
+        });
+        return result;
+    }
+
+
+
+    public static List<PsiExpression> findChildPsiExpressions(PsiElement element) {
+        List<PsiExpression> result = new ArrayList<>();
+        element.accept(new JavaElementVisitor() {
+            @Override
+            public void visitExpression(PsiExpression element) {
+                result.add(element);
+            }
+        });
+        return result;
+    }
+
+
+
+    public static List<PsiLocalVariable> findChildPsiLocalVariables(PsiElement element) {
+        List<PsiLocalVariable> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiLocalVariable) result.add((PsiLocalVariable) elem);
+        }
+        return result;
+    }
+
+    public static List<PsiLocalVariable> findPsiLocalVariables(PsiElement element) {
+        List<PsiLocalVariable> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitLocalVariable(PsiLocalVariable element) {
+                super.visitLocalVariable(element);
+                result.add(element);
+            }
+        });
+        return result;
+    }
+
+
 }
 
