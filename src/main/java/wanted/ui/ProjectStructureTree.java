@@ -1,6 +1,8 @@
 package wanted.ui;
 
+import com.intellij.icons.*;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -12,12 +14,13 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalIconFactory;
 import javax.swing.tree.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.LineNumberReader;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Optional;
+
 
 /**
  * A tree GUI for our Project Structure plugin. It displays the corresponding name and icon for the nodes in our tree
@@ -32,7 +35,9 @@ import java.util.Optional;
  */
 class ProjectStructureTree extends Tree {
 
-    private static final Icon projectIcon = MetalIconFactory.getTreeHardDriveIcon();
+    private static final Icon Icon1 = IconLoader.getIcon("/general/projectStructure.svg");
+    private static final Icon Icon2 = IconLoader.getIcon("/nodes/configFolder.svg");
+    private static final Icon Icon3 = IconLoader.getIcon("/nodes/editorconfig.svg");
 
     /**
      * Creates a project structure tree for a given project.
@@ -50,15 +55,15 @@ class ProjectStructureTree extends Tree {
                 if (value instanceof DefaultMutableTreeNode) {
                     Object v = ((DefaultMutableTreeNode) value).getUserObject();
                     if (v instanceof Project) { // Project
-                        setIcon(projectIcon);
+                        setIcon(Icon1);
                         append(((Project) v).getName());
                     }
                     else if (v instanceof String){ // Category: Refactoring
-                        setIcon(projectIcon);
+                        setIcon(Icon2);
                         append((String) v);
                     }
                     else if (v instanceof PsiClass) {
-                        setIcon(projectIcon);
+                        setIcon(Icon3);
 
                         if (((PsiClass) v).getName() == null) { // Anonymous Class
                             append("Anonymous class");
@@ -67,12 +72,12 @@ class ProjectStructureTree extends Tree {
                         }
                     }
                     else if (v instanceof PsiMethod) {
-                        setIcon(projectIcon);
+                        setIcon(Icon3);
                         append(((PsiMethod) v).getName());
                     }
                     else if (v instanceof PsiStatement) {
-                        setIcon(projectIcon);
-                        // TODO: Change
+                        setIcon(Icon3);
+
                         String fileName = ((PsiStatement) v).getContainingFile().getName();
                         String fileText = ((PsiStatement) v).getContainingFile().getText();
                         int offset = ((PsiStatement) v).getTextOffset();
