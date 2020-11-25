@@ -1,4 +1,4 @@
-package wanted.test;
+package wanted.test.base;
 
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.psi.PsiFile;

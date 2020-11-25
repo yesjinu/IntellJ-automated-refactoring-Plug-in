@@ -2,6 +2,7 @@ package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.InlineMethodAction;
+import wanted.test.base.LightActionTestCase;
 
 public class InlineMethodActionTest extends LightActionTestCase {
 

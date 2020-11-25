@@ -1,4 +1,4 @@
-package wanted.test;
+package wanted.test.base;
 
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.ActionManager;

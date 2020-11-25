@@ -2,6 +2,7 @@ package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.EncapField;
+import wanted.test.base.LightActionTestCase;
 
 /**
  * Test class for encapsulate field
