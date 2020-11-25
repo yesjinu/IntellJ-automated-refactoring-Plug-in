@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.ArrayList;
@@ -35,7 +36,9 @@ public class FindPsi {
         // assume file always contains one class which has only one method
         assert focusFile != null;
         focusClass = ((PsiClassOwner) focusFile).getClasses()[0];
-        focusMethod = focusClass.getMethods()[0];
+        if (Arrays.stream(focusClass.getMethods()).count() > 0) {
+            focusMethod = focusClass.getMethods()[0];
+        }
     }
 
     /**
@@ -110,9 +113,8 @@ public class FindPsi {
      * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
      * @return set of unused parameters 
      */
-    public static Set<PsiParameter> findParametersOfMethod(PsiMethod focusMethod) {
+    public static Set<PsiParameter> findParametersOfMethod(@NotNull PsiMethod focusMethod) {
         Set<PsiParameter> result = new HashSet<>();
-
         // assume class always contains one field
         if (focusMethod.hasParameters()) {
             result.addAll(Arrays.asList(focusMethod.getParameterList().getParameters()));

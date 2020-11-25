@@ -16,7 +16,37 @@ public class RemoveUnusedParameterActionTest extends LightActionTestCase {
         return super.getBasePath() + "/removeUnusedParameter";
     }
 
-    public void testRemoveUnusedParameterAction() throws Exception {
+    // Case 1 : parameter 3개, used reference 2개
+    public void testRemoveUnusedParameterAction1() throws Exception {
         doTest();
+    }
+
+    // Case 2 : parameter 2개, used reference 2개
+    public void testRemoveUnusedParameterAction2() throws Exception {
+        try {doTest();}
+        catch(RuntimeException e){
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
+    }
+
+    // Case 3 : parameter 0개, used reference 2개
+    public void testRemoveUnusedParameterAction3() throws Exception {
+        try {doTest();}
+        catch(RuntimeException e){
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
+    }
+
+    // Case 4 : parameter 2개, used reference 0개
+    public void testRemoveUnusedParameterAction4() throws Exception {
+        doTest();
+    }
+
+    // Case 5 : parameter 0개, used reference 0개
+    public void testRemoveUnusedParameterAction5() throws Exception {
+        try {doTest();}
+        catch(RuntimeException e){
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
     }
 }
