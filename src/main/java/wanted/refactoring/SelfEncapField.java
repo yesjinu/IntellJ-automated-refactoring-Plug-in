@@ -63,7 +63,10 @@ public class SelfEncapField extends BaseRefactorAction {
      * 1. Field should be private
      * 2. It has neither getter nor setter
      *
+     * @param project Project
+     * @param member PsiField Object
      * @return true if method is refactorable
+     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
      */
     public static boolean refactorValid(Project project, PsiField member) {
         if(member==null){ return false; } // nothing is chosen

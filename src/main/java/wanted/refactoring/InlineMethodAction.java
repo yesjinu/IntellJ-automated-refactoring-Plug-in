@@ -173,7 +173,7 @@ public class InlineMethodAction extends BaseRefactorAction {
 
 
     /**
-     * Helper method that checks whether statement in method needs to be inserted while wanted.refactoring.
+     * Helper method that checks whether statement in method needs to be inserted while refactoring.
      *
      * @return true if statement needs insertion.
      * @see InlineMethodAction#refactorValid(Project, PsiMethod)

@@ -67,7 +67,9 @@ class ProjectTreeModelFactory {
                 // SEF
                 if(SelfEncapField.refactorValid(project, field)) {
                     addTreeNodes(root, rootRef, "SEF", field);
-                } else if(EncapField.refactorValid(project, field)){ // EF
+                }
+                // EF
+                else if(EncapField.refactorValid(project, field)){
                     addTreeNodes(root, rootRef, "EF", field);
                 }
             }

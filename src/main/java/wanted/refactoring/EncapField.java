@@ -58,31 +58,6 @@ public class EncapField extends BaseRefactorAction {
     }
 
     /**
-     * Helper method that checks whether candidate method is refactorable using 'Encapsulate Field'.
-     *
-     * Every candidate fields should follow these two requisites:
-     * 1. Field should be public
-     * 2. It has neither getter nor setter
-     *
-     * @return true if method is refactorable
-     */
-    public static boolean refactorValid(Project project, PsiField member) {
-        if(member==null){ return false; } // nothing is chosen
-
-        if(!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ return false; } // member is not public
-
-        // check if there's getter or setter
-        String newName = CreatePsi.capitalize(member);
-        List<String> methods = new ArrayList<>();
-        methods.add("get"+newName); methods.add("set"+newName);
-
-        methods = FindPsi.checkDuplicateName(member.getContainingClass(), methods);
-        if(methods.size()!=2){ return false; } // there's either getMember or setMember already
-
-        return true;
-    }
-
-    /**
      * Method that performs refactoring: 'Encapsulate Field'
      *
      * @param e AnActionEvent
@@ -112,5 +87,31 @@ public class EncapField extends BaseRefactorAction {
             ReplacePsi.changeModifier(member, removeValue, addValue); // replace modifier
             ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references); // encapsulate with getter and setter
         });
+    }
+
+    /**
+     * Helper method that checks whether candidate method is refactorable using 'Encapsulate Field'.
+     *
+     * Every candidate fields should follow these two requisites:
+     * 1. Field should be public
+     * 2. It has neither getter nor setter
+     *
+     * @return true if method is refactorable
+     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
+     */
+    public static boolean refactorValid(Project project, PsiField member) {
+        if(member==null){ return false; } // nothing is chosen
+
+        if(!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ return false; } // member is not public
+
+        // check if there's getter or setter
+        String newName = CreatePsi.capitalize(member);
+        List<String> methods = new ArrayList<>();
+        methods.add("get"+newName); methods.add("set"+newName);
+
+        methods = FindPsi.checkDuplicateName(member.getContainingClass(), methods);
+        if(methods.size()!=2){ return false; } // there's either getMember or setMember already
+
+        return true;
     }
 }

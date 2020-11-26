@@ -75,9 +75,10 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
 
 
     /**
-     * Do refactoring action
+     * Method that performs refactoring: 'Remove Unused Parameter'
      *
-     * @param e An Actionevent
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
     protected void refactor(AnActionEvent e) {
@@ -93,5 +94,4 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
             }
         });
     }
-
 }
