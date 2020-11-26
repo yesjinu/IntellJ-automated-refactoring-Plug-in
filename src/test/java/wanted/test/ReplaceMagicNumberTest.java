@@ -2,6 +2,7 @@ package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.ReplaceMagicNumber;
+import wanted.test.base.LightActionTestCase;
 
 public class ReplaceMagicNumberTest extends LightActionTestCase  {
 
@@ -26,6 +27,11 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
 
     /* Test 3: refactor only if it is worth it */
     public void testReplaceMagicNumber3() throws Exception {
+        doTest();
+    }
+
+    /* Test 4: Replace string */
+    public void testReplaceMagicNumber4() throws Exception {
         doTest();
     }
 
