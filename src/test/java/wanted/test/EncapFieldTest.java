@@ -5,7 +5,8 @@ import wanted.refactoring.EncapField;
 import wanted.test.base.LightActionTestCase;
 
 /**
- * Test class for encapsulate field
+ * Test class for 'Encapsulate Field'
+ *
  * @author seha Park
  */
 public class EncapFieldTest extends LightActionTestCase {

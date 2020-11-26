@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Class to find specific Psi element in given context.
+ *
  * @author seha Park
  * @author Mintae Kim
  * @author JINU NOH

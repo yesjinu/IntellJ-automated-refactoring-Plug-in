@@ -88,8 +88,8 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
 
     /**
      * Determine whether first statement of each condition is same
-     * @author seungjae yoo
-     * @param statementList
+     *
+     * @param statementList List of Statement
      * @return true if first statement is same for every condition
      *         false otherwise
      */
@@ -116,8 +116,8 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
 
     /**
      * Determine whether last statement of each condition is same
-     * @author seungjae yoo
-     * @param statementList
+     *
+     * @param statementList List of Statement
      * @return true if last statement is same for every condition
      *         false otherwise
      */

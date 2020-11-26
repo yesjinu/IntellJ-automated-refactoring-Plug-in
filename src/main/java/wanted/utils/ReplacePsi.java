@@ -149,7 +149,9 @@ public class ReplacePsi {
     }
 
 
-    /** Edit modifier of member
+    /**
+     * Edit modifier of member
+     *
      * @param member selected member
      * @param removeValues modifier to be removed
      * @param addValues modifier to be added

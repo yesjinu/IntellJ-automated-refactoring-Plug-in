@@ -4,6 +4,11 @@ import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.InlineMethodAction;
 import wanted.test.base.LightActionTestCase;
 
+/**
+ * Test class for 'Inline Method'
+ *
+ * @author seha Park
+ */
 public class InlineMethodActionTest extends LightActionTestCase {
 
     protected AnAction getAction() {

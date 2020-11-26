@@ -24,10 +24,9 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     //  -> In what datatype?
     Set<PsiParameter> unusedParameter = new HashSet<>();
 
-
-
     /**
      * Returns the story name as a string format, for message.
+     *
      * @return story name "Remove Unused Parameter"
      */
     @Override
@@ -37,6 +36,7 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
 
     /**
      * Returns the possibility of refactoring for current project with particular strategy.
+     *
      * @param e An Actionevent
      * @return true if refactoring is available, otherwise false.
      */
@@ -73,6 +73,7 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
 
     /**
      * Do refactoring action
+     *
      * @param e An Actionevent
      */
     @Override

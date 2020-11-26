@@ -97,6 +97,7 @@ public class NavigatePsi {
 
     /**
      * Returns list of public members from focused class
+     *
      * @return list of public fields
      */
     public List<PsiField> findPublicField()
