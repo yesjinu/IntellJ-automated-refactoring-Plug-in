@@ -28,6 +28,7 @@ public class NavigatePsi {
     private static PsiFile focusFile;
     private static PsiClass focusClass;
     private static PsiMethod focusMethod;
+    private static PsiField focusField;
 
     private static Editor editor;
     private static int caret;
@@ -62,6 +63,13 @@ public class NavigatePsi {
                 // focusMethod = FindPsi.getContainingMethod(focusClass, caret);
             } catch (ArrayIndexOutOfBoundsException exception) {
                 focusMethod = null;
+            }
+
+            try {
+                caret = editor.getCaretModel().getOffset();
+                focusField = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiField.class);
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                focusField = null;
             }
         }
     }
@@ -144,4 +152,7 @@ public class NavigatePsi {
 
     /* return first method of focus class */
     public PsiMethod findMethod(){ return focusMethod; }
+
+    /* return chosen field */
+    public PsiField findField(){ return focusField; }
 }

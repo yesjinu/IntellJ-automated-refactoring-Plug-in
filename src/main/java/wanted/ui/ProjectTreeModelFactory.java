@@ -8,6 +8,8 @@ import wanted.refactoring.ConsolidateCondExpr;
 import wanted.refactoring.ConsolidateDupCondFrag;
 import wanted.refactoring.InlineMethodAction;
 import wanted.utils.TraverseProjectPsi;
+import wanted.refactoring.SelfEncapField;
+import wanted.refactoring.EncapField;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -55,6 +57,19 @@ class ProjectTreeModelFactory {
                 super.visitClass(psiClass);
 
 
+            }
+
+            // TODO: ADD
+            @Override
+            public void visitField(PsiField field) {
+                super.visitField(field);
+
+                // SEF
+                if(SelfEncapField.refactorValid(project, field)) {
+                    addTreeNodes(root, rootRef, "SEF", field);
+                } else if(EncapField.refactorValid(project, field)){ // EF
+                    addTreeNodes(root, rootRef, "EF", field);
+                }
             }
 
             // TODO: ADD
@@ -111,6 +126,12 @@ class ProjectTreeModelFactory {
         switch (id) {
             // Scope: Class
             // TODO: ADD
+
+            // Scope: Field
+            case "SEF":
+                return new SelfEncapField().storyName();
+            case "EF":
+                return new EncapField().storyName();
 
             // Scope: Method
             case "IM":

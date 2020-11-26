@@ -1,5 +1,5 @@
-public class SEF_ex_alreadyDone {
-    private int member;
+public class SEF_alreadyDone {
+    private int m<caret>ember;
 
     public SEF_ex_alreadyDone()
     {

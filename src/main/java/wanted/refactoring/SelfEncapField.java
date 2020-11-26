@@ -1,5 +1,6 @@
 package wanted.refactoring;
 
+import org.jetbrains.annotations.NotNull;
 import wanted.utils.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -49,21 +50,33 @@ public class SelfEncapField extends BaseRefactorAction {
         targetClass = navigator.findClass();
         if(targetClass==null){ return false; }
 
-        List<PsiField> members = navigator.findPrivateField();
-        if(members.isEmpty()){ return false; }
+        // find member from caret
+        member = navigator.findField();
 
-        // ! only encapsulate one member
-        member = members.get(0); // -> traverse version
-        //member = FindPsi.findMemberByCaret(navigator.findFile(), e); // caret version
-        //if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // fail if member is not private
+        return refactorValid(project, member);
+    }
 
-        // check if there's getMember or setMember
+    /**
+     * Helper method that checks whether candidate method is refactorable using 'Self Encapsulate Field'.
+     *
+     * Every candidate fields should follow these two requisites:
+     * 1. Field should be private
+     * 2. It has neither getter nor setter
+     *
+     * @return true if method is refactorable
+     */
+    public static boolean refactorValid(Project project, PsiField member) {
+        if(member==null){ return false; } // nothing is chosen
+
+        if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // member is not private
+
+        // check if there's getter or setter
         String newName = CreatePsi.capitalize(member);
         List<String> methods = new ArrayList<>();
         methods.add("get"+newName); methods.add("set"+newName);
 
-        List<String> methodToImpl = navigator.findMethodByName(methods);
-        if(methodToImpl.size()!=2){ return false; } // there's either getMember or setMember already
+        methods = FindPsi.checkDuplicateName(member.getContainingClass(), methods);
+        if(methods.size()!=2){ return false; } // there's either getMember or setMember already
 
         return true;
     }

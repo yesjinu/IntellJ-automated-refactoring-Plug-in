@@ -518,5 +518,29 @@ public class FindPsi {
         }
         return result;
     }
+
+    /**
+     * For each query in queries,
+     * if there's method with same name in searchClass, remove the query from list
+     * return the modified list such that queries with duplicate name are removed
+     *
+     * @param searchClass
+     * @param queries
+     * @return
+     */
+    public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries)
+    {
+        List<String> ret = queries;
+
+        for(PsiMethod m: searchClass.getMethods())
+        {
+            if(queries.contains(m.getName()))
+            {
+                ret.remove(m.getName());
+            }
+        }
+
+        return ret;
+    }
 }
 
