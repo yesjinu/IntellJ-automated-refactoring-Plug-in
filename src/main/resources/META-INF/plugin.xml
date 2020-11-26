@@ -15,6 +15,7 @@
     <depends>com.intellij.java</depends>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <toolWindow id="Project Structure" anchor="right" factoryClass="wanted.ui.MyToolWindowFactory"/>
     </extensions>
 
     <actions>
@@ -22,9 +23,19 @@
         <group id="Wanted-Refactoring" text="Wanted_Refactoring">
             <add-to-group group-id="MainMenu" anchor="last"/>
 
-            <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="self encapsulate field"
+            <action id="wanted.refactoring.RemoveUnusedParameterAction" class="wanted.refactoring.RemoveUnusedParameterAction"
+                    text="Remove Unused Parameter"/>
+            <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="Self Encapsulate Field"
                     description="Data Organize: self encapsulate field"/>
-            <action id="Wanted-Refactoring.feature10" class="wanted.refactoring.ReplaceMagicNumber" text="replace megic number"
+            <action id="Wanted-Refactoring.IM" class="wanted.refactoring.InlineMethodAction" text="Inline Method"
+                    description="Composing Methods: inline method"/>
+            <action id="Wanted-Refactoring.CCE" class="wanted.refactoring.ConsolidateCondExpr" text="consolidate conditional expression"
+                    description="Simplifying Conditional Expressions: consolidate conditional expression"/>
+            <action id="Wanted-Refactoring.EF" class="wanted.refactoring.EncapField" text="encapsulate field"
+                    description="Data Organize: encapsulate field"/>
+            <action id="Wanted-Refactoring.CDCF" class="wanted.refactoring.ConsolidateDupCondFrag" text="consolidate duplicate conditional fragments"
+                    description="Simplifying Conditional Expressions: consolidate duplicate conditional fragments"/>
+            <action id="Wanted-Refactoring.RMN" class="wanted.refactoring.ReplaceMagicNumber" text="replace megic number"
                     description="Data Organize: replace magic number"/>
         </group>
     </actions>

@@ -2,6 +2,7 @@ package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.HideMethodAction;
+import wanted.test.base.LightActionTestCase;
 
 
 public class HideMethodActionTest extends LightActionTestCase {
