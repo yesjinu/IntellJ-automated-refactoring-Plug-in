@@ -4,7 +4,11 @@ import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.IntroduceForeignMethodAction;
 import wanted.test.base.LightActionTestCase;
 
-
+/**
+ * Test class for 'Introduce Foreign Method Action'
+ *
+ * @author Chanyoung Kim
+ */
 public class IntroduceForeignMethodActionTest extends LightActionTestCase {
 
     protected AnAction getAction() {

@@ -4,6 +4,11 @@ import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.RemoveUnusedParameterAction;
 import wanted.test.base.LightActionTestCase;
 
+/**
+ * Test class for 'Remove Unused Parameter Action'
+ *
+ * @author Jinu Noh
+ */
 public class RemoveUnusedParameterActionTest extends LightActionTestCase {
 
     public RemoveUnusedParameterActionTest() {};
