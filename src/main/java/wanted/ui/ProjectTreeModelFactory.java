@@ -53,9 +53,8 @@ class ProjectTreeModelFactory {
                 super.visitClass(psiClass);
                 // IFM
                 if(IntroduceForeignMethodAction.refactorValid(project, psiClass)) {
-                    addTreeNodes(root, rootRef, "SEF", psiClass);
+                    addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
-
             }
 
             // TODO: ADD
