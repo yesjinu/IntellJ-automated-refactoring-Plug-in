@@ -94,8 +94,8 @@ public class CreatePsi {
     /**
      * Return same statement which is copied
      *
-     * @param project
-     * @param statement
+     * @param project factory context
+     * @param statement the original version of the statement
      * @return newStatement which is same with statement
      */
     public static PsiStatement copyStatement(@NotNull Project project, PsiStatement statement) {
@@ -108,10 +108,10 @@ public class CreatePsi {
     /**
      * Return merged conditionExpression with || symbol
      *
-     * @param project
-     * @param Left
-     * @param Right
-     * @param isFirstTime
+     * @param project factory context
+     * @param Left the conditional expression it would be left side
+     * @param Right the conditional expression it would be right side
+     * @param isFirstTime check boolean parameter that this function was used before for this ifStatement
      * @return newExpression which is "Left || Right"
      */
     public static PsiExpression createMergeCondition(@NotNull Project project, PsiExpression Left, PsiExpression Right, boolean isFirstTime) {
@@ -151,8 +151,8 @@ public class CreatePsi {
     /**
      * Return empty block statement
      *
-     * @param project
-     * @return
+     * @param project target context
+     * @return Newly created Empty PsiBlockStatement
      */
     public static PsiStatement createEmptyBlockStatement(@NotNull Project project) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
