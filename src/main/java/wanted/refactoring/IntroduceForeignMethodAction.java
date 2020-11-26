@@ -293,6 +293,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
             if (isVaildParameter(right, stm)) {
                 param += params.get(stm).remove(params.get(stm).size() - 1);
                 params.get(stm).add(param);
+                return true;
             }
         }
         return false;

@@ -16,7 +16,23 @@ public class IntroduceForeignMethodActionTest extends LightActionTestCase {
         return super.getBasePath() + "/introduceForeignMethod";
     }
 
-    public void testIntroduceForeignMethodAction() throws Exception {
+    public void testIntroduceForeignMethodAction1() throws Exception {
+        doTest();
+    }
+
+    public void testIntroduceForeignMethodAction2() throws Exception {
+        doTest();
+    }
+
+    public void testIntroduceForeignMethodAction3() throws Exception {
+        doTest();
+    }
+
+    public void testIntroduceForeignMethodAction4() throws Exception {
+        doTest();
+    }
+
+    public void testIntroduceForeignMethodAction5() throws Exception {
         doTest();
     }
 }
