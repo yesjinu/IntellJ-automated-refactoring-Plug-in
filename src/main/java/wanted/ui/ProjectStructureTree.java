@@ -97,7 +97,7 @@ class ProjectStructureTree extends Tree {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    // TODO
+                    // TODO: null treepath
                     TreePath treePath = getPathForLocation(e.getX(), e.getY());
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
                     Object element = node.getUserObject();
