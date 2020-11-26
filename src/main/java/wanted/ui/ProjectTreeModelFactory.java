@@ -8,6 +8,7 @@ import wanted.refactoring.ConsolidateCondExpr;
 import wanted.refactoring.ConsolidateDupCondFrag;
 import wanted.refactoring.InlineMethodAction;
 import wanted.refactoring.SelfEncapField;
+import wanted.refactoring.EncapField;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -65,6 +66,8 @@ class ProjectTreeModelFactory {
                 // SEF
                 if(SelfEncapField.refactorValid(project, field)) {
                     addTreeNodes(root, rootRef, "SEF", field);
+                } else if(EncapField.refactorValid(project, field)){ // EF
+                    addTreeNodes(root, rootRef, "EF", field);
                 }
             }
 
@@ -126,6 +129,8 @@ class ProjectTreeModelFactory {
             // Scope: Field
             case "SEF":
                 return new SelfEncapField().storyName();
+            case "EF":
+                return new EncapField().storyName();
 
             // Scope: Method
             case "IM":
