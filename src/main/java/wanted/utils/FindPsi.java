@@ -17,7 +17,7 @@ import java.util.List;
  * @author seha Park
  * @author Mintae Kim
  * @author JINU NOH
- * @author chanyoung Kim
+ * @author Chanyoung Kim
  * @author seungjae yoo
  * @author CSED332 2019 Team 1
  */
@@ -57,11 +57,12 @@ public class FindPsi {
     }
 
     /**
-     * Find reference expression which refers given member
-     * search scope: directory of file. i.e, only check files in same package
+     * Find PsiReferenceExpression in same directory PsiFiles (not itself)
+     * Search scope: directory of file. i.e, only check files in same package
+     *
      * @param file the file which own class with member field
      * @param member PsiField to find reference
-     * @return
+     * @return List<PsiReferenceExpression> if PsiFiles  has PsiReferenceExpression, empty() otherwise
      */
     public static List<PsiReferenceExpression> findMemberReference(PsiFile file, PsiField member)
     {
@@ -179,20 +180,6 @@ public class FindPsi {
             if (Arrays.asList(psiClass.getSupers()).contains(superclass))
                 subclassList.add(psiClass);
         return subclassList;
-    }
-
-    /**
-     * retrieve member field from caret
-     * @param f PsiFile context
-     * @param e action event
-     * @return PsiField
-     */
-    public static PsiField findMemberByCaret(PsiFile f, AnActionEvent e)
-    {
-        PsiField ret;
-        int caret = e.getData(CommonDataKeys.EDITOR).getCaretModel().getOffset();
-        ret = PsiTreeUtil.getParentOfType(f.findElementAt(caret), PsiField.class);
-        return ret;
     }
 
     public static PsiClass getContainingClass (PsiMethod method) {
@@ -515,6 +502,30 @@ public class FindPsi {
             if (elem instanceof PsiJavaToken) result.add((PsiJavaToken) elem);
         }
         return result;
+    }
+
+    /**
+     * For each query in queries,
+     * if there's method with same name in searchClass, remove the query from list
+     * return the modified list such that queries with duplicate name are removed
+     *
+     * @param searchClass PsiClass to check
+     * @param queries list of strings which represents names of methods to check
+     * @return modified queries such that duplicate strings are removed
+     */
+    public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries)
+    {
+        List<String> ret = queries;
+
+        for(PsiMethod m: searchClass.getMethods())
+        {
+            if(queries.contains(m.getName()))
+            {
+                ret.remove(m.getName());
+            }
+        }
+
+        return ret;
     }
 }
 

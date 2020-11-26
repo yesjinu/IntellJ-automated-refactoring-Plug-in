@@ -1,4 +1,4 @@
-public class SEF_ex_alreadyDone {
+public class SEF_alreadyDone {
     private int member;
 
     public SEF_ex_alreadyDone()

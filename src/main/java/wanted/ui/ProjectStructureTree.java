@@ -63,6 +63,11 @@ class ProjectStructureTree extends Tree {
                         setIcon(Icon2);
                         append((String) v);
                     }
+                    else if (v instanceof PsiField) {
+                        setIcon(Icon3);
+                        String fileName = ((PsiField) v).getContainingFile().getName();
+                        append("[" + fileName + "] " + ((PsiField)v).getName());
+                    }
                     else if (v instanceof PsiClass) {
                         setIcon(Icon3);
 

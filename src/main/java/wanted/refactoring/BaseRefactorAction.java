@@ -41,6 +41,23 @@ public abstract class BaseRefactorAction extends AnAction {
      */
     protected abstract void refactor(AnActionEvent e);
 
+    /**
+     * TODO: 작성해주세요
+     *
+     * @param e AnActionEvent
+     * @see AnAction#update(AnActionEvent)
+     */
+    @Override
+    public void actionPerformed(AnActionEvent e) {
+        refactorRequest(e);
+    }
+
+    /**
+     * TODO: 작성해주세요
+     *
+     * @param e AnActionEvent
+     * @see AnAction#update(AnActionEvent)
+     */
     @Override
     public void update(@NotNull AnActionEvent e) {
         super.update(e);
@@ -52,11 +69,12 @@ public abstract class BaseRefactorAction extends AnAction {
         presentation.setEnabled(visible);
     }
 
-    @Override
-    public void actionPerformed(AnActionEvent e) {
-        refactorRequest(e);
-    }
-
+    /**
+     * Helper Method that TODO: 작성해주세요
+     *
+     * @param e AnActionEvent
+     * @return
+     */
     private boolean isActionAvailable(AnActionEvent e) {
         final VirtualFile file = getVirtualFiles(e);
         if (getEventProject(e) != null && file != null) {
@@ -66,11 +84,21 @@ public abstract class BaseRefactorAction extends AnAction {
         return false;
     }
 
+    /**
+     * Helper Method that TODO: 작성해주세요
+     *
+     * @param e AnActionEvent
+     * @return
+     */
     private VirtualFile getVirtualFiles(AnActionEvent e) {
         return PlatformDataKeys.VIRTUAL_FILE.getData(e.getDataContext());
     }
 
-    /* apply refactoring if it's available */
+    /**
+     * Helper Method that applies refactoring if it's available.
+     *
+     * @param e AnActionEvent
+     */
     private void refactorRequest(AnActionEvent e)
     {
         if(!refactorValid(e)){ Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null); }

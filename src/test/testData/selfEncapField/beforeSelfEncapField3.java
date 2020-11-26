@@ -1,5 +1,5 @@
-public class SEF_ex_synonym {
-    private int member;
+public class SEF_shadowing {
+    private int mem<caret>ber;
 
     public void method1()
     {
