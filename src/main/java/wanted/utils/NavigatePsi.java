@@ -86,61 +86,6 @@ public class NavigatePsi {
         return navigator;
     }
 
-    /**
-     * Returns list of private members from focused class
-     * 
-     * @return list of private fields
-     */
-    public List<PsiField> findPrivateField() throws ProcessCanceledException
-    {
-        List<PsiField> ret = new ArrayList<>();
-
-        for(PsiField f : focusClass.getFields())
-        {
-            if(f.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ ret.add(f); }
-        }
-
-        return ret;
-    }
-
-    /**
-     * Returns list of public members from focused class
-     *
-     * @return list of public fields
-     */
-    public List<PsiField> findPublicField()
-    {
-        List<PsiField> ret = new ArrayList<>();
-
-        for(PsiField f : focusClass.getFields())
-        {
-            if(f.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ ret.add(f); }
-        }
-
-        return ret;
-    }
-
-    /**
-     * Check whether methods with given names are already implemented in class
-     * 
-     * @param methods List of method names in string
-     * @return names of methods that haven't implemented in current class
-     *         if all entries of methods are already implemented, return empty list
-     */
-    public List<String> findMethodByName(List<String> methods)
-    {
-        List<String> ret = methods;
-        for(PsiMethod m: focusClass.getMethods())
-        {
-            if(methods.contains(m.getName()))
-            {
-                ret.remove(m.getName());
-            }
-        }
-
-        return ret;
-    }
-
     /* return currently open project */
     public Project findProject(){ return focusProject; }
 

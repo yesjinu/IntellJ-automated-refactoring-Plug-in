@@ -182,21 +182,6 @@ public class FindPsi {
         return subclassList;
     }
 
-    /**
-     * retrieve member field from caret
-     *
-     * @param f PsiFile context
-     * @param e action event
-     * @return PsiField
-     */
-    public static PsiField findMemberByCaret(PsiFile f, AnActionEvent e)
-    {
-        PsiField ret;
-        int caret = e.getData(CommonDataKeys.EDITOR).getCaretModel().getOffset();
-        ret = PsiTreeUtil.getParentOfType(f.findElementAt(caret), PsiField.class);
-        return ret;
-    }
-
     public static PsiClass getContainingClass (PsiMethod method) {
         PsiElement targetClass = method;
         while (!(targetClass instanceof PsiClass)) {
@@ -524,9 +509,9 @@ public class FindPsi {
      * if there's method with same name in searchClass, remove the query from list
      * return the modified list such that queries with duplicate name are removed
      *
-     * @param searchClass
-     * @param queries
-     * @return
+     * @param searchClass PsiClass to check
+     * @param queries list of strings which represents names of methods to check
+     * @return modified queries such that duplicate strings are removed
      */
     public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries)
     {
