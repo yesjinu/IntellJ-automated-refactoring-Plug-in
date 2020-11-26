@@ -42,7 +42,7 @@ public abstract class BaseRefactorAction extends AnAction {
     protected abstract void refactor(AnActionEvent e);
 
     /**
-     * TODO: 작성해주세요
+     * Implement this method to provide your action handler.
      *
      * @param e AnActionEvent
      * @see AnAction#update(AnActionEvent)
@@ -53,7 +53,8 @@ public abstract class BaseRefactorAction extends AnAction {
     }
 
     /**
-     * TODO: 작성해주세요
+     * Updates the state of the action.
+     * If refactoring is possible, make the function enabled and visible.
      *
      * @param e AnActionEvent
      * @see AnAction#update(AnActionEvent)
@@ -70,7 +71,7 @@ public abstract class BaseRefactorAction extends AnAction {
     }
 
     /**
-     * Helper Method that TODO: 작성해주세요
+     * Check if the file to which the action is applied exists and whether the action is possible.
      *
      * @param e AnActionEvent
      * @return
@@ -85,7 +86,7 @@ public abstract class BaseRefactorAction extends AnAction {
     }
 
     /**
-     * Helper Method that TODO: 작성해주세요
+     * Returns the VirtualFile to which the action is applied
      *
      * @param e AnActionEvent
      * @return
