@@ -12,6 +12,7 @@ import java.util.*;
  * Class to Search Psi Class, Methods, ... for whole Project.
  *
  * @author Mintae Kim
+ * @author seungjae yoo
  * @author CSED332 2020 TAs
  */
 public class TraverseProjectPsi {
