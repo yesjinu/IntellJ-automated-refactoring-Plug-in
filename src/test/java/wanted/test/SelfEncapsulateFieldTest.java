@@ -6,6 +6,7 @@ import wanted.test.base.LightActionTestCase;
 
 /**
  * Test class for self encapsulate field
+ * use caret
  * @author seha Park
  */
 public class SelfEncapsulateFieldTest extends LightActionTestCase {
@@ -38,14 +39,9 @@ public class SelfEncapsulateFieldTest extends LightActionTestCase {
     public void testSelfEncapField4() throws Exception {
         try
         {
-            doTest(); // This cause error refactorValid() returns false and Message dialog appears
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
         }catch(RuntimeException e) {
             // nothing
         }
     }
-
-    /* Test 5: test using caret */
-    //public void testSelfEncapField5() throws Exception {
-    //    doTest();
-    //}
 }
