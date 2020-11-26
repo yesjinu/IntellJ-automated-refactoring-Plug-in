@@ -34,25 +34,36 @@ public class EncapField extends BaseRefactorAction {
 
         project = navigator.findProject();
         file = navigator.findFile();
-
         targetClass = navigator.findClass();
         if(targetClass==null){ return false; }
 
-        List<PsiField> members = navigator.findPublicField(); // find public field
-        if(members.isEmpty()){ return false; }
+        // find member from caret
+        member = navigator.findField();
 
-        // ! only encapsulate one member
-        member = members.get(0);
-        //member = FindPsi.findMemberByCaret(file, e); // -> caret version
-        //if(!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ return false; }
+        return refactorValid(project, member);
+    }
 
-        // check if there's getMember or setMember
+    /**
+     * Helper method that checks whether candidate method is refactorable using 'Encapsulate Field'.
+     *
+     * Every candidate fields should follow these two requisites:
+     * 1. Field should be public
+     * 2. It has neither getter nor setter
+     *
+     * @return true if method is refactorable
+     */
+    public static boolean refactorValid(Project project, PsiField member) {
+        if(member==null){ return false; } // nothing is chosen
+
+        if(!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ return false; } // member is not public
+
+        // check if there's getter or setter
         String newName = CreatePsi.capitalize(member);
         List<String> methods = new ArrayList<>();
         methods.add("get"+newName); methods.add("set"+newName);
 
-        List<String> methodToImpl = navigator.findMethodByName(methods);
-        if(methodToImpl.size()!=2){ return false; } // there's either getMember or setMember already
+        methods = FindPsi.checkDuplicateName(member.getContainingClass(), methods);
+        if(methods.size()!=2){ return false; } // there's either getMember or setMember already
 
         return true;
     }

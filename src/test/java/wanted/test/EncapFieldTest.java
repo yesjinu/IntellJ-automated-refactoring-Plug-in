@@ -6,6 +6,8 @@ import wanted.test.base.LightActionTestCase;
 
 /**
  * Test class for encapsulate field
+ * use caret
+ *
  * @author seha Park
  */
 public class EncapFieldTest extends LightActionTestCase {
@@ -30,10 +32,4 @@ public class EncapFieldTest extends LightActionTestCase {
         String[] beforeFiles = {"EF_owner.java", "EF_user1.java", "EF_user2.java", "EF_user3.java"};
         doTestDirectory(beforeFiles);
     }
-
-    /* Test 3: caret case */
-    //public void testEncapField3() throws Exception {
-    //    String[] beforeFiles = {"EF_owner.java", "EF_other.java"};
-    //     doTestDirectory(beforeFiles);
-    // }
 }
