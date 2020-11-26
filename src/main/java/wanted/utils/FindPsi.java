@@ -125,7 +125,6 @@ public class FindPsi {
     /**
      * Return the List containing PsiMethodCallExpression Object in current PSI Element
      *
-     * @author Chanyoung Kim
      * @param element the PSI Element.
      * @return List<PsiMethodCallExpression> if element has MethodCallExpressions, empty() otherwise
      */
@@ -144,8 +143,8 @@ public class FindPsi {
     /**
      * Return PsiIfstatement from cursor offset inside of PsiClass
      * 
-     * @param psiClass
-     * @param offset
+     * @param psiClass the scope this function find ifstatement
+     * @param offset the text offset of file containing this class
      * @return PsiIfStatement which contains cursor
      *         If various PsiIfStatements are correct, choose narrowest one
      */
@@ -208,7 +207,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiClass Object in current PsiElement
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiClass> if element has PsiClass, empty() otherwise
      */
@@ -226,7 +225,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiField Object in current PsiElement
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiField> if element has PsiField, empty() otherwise
      */
@@ -244,7 +243,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiMethod Object in current PsiElement
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiMethod> if element has PsiMethod, empty() otherwise
      */
@@ -262,7 +261,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiDeclarationStatement Object in current PsiElement
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiDeclarationStatement> if element has PsiDeclarationStatement, empty() otherwise
      */
@@ -280,7 +279,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiExpression Object in current PsiElement
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiExpression> if element has PsiExpression, empty() otherwise
      */
@@ -298,7 +297,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiExpression Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiExpression> if element has PsiExpression, empty() otherwise
      */
@@ -312,7 +311,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiLocalVariable Object in current PsiElement
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiLocalVariable> if element has PsiLocalVariable, empty() otherwise
      */
@@ -330,7 +329,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiLocalVariable Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiLocalVariable> if element has PsiLocalVariable, empty() otherwise
      */
@@ -344,7 +343,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiTypeElement Object in current PsiElement
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiTypeElement> if element has PsiTypeElement, empty() otherwise
      */
@@ -362,7 +361,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiTypeElement Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiTypeElement> if element has PsiTypeElement, empty() otherwise
      */
@@ -376,7 +375,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiNewExpression Object in current PsiElement
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiNewExpression> if element has PsiNewExpression, empty() otherwise
      */
@@ -394,7 +393,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiNewExpression Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiNewExpression> if element has PsiNewExpression, empty() otherwise
      */
@@ -408,7 +407,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiJavaCodeReferenceElement Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiJavaCodeReferenceElement> if element has PsiJavaCodeReferenceElement, empty() otherwise
      */
@@ -422,7 +421,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiKeyword Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiKeyword> if element has PsiKeyword, empty() otherwise
      */
@@ -436,7 +435,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiExpressionList Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiExpressionList> if element has PsiExpressionList, empty() otherwise
      */
@@ -450,7 +449,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiReferenceExpression Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiReferenceExpression> if element has PsiReferenceExpression, empty() otherwise
      */
@@ -464,7 +463,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiBinaryExpression Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiBinaryExpression> if element has PsiBinaryExpression, empty() otherwise
      */
@@ -478,7 +477,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiLiteralExpression Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiLiteralExpression> if element has PsiLiteralExpression, empty() otherwise
      */
@@ -492,7 +491,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiIdentifier Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiIdentifier> if element has PsiIdentifier, empty() otherwise
      */
@@ -506,7 +505,7 @@ public class FindPsi {
 
     /**
      * Return the List containing PsiJavaToken Object in current PsiElement children
-     * @author Chanyoung Kim
+     *
      * @param element the PsiElement.
      * @return List<PsiJavaToken> if element has PsiJavaToken, empty() otherwise
      */
