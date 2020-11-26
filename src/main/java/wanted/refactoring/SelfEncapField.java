@@ -37,7 +37,7 @@ public class SelfEncapField extends BaseRefactorAction {
         if(targetClass==null){ return false; }
 
         // find member from caret
-        member = FindPsi.findMemberByCaret(navigator.findFile(), e);
+        member = navigator.findField();
 
         return refactorValid(project, member);
     }
@@ -52,6 +52,8 @@ public class SelfEncapField extends BaseRefactorAction {
      * @return true if method is refactorable
      */
     public static boolean refactorValid(Project project, @NotNull PsiField member) {
+        if(member==null){ return false; } // nothing is chosen
+
         if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // member is not private
 
         // check if there's getter or setter
