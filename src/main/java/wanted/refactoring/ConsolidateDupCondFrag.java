@@ -45,6 +45,12 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         return refactorValid(ifStatement);
     }
 
+    /**
+     * Determine whether PsiIfStatement object can refactor
+     *
+     * @param s the target which should be validated
+     * @return true if s is valid to refactor
+     */
     public static boolean refactorValid(PsiIfStatement s) {
         List<PsiStatement> statementList = new ArrayList<>();
         PsiStatement nowStatement = s;
