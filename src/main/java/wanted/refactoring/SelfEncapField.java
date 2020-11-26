@@ -51,7 +51,7 @@ public class SelfEncapField extends BaseRefactorAction {
      *
      * @return true if method is refactorable
      */
-    public static boolean refactorValid(Project project, @NotNull PsiField member) {
+    public static boolean refactorValid(Project project, PsiField member) {
         if(member==null){ return false; } // nothing is chosen
 
         if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // member is not private

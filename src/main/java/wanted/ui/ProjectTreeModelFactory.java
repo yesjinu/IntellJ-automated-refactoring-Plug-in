@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import wanted.refactoring.ConsolidateCondExpr;
 import wanted.refactoring.ConsolidateDupCondFrag;
 import wanted.refactoring.InlineMethodAction;
+import wanted.refactoring.SelfEncapField;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -54,6 +55,17 @@ class ProjectTreeModelFactory {
                 super.visitClass(psiClass);
 
 
+            }
+
+            // TODO: ADD
+            @Override
+            public void visitField(PsiField field) {
+                super.visitField(field);
+
+                // SEF
+                if(SelfEncapField.refactorValid(project, field)) {
+                    addTreeNodes(root, rootRef, "SEF", field);
+                }
             }
 
             // TODO: ADD
@@ -110,6 +122,10 @@ class ProjectTreeModelFactory {
         switch (id) {
             // Scope: Class
             // TODO: ADD
+
+            // Scope: Field
+            case "SEF":
+                return new SelfEncapField().storyName();
 
             // Scope: Method
             case "IM":
