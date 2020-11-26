@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import wanted.refactoring.ConsolidateCondExpr;
 import wanted.refactoring.ConsolidateDupCondFrag;
 import wanted.refactoring.InlineMethodAction;
+import wanted.refactoring.RemoveUnusedParameterAction;
 import wanted.utils.TraverseProjectPsi;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -66,6 +67,11 @@ class ProjectTreeModelFactory {
                 if (InlineMethodAction.refactorValid(project, method)) {
                     addTreeNodes(root, rootRef, "IM", method);
                 }
+
+                // RPA
+                if (RemoveUnusedParameterAction.refactorValid(project, method)) {
+                    addTreeNodes(root, rootRef, "RPA", method);
+                }
             }
 
             // TODO: ADD
@@ -123,6 +129,10 @@ class ProjectTreeModelFactory {
 
             case "CDCF":
                 return new ConsolidateDupCondFrag().storyName();
+            // TODO: ADD
+
+            case "RPA":
+                return new RemoveUnusedParameterAction().storyName();
             // TODO: ADD
 
             default:
