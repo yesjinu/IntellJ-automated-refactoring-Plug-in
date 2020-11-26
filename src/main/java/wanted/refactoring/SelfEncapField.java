@@ -32,6 +32,14 @@ public class SelfEncapField extends BaseRefactorAction {
         return "Self Encapsulation Field";
     }
 
+    /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Self Encapsulation Field'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e)
     {
@@ -60,6 +68,12 @@ public class SelfEncapField extends BaseRefactorAction {
         return true;
     }
 
+    /**
+     * Method that performs refactoring: 'Self Encapsulate Field'
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
+     */
     @Override
     protected void refactor(AnActionEvent e)
     {

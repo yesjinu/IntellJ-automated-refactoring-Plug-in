@@ -35,7 +35,7 @@ public class NavigatePsi {
     /**
      * Collect project and psi file from given context
      * 
-     * @param e
+     * @param e AnActionEvent
      */
     private NavigatePsi(AnActionEvent e)
     {

@@ -76,7 +76,6 @@ public class ReplacePsi {
      *
      * @param project target project
      * @param ifStatement target ifStatement
-     *
      */
     public static void removeCondStatement(Project project, PsiIfStatement ifStatement) {
         PsiStatement thenStatement = ifStatement.getThenBranch();

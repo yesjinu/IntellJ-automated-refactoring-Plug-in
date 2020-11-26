@@ -35,6 +35,14 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         return "Consolidate Duplicate Conditional Fragments";
     }
 
+    /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Consolidate Duplicate Conditional Fragments'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
@@ -72,6 +80,12 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         return false;
     }
 
+    /**
+     * Method that performs refactoring: 'Consolidate Duplicate Conditional Fragments'
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
+     */
     @Override
     protected void refactor(AnActionEvent e) {
         List<PsiStatement> statementList = new ArrayList<>();
@@ -99,7 +113,7 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
     }
 
     /**
-     * Determine whether first statement of each condition is same
+     * Helper Method which determines whether first statement of each condition is same
      *
      * @param statementList List of Statement
      * @return true if first statement is same for every condition
@@ -127,7 +141,7 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
     }
 
     /**
-     * Determine whether last statement of each condition is same
+     * Helper Method which determines whether last statement of each condition is same
      *
      * @param statementList List of Statement
      * @return true if last statement is same for every condition

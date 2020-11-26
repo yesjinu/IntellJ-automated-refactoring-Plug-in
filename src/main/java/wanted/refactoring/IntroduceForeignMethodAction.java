@@ -12,13 +12,8 @@ import wanted.utils.FindPsi;
 import java.util.*;
 
 /**
+ * Class to provide refactoring: 'Introduce Foreign Method'
  * Add the method to a client class and pass an object of the utility class to it as an argument.
- *
- * When does this refactoring activiate
- * 1. 클래스 내부 함수에서 유틸리티 객체가 선언되고, 선언될 때 파라미터로 온전히 그 객체가 사용된 경우
- *
- * How to implement this refactoring
- * 1.
  *
  * @author Chanyoung Kim
  */
@@ -47,6 +42,18 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         return "Introduce Foreign Method";
     }
 
+    /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Introduce Foreign Method'.
+     *
+     * When does this refactoring activiate
+     * 1. 클래스 내부 함수에서 유틸리티 객체가 선언되고, 선언될 때 파라미터로 온전히 그 객체가 사용된 경우
+     * 2. TODO: 기록해주세요
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e)
     {
@@ -131,6 +138,47 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         return !possible.isEmpty();
     }
 
+    /**
+     * Method that performs refactoring: 'Introduct Foreign Method Action'
+     *
+     * How to implement this refactoring:
+     * 1. TODO: 기록해주세요
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
+     */
+    @Override
+    protected void refactor(AnActionEvent e)
+    {
+        Project project = e.getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            for (PsiDeclarationStatement stm : possible) {
+                PsiMethod mtd = psiDclStateMap.get(stm);
+                PsiClass cls = psiMethodMap.get(mtd);
+
+                String statement = utilityClassType + " " + variableName + " = " + variableName
+                        + "(" + utilityClassName + ");";
+                PsiStatement _stm = factory.createStatementFromText(statement, null);
+                stm.replace(_stm);
+
+                String strMethod = "private static " + utilityClassType + " " + variableName + "(" + utilityClassType
+                        + " arg) { return new " + utilityClassType + "("
+                        + StringUtils.join(params.get(stm), ", ") + "); }";
+                PsiMethod _mtd = factory.createMethodFromText(strMethod, null);
+                cls.addBefore(_mtd, cls.getLastChild());
+            }
+        });
+    }
+
+    /**
+     * Helper Method that performs TODO: 기록해주세요
+     *
+     * @param exp
+     * @param stm
+     * @return
+     */
     private boolean isVaildParameter(PsiExpression exp, PsiDeclarationStatement stm) {
         if (exp instanceof PsiMethodCallExpression) {
             return isVaildParameter((PsiMethodCallExpression) exp, stm);
@@ -148,7 +196,13 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         return false;
     }
 
-
+    /**
+     * Helper Method that performs TODO: 기록해주세요
+     *
+     * @param exp
+     * @param stm
+     * @return
+     */
     private boolean isVaildParameter(PsiMethodCallExpression exp, PsiDeclarationStatement stm) {
         List<PsiReferenceExpression> frontReList = FindPsi.findChildPsiReferenceExpressions(exp);
         if (frontReList.size() != 1) return false;
@@ -174,6 +228,13 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         return false;
     }
 
+    /**
+     * Helper Method that performs TODO: 기록해주세요
+     *
+     * @param exp
+     * @param stm
+     * @return
+     */
     private boolean isVaildParameter(PsiReferenceExpression exp, PsiDeclarationStatement stm) {
         PsiMethod m = psiDclStateMap.get(stm);
         PsiClass c = psiMethodMap.get(m);
@@ -195,6 +256,13 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         return false;
     }
 
+    /**
+     * Helper Method that performs TODO: 기록해주세요
+     *
+     * @param exp
+     * @param stm
+     * @return
+     */
     private boolean isVaildParameter(PsiBinaryExpression exp, PsiDeclarationStatement stm) {
         List<PsiExpression> expList = FindPsi.findChildPsiExpressions(exp);
         PsiJavaToken token = FindPsi.findChildPsiJavaTokens(exp).get(0);
@@ -214,35 +282,15 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         return false;
     }
 
+    /**
+     * Helper Method that performs TODO: 기록해주세요
+     *
+     * @param exp
+     * @param stm
+     * @return
+     */
     private boolean isVaildParameter(PsiLiteralExpression exp, PsiDeclarationStatement stm) {
         params.get(stm).add(exp.getText());
         return true;
-    }
-
-    @Override
-    protected void refactor(AnActionEvent e)
-    {
-        Project project = e.getProject();
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            for (PsiDeclarationStatement stm : possible) {
-                PsiMethod mtd = psiDclStateMap.get(stm);
-                PsiClass cls = psiMethodMap.get(mtd);
-
-                String statement = utilityClassType + " " + variableName + " = " + variableName
-                        + "(" + utilityClassName + ");";
-                PsiStatement _stm = factory.createStatementFromText(statement, null);
-                stm.replace(_stm);
-
-                String strMethod = "private static " + utilityClassType + " " + variableName + "(" + utilityClassType
-                                    + " arg) { return new " + utilityClassType + "("
-                                    + StringUtils.join(params.get(stm), ", ") + "); }";
-                PsiMethod _mtd = factory.createMethodFromText(strMethod, null);
-                cls.addBefore(_mtd, cls.getLastChild());
-            }
-        });
-
-
     }
 }

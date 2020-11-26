@@ -37,10 +37,11 @@ public class InlineMethodAction extends BaseRefactorAction {
     }
 
     /**
-     * Returns the possibility of refactoring for current project with particular strategy.
+     * Method that checks whether candidate method is refactorable
+     * using 'Inline Method'.
      *
-     * @param e An ActionEvent
-     * @return true if refactoring is available, otherwise false.
+     * @param e AnActionevent
+     * @return true if method is refactorable
      * @see BaseRefactorAction#refactorValid(AnActionEvent)
      */
     @Override
@@ -101,7 +102,7 @@ public class InlineMethodAction extends BaseRefactorAction {
     }
 
     /**
-     * Method that performs refactoring 'Inline Method;.
+     * Method that performs refactoring: 'Inline Method'
      *
      * @param e AnActionEvent
      * @see BaseRefactorAction#refactor(AnActionEvent)

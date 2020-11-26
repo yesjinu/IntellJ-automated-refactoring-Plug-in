@@ -140,7 +140,12 @@ public class CreatePsi {
     }
 
 
-    /* capitalize name of given member */
+    /**
+     * Method that capitalize name of given member
+     *
+     * @param member PsiField object
+     * @return new name with its letter capitalized
+     */
     public static String capitalize(PsiField member)
     {
         String name = member.getName(); // make first character uppercase

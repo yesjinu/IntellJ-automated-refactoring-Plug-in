@@ -31,6 +31,14 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
         return "Consolidate Conditional Expression";
     }
 
+    /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Consolidate Conditional Expression'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
@@ -63,6 +71,12 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
         return thenText.equals(elseText);
     }
 
+    /**
+     * Method that performs refactoring: 'Consolidate Conditional Expression'
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
+     */
     @Override
     protected void refactor(AnActionEvent e) {
         PsiStatement thenStatement;
@@ -107,9 +121,7 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
                     });
                 }
                 isFirstTime = false;
-
             }
         }
-
     }
 }

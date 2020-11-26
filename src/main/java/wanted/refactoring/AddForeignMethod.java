@@ -16,10 +16,12 @@ public class AddForeignMethod extends BaseRefactorAction {
     }
 
     /**
-     * Returns the possibility of wanted.refactoring for current project with particular strategy.
+     * Method that checks whether candidate method is refactorable
+     * using 'Add Foreign Method'.
      *
-     * @param e An Actionevent
-     * @return true if wanted.refactoring is available, otherwise false.
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
@@ -27,7 +29,10 @@ public class AddForeignMethod extends BaseRefactorAction {
     }
 
     /**
-     * Method that performs wanted.refactoring.
+     * Method that performs refactoring: 'Add Foreign Method'
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
     protected void refactor(AnActionEvent e) {

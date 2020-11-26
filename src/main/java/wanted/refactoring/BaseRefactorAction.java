@@ -29,6 +29,7 @@ public abstract class BaseRefactorAction extends AnAction {
     /**
      * Method that checks whether candidate method is refactorable.
      *
+     * @param e AnActionEvent
      * @return true if method is refactorable
      */
     public abstract boolean refactorValid(AnActionEvent e);

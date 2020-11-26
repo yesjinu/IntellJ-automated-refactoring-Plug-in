@@ -20,11 +20,25 @@ public class ExtractVariable extends BaseRefactorAction {
         return "Extract Variable";
     }
 
+    /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Extract Variable'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e) {
         return false;
     }
 
+    /**
+     * Method that performs refactoring: 'Extract Variable'
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
+     */
     @Override
     protected void refactor(AnActionEvent e) {
 

@@ -36,10 +36,12 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     }
 
     /**
-     * Returns the possibility of refactoring for current project with particular strategy.
+     * Method that checks whether candidate method is refactorable
+     * using 'Remove Unused Parameter'.
      *
-     * @param e An Actionevent
-     * @return true if refactoring is available, otherwise false.
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {

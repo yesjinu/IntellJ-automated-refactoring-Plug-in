@@ -27,7 +27,7 @@ public class FindPsi {
      * Returns list of statements referring to given member
      *
      * @param focusClass search scope
-     * @param member
+     * @param member PsiField object
      * @return list of statements
      */
     public static List<PsiReferenceExpression> findMemberReference(PsiClass focusClass, PsiField member) {
