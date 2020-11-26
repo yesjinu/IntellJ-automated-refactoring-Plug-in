@@ -17,7 +17,7 @@ import java.util.List;
  * @author seha Park
  * @author Mintae Kim
  * @author JINU NOH
- * @author chanyoung Kim
+ * @author Chanyoung Kim
  * @author seungjae yoo
  * @author CSED332 2019 Team 1
  */
@@ -57,11 +57,12 @@ public class FindPsi {
     }
 
     /**
-     * Find reference expression which refers given member
-     * search scope: directory of file. i.e, only check files in same package
+     * Find PsiReferenceExpression in same directory PsiFiles (not itself)
+     * Search scope: directory of file. i.e, only check files in same package
+     *
      * @param file the file which own class with member field
      * @param member PsiField to find reference
-     * @return
+     * @return List<PsiReferenceExpression> if PsiFiles  has PsiReferenceExpression, empty() otherwise
      */
     public static List<PsiReferenceExpression> findMemberReference(PsiFile file, PsiField member)
     {
@@ -183,6 +184,7 @@ public class FindPsi {
 
     /**
      * retrieve member field from caret
+     *
      * @param f PsiFile context
      * @param e action event
      * @return PsiField
