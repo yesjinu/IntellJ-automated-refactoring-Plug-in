@@ -4,13 +4,8 @@ import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
-import wanted.refactoring.ConsolidateCondExpr;
-import wanted.refactoring.ConsolidateDupCondFrag;
-import wanted.refactoring.InlineMethodAction;
-import wanted.refactoring.RemoveUnusedParameterAction;
+import wanted.refactoring.*;
 import wanted.utils.TraverseProjectPsi;
-import wanted.refactoring.SelfEncapField;
-import wanted.refactoring.EncapField;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -56,7 +51,10 @@ class ProjectTreeModelFactory {
             @Override
             public void visitClass(PsiClass psiClass) {
                 super.visitClass(psiClass);
-
+                // IFM
+                if(IntroduceForeignMethodAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "SEF", psiClass);
+                }
 
             }
 
@@ -134,7 +132,8 @@ class ProjectTreeModelFactory {
         switch (id) {
             // Scope: Class
             // TODO: ADD
-
+            case "IFM":
+                return new IntroduceForeignMethodAction().storyName();
             // Scope: Field
             case "SEF":
                 return new SelfEncapField().storyName();
