@@ -5,6 +5,17 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 public class AddForeignMethod extends BaseRefactorAction {
 
     /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
+     */
+    @Override
+    public String storyName() {
+        return "Add Foreign Method";
+    }
+
+    /**
      * Returns the possibility of wanted.refactoring for current project with particular strategy.
      *
      * @param e An Actionevent
@@ -13,17 +24,6 @@ public class AddForeignMethod extends BaseRefactorAction {
     @Override
     public boolean refactorValid(AnActionEvent e) {
         return true;
-    }
-
-
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name "Inline Method"
-     */
-    @Override
-    public String storyName() {
-        return "Add Foreign Method";
     }
 
     /**

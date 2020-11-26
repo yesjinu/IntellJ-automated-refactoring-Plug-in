@@ -7,6 +7,7 @@ import com.intellij.psi.*;
 import wanted.refactoring.ConsolidateCondExpr;
 import wanted.refactoring.ConsolidateDupCondFrag;
 import wanted.refactoring.InlineMethodAction;
+import wanted.utils.TraverseProjectPsi;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -14,7 +15,7 @@ import javax.swing.tree.TreeModel;
 import java.util.*;
 
 /**
- * TODO: ProjectTreeModelFactory Explanation
+ * Factory Class responsible for creation of Project Structure Tree: Refactoring Techinques
  *
  * @author Mintae Kim
  * @author seungjae yoo
@@ -95,15 +96,15 @@ class ProjectTreeModelFactory {
             }
         };
 
-        getRootPackages(project).forEach(aPackage -> aPackage.accept(visitor));
-        getRootClasses(project).forEach(aClass -> aClass.accept(visitor));
+        TraverseProjectPsi.getRootPackages(project).forEach(aPackage -> aPackage.accept(visitor));
+        TraverseProjectPsi.getRootClasses(project).forEach(aClass -> aClass.accept(visitor));
         return new DefaultTreeModel(root);
     }
 
     /**
      * Method that fetches Refactoring Method name by ID.
      *
-     * @param id
+     * @param id Refactoring Techinque ID
      * @return Corresponding Refactoring name (story name)
      */
     private static String getNameByID (String id) {
@@ -130,7 +131,8 @@ class ProjectTreeModelFactory {
     }
 
     /**
-     * Create
+     * Adds new DefaultMutableTreeNode (Category) if missing,
+     * and Adds new DefaultMutableTreeNode (PsiElement).
      *
      * @param root Root node of this JTree
      * @param rootRef Map with ID Keys and corresponding 'Refactoring Technique' Nodes
@@ -153,7 +155,7 @@ class ProjectTreeModelFactory {
     }
 
     /**
-     * Adding new 'Refactoring Techinque' node to the root.
+     * Adds new DefaultMutableTreeNode (Category) and connect to the root.
      *
      * @param root Root node of this JTree
      * @param rootRef Map with ID Keys and corresponding 'Refactoring Technique' Nodes
@@ -168,78 +170,6 @@ class ProjectTreeModelFactory {
                 new DefaultMutableTreeNode (getNameByID (id));
         rootRef.put(id, rootRefNode);
         root.add(rootRefNode);
-    }
-
-
-    /**
-     * Returns the root package(s) in the source directory of a project. The default package will not be considered, as
-     * it includes all Java classes. Note that classes in the default package (i.e., having no package statement) will
-     * be ignored for this assignment. To be completed, this case must be separately handled.
-     *
-     * @param project a project
-     * @return a set of root packages
-     */
-    private static Set<PsiPackage> getRootPackages(Project project) {
-        final Set<PsiPackage> rootPackages = new HashSet<>();
-        PsiElementVisitor visitor = new PsiElementVisitor() {
-            @Override
-            public void visitDirectory(PsiDirectory dir) {
-                final PsiPackage psiPackage = JavaDirectoryService.getInstance().getPackage(dir);
-                if (psiPackage != null && !PackageUtil.isPackageDefault(psiPackage))
-                    rootPackages.add(psiPackage);
-                else
-                    Arrays.stream(dir.getSubdirectories()).forEach(sd -> sd.accept(this));
-            }
-        };
-
-        ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
-        PsiManager psiManager = PsiManager.getInstance(project);
-        Arrays.stream(rootManager.getContentSourceRoots())
-                .map(psiManager::findDirectory)
-                .filter(Objects::nonNull)
-                .forEach(dir -> dir.accept(visitor));
-
-        return rootPackages;
-    }
-
-    /**
-     * Returns set of classes in the default package
-     * (which is not considered in {@link ProjectTreeModelFactory#getRootPackages(Project)}
-     *
-     * @param project A Project
-     * @return Set of PsiClass containing default package classes
-     */
-    private static Set<PsiClass> getRootClasses(Project project) {
-        final Set<PsiClass> rootClasses = new HashSet<>();
-
-        PsiElementVisitor visitor = new PsiElementVisitor() {
-            @Override
-            public void visitFile(PsiFile file) {
-                if (file instanceof PsiJavaFile) {
-                    rootClasses.addAll(Arrays.asList(((PsiJavaFile) file).getClasses()));
-                }
-            }
-            @Override
-            public void visitDirectory(PsiDirectory dir) {
-                final PsiPackage psiPackage = JavaDirectoryService.getInstance().getPackage(dir);
-                if (psiPackage != null && !PackageUtil.isPackageDefault(psiPackage)) {
-
-                }
-                else {
-                    Arrays.stream(dir.getSubdirectories()).forEach(sd -> sd.accept(this));
-                    Arrays.stream(dir.getFiles()).forEach(f -> f.accept(this));
-                }
-            }
-        };
-
-        ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
-        PsiManager psiManager = PsiManager.getInstance(project);
-        Arrays.stream(rootManager.getContentSourceRoots())
-                .map(psiManager::findDirectory)
-                .filter(Objects::nonNull)
-                .forEach(dir -> dir.accept(visitor));
-
-        return rootClasses;
     }
 }
 

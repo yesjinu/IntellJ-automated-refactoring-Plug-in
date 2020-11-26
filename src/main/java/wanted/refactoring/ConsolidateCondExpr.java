@@ -10,7 +10,7 @@ import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 
 /**
- * class to provide consolidate conditional expression refactoring
+ * Class to provide refactoring: 'Consolidate Conditional Expression'
  *
  * @author seungjae yoo
  */
@@ -20,6 +20,13 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
 
     private PsiIfStatement ifStatement;
 
+    /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
+     */
+    @Override
     public String storyName() {
         return "Consolidate Conditional Expression";
     }

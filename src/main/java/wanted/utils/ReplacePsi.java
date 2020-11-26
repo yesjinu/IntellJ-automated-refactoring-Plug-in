@@ -16,6 +16,7 @@ import java.util.List;
  * @author Mintae Kim
  */
 public class ReplacePsi {
+
     /**
      * Replace getter() and setter()
      *

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class to provide encapsulate field refactoring.
+ * Class to provide refactoring: 'Encapsulate Field Refactoring'
  *
  * @author seha Park
  */
@@ -21,6 +21,12 @@ public class EncapField extends BaseRefactorAction {
     private PsiFile file;
     private List<PsiReferenceExpression> references;
 
+    /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
+     */
     @Override
     public String storyName()
     {

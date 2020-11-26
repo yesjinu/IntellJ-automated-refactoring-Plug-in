@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Class to remove unused parameters
+ * Class to provide refactoring: 'Remove Unused Parameters'
  *
  * @author Jinu Noh
  */
@@ -27,7 +27,8 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     /**
      * Returns the story name as a string format, for message.
      *
-     * @return story name "Remove Unused Parameter"
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
      */
     @Override
     public String storyName() {

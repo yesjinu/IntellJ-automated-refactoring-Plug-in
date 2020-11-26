@@ -6,7 +6,7 @@ import wanted.test.base.LightActionTestCase;
 
 /**
  * Test class for 'Self Encapsulate Field'
- * 
+ *
  * @author seha Park
  */
 public class SelfEncapsulateFieldTest extends LightActionTestCase {

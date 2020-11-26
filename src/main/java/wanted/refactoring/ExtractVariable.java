@@ -3,16 +3,18 @@ package wanted.refactoring;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
 /**
- * Refactoring Techinque: Extract long variables
+ * Class to provide refactoring: 'Extract Variable'
  *
  * @author Mintae Kim
  */
 public class ExtractVariable extends BaseRefactorAction {
 
-    public boolean isRefactorable() {
-        return false;
-    }
-
+    /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
+     */
     @Override
     public String storyName() {
         return "Extract Variable";

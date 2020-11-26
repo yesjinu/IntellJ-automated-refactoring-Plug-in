@@ -10,7 +10,35 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Abstract class to provide refactoring techniques.
+ *
+ * @author seha Park
+ * @author seungjae yoo
+ * @author Chanyoung Kim
+ */
 public abstract class BaseRefactorAction extends AnAction {
+
+    /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     */
+    public abstract String storyName();
+
+    /**
+     * Method that checks whether candidate method is refactorable.
+     *
+     * @return true if method is refactorable
+     */
+    public abstract boolean refactorValid(AnActionEvent e);
+
+    /**
+     * Method that performs refactoring.
+     *
+     * @param e AnActionEvent
+     */
+    protected abstract void refactor(AnActionEvent e);
 
     @Override
     public void update(@NotNull AnActionEvent e) {
@@ -50,12 +78,4 @@ public abstract class BaseRefactorAction extends AnAction {
             refactor(e);
         }
     }
-
-    public abstract String storyName();
-
-    /* return true if refactoring is available */
-    public abstract boolean refactorValid(AnActionEvent e);
-
-    /* perform refactoring */
-    protected abstract void refactor(AnActionEvent e);
 }

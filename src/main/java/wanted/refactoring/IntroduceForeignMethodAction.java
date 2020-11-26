@@ -35,6 +35,18 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
     Map<PsiDeclarationStatement, Integer> paramCounts;
     List<PsiDeclarationStatement> possible;
 
+    /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
+     */
+    @Override
+    public String storyName()
+    {
+        return "Introduce Foreign Method";
+    }
+
     @Override
     public boolean refactorValid(AnActionEvent e)
     {
@@ -232,12 +244,5 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         });
 
 
-    }
-
-
-    @Override
-    public String storyName()
-    {
-        return "Introduce Foreign Method";
     }
 }

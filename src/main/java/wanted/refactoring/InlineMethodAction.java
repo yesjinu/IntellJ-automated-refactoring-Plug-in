@@ -17,7 +17,7 @@ import wanted.utils.ReplacePsi;
 import java.util.*;
 
 /**
- * Class to eliminate redundant 'Inline Method's.
+ * Class to provide refactoring: 'Inline Method'
  *
  * @author Mintae Kim
  */
@@ -28,7 +28,8 @@ public class InlineMethodAction extends BaseRefactorAction {
     /**
      * Returns the story name as a string format, for message.
      *
-     * @return story name "Inline Method"
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
      */
     @Override
     public String storyName() {
@@ -40,6 +41,7 @@ public class InlineMethodAction extends BaseRefactorAction {
      *
      * @param e An ActionEvent
      * @return true if refactoring is available, otherwise false.
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
@@ -54,13 +56,14 @@ public class InlineMethodAction extends BaseRefactorAction {
     }
 
     /**
-     * Helper method that checks whether candidate method is refactorable using 'Inline Method'.
+     * Static method that checks whether candidate method is refactorable using 'Inline Method'.
      *
      * Every candidate methods should follow these two requisites:
      * 1. Methods which is not defined in subclasses
      * 2. Methods with 1 statement.
      *
      * @return true if method is refactorable
+     * @see wanted.ui.ProjectTreeModelFactory#createProjectTreeModel(Project) 
      */
     public static boolean refactorValid(Project project, @NotNull PsiMethod method) {
         PsiElement targetClass = FindPsi.getContainingClass(method);
@@ -98,7 +101,10 @@ public class InlineMethodAction extends BaseRefactorAction {
     }
 
     /**
-     * Method that performs refactoring.
+     * Method that performs refactoring 'Inline Method;.
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
     protected void refactor(AnActionEvent e) {
@@ -169,6 +175,7 @@ public class InlineMethodAction extends BaseRefactorAction {
      * Helper method that checks whether statement in method needs to be inserted while wanted.refactoring.
      *
      * @return true if statement needs insertion.
+     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
      */
     private boolean isInsertStatement(PsiStatement statement) {
         if (statement instanceof PsiAssertStatement ||
@@ -215,6 +222,7 @@ public class InlineMethodAction extends BaseRefactorAction {
      * @precond PsiCallExpression & PsiSwitchExpression returns always true
      * @return false if Assign, Prefix, Postfix Expression is used. (TBD in later steps)
      * @return true if expression needs insertion.
+     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
      */
     private boolean isInsertExpression(PsiExpression expression) {
         if (expression instanceof PsiConditionalExpression)

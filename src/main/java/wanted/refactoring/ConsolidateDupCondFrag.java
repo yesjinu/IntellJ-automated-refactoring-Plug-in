@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * class to provide consolidate duplicate conditional fragments refactoring
+ * Class to provide refactoring: 'Consolidate Duplicate Conditional Fragments'
  *
  * @author seungjae yoo
  */
@@ -24,6 +24,12 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
 
     private PsiIfStatement ifStatement;
 
+    /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
+     */
     @Override
     public String storyName() {
         return "Consolidate Duplicate Conditional Fragments";

@@ -12,7 +12,11 @@ import wanted.utils.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/* class to provide self encapsulate field refactoring */
+/**
+ * Class to provide refactoring: 'Hide Method'
+ *
+ * @author ????
+ */
 public class HideMethodAction extends BaseRefactorAction {
 
     @Override
