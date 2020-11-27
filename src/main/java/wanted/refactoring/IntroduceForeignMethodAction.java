@@ -86,6 +86,10 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      * @return true if method is refactorable
      */
     public static boolean refactorValid(Project project, @NotNull PsiClass targetClass) {
+        variableName = null;
+        utilityClassName = null;
+        utilityClassType = null;
+
         psiMethodMap = new HashMap<>();
         Arrays.stream(targetClass.getMethods()).forEach(method -> psiMethodMap.put(method, targetClass));
         if (psiMethodMap.isEmpty()) return false;

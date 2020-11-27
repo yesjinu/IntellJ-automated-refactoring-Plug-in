@@ -102,7 +102,9 @@ public abstract class BaseRefactorAction extends AnAction {
      */
     private void refactorRequest(AnActionEvent e)
     {
-        if(!refactorValid(e)){ Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null); }
+        if(!refactorValid(e)) {
+            Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);
+        }
         else
         {
             refactor(e);

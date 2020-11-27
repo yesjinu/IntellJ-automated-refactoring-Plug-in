@@ -31,10 +31,8 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
      */
     protected void doTest() throws Exception {
         myFixture.configureByFile(getBasePath() + "/before" + getTestName(false) + ".java");
-        // myFixture.configureByFile(getBasePath() + "/input.java");
         performActionTest();
         checkResultByFile(getBasePath() + "/after" + getTestName(false) + ".java");
-        // checkResultByFile(getBasePath() + "/output.java");
     }
 
     /**
