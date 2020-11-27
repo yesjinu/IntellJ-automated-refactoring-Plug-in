@@ -25,10 +25,6 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
     List<PsiMethodCallExpression> methodCallsInClass;
     List<PsiIdentifier> varFromGetter;
 
-
-
-
-
     /**
      * Returns the story name as a string format, for message.
      * @return story name "Parameterize Whole Object"
@@ -39,15 +35,18 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
     }
 
     /**
-     * 1. focusClass의 method call 부분을 전부 검사
-     *      1) get method를 사용해서 값을 얻어낸 경우를 전부 저장
-     * 2. parameter 리스트를 순회하며 하나의 object의 getter로부터 받아온 값이 2개 이상인 경우 체크
-     *      1) o.getA(), o.getB()
-     *      2) a, b
-     *      3) o.getA(), b
-     * 3. parameter 2개 (혹은 그 이상) 제거 후, parameter로 object를 넣기
-     * 4. method에 해당 parameter의 getMethod() 넣기. (getMethod가 있는 경우만 생각)
+     * 구현 순서
+     * 1. method의 > parameter 부분을 검사
+     * 2. 하나의 object의 get method로부터 받아온 값이 2개 이상인 경우 체크
+     * 3. parameter 제거 후, parameter로 object를 넣기
+     * 4. method 내부에 해당 parameter의 getMethod()넣기.
      * 5. method 호출부 찾아서 변경하기
+     *
+     * 내가 지금 모르는 것
+     * 1. parameter가 어떻게 get method로 받아온 것인지 알 수 있는가?
+     * 2. 어떻게 특정 parameter를 제거할 것인가?
+     * 3. 어떻게 object를 parameter에 넣을 것인가?
+     * 4. 어떻게 호출부를 찾을 것인가?
     */
     @Override
     public boolean refactorValid(AnActionEvent e) {

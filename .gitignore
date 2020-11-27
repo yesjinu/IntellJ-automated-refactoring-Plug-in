@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 build/
 .gradle/
 src/.idea
-=======
-# IntelliJ project files 
+
+# IntelliJ project files
 *.iml
 .idea/
 
@@ -25,4 +24,4 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
->>>>>>> 84b00f1945564cdadd79b641f5562a5c09967123
+.vs/
