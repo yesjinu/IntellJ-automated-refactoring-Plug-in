@@ -74,7 +74,7 @@ public abstract class BaseRefactorAction extends AnAction {
      * Check if the file to which the action is applied exists and whether the action is possible.
      *
      * @param e AnActionEvent
-     * @return
+     * @return true if action is valid in terms of virtual file and presence of project
      */
     private boolean isActionAvailable(AnActionEvent e) {
         final VirtualFile file = getVirtualFiles(e);
@@ -89,7 +89,7 @@ public abstract class BaseRefactorAction extends AnAction {
      * Returns the VirtualFile to which the action is applied
      *
      * @param e AnActionEvent
-     * @return
+     * @return VirtualFile in Project
      */
     private VirtualFile getVirtualFiles(AnActionEvent e) {
         return PlatformDataKeys.VIRTUAL_FILE.getData(e.getDataContext());

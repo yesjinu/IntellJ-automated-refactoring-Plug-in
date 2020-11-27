@@ -63,8 +63,9 @@ public class InlineMethodAction extends BaseRefactorAction {
      * 1. Methods which is not defined in subclasses
      * 2. Methods with 1 statement.
      *
+     * @param project Project
+     * @param method PsiMethod
      * @return true if method is refactorable
-     * @see wanted.ui.ProjectTreeModelFactory#createProjectTreeModel(Project) 
      */
     public static boolean refactorValid(Project project, @NotNull PsiMethod method) {
         PsiElement targetClass = FindPsi.getContainingClass(method);

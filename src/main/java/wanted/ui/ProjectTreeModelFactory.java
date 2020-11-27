@@ -17,6 +17,9 @@ import java.util.*;
  *
  * @author Mintae Kim
  * @author seungjae yoo
+ * @author seha Park
+ * @author Jinu Noh
+ * @author Chanyoung Kim
  * @author CSED332 2020 TAs
  */
 class ProjectTreeModelFactory {
@@ -47,7 +50,11 @@ class ProjectTreeModelFactory {
                 for (PsiClass subClass : pack.getClasses()) subClass.accept(this);
             }
 
-            // TODO: ADD
+            /**
+             * function that is executed when visiting a PsiClass node while traversing the tree
+             *
+             * @param psiClass PsiClass
+             */
             @Override
             public void visitClass(PsiClass psiClass) {
                 super.visitClass(psiClass);
@@ -57,7 +64,11 @@ class ProjectTreeModelFactory {
                 }
             }
 
-            // TODO: ADD
+            /**
+             * function that is executed when visiting a PsiField node while traversing the tree
+             *
+             * @param field PsiField
+             */
             @Override
             public void visitField(PsiField field) {
                 super.visitField(field);
@@ -72,7 +83,11 @@ class ProjectTreeModelFactory {
                 }
             }
 
-            // TODO: ADD
+            /**
+             * function that is executed when visiting a PsiMethod node while traversing the tree
+             *
+             * @param method PsiMethod
+             */
             @Override
             public void visitMethod(PsiMethod method) {
                 super.visitMethod(method);
@@ -88,7 +103,11 @@ class ProjectTreeModelFactory {
                 }
             }
 
-            // TODO: ADD
+            /**
+             * function that is executed when visiting a PsiIfStatement node while traversing the tree
+             *
+             * @param ifStatement PsiIfStatement
+             */
             @Override
             public void visitIfStatement(PsiIfStatement ifStatement) {
                 super.visitIfStatement(ifStatement);
@@ -130,9 +149,9 @@ class ProjectTreeModelFactory {
     private static String getNameByID (String id) {
         switch (id) {
             // Scope: Class
-            // TODO: ADD
             case "IFM":
                 return new IntroduceForeignMethodAction().storyName();
+
             // Scope: Field
             case "SEF":
                 return new SelfEncapField().storyName();
@@ -142,7 +161,8 @@ class ProjectTreeModelFactory {
             // Scope: Method
             case "IM":
                 return new InlineMethodAction().storyName();
-            // TODO: ADD
+            case "RPA":
+                return new RemoveUnusedParameterAction().storyName();
 
             // Scope: Statement
             case "CCE":
@@ -150,11 +170,9 @@ class ProjectTreeModelFactory {
 
             case "CDCF":
                 return new ConsolidateDupCondFrag().storyName();
-            // TODO: ADD
 
-            case "RPA":
-                return new RemoveUnusedParameterAction().storyName();
-            // TODO: ADD
+
+
 
             default:
                 return null;
