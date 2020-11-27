@@ -144,7 +144,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
             // Checks whether the parameter is valid, and if it is valid, it is stored in a global variable.
             for (PsiExpression exp : eList) {
-                if(!isVaildParameter(exp, stm)) break;
+                if(!isVaildParameter(exp, stm, targetClass)) break;
             }
 
             // Determine whether the number of input parameters and the number of valid parameters are the same,
@@ -199,20 +199,21 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      *
      * @param exp PsiExpression
      * @param stm PsiDeclarationStatement
+     * @param cls PsiClass
      * @return true if the parameter is valid
      */
-    private static boolean isVaildParameter(PsiExpression exp, PsiDeclarationStatement stm) {
+    private static boolean isVaildParameter(PsiExpression exp, PsiDeclarationStatement stm, PsiClass cls) {
         if (exp instanceof PsiMethodCallExpression) {
-            return isVaildParameter((PsiMethodCallExpression) exp, stm);
+            return isVaildParameter((PsiMethodCallExpression) exp, stm, cls);
         }
         else if (exp instanceof PsiBinaryExpression) {
-            return isVaildParameter((PsiBinaryExpression) exp, stm);
+            return isVaildParameter((PsiBinaryExpression) exp, stm, cls);
         }
         else if (exp instanceof PsiReferenceExpression) {
-            return isVaildParameter((PsiReferenceExpression) exp, stm);
+            return isVaildParameter((PsiReferenceExpression) exp, stm, cls);
         }
         else if (exp instanceof PsiLiteralExpression) {
-            return isVaildParameter((PsiLiteralExpression) exp, stm);
+            return isVaildParameter((PsiLiteralExpression) exp, stm, cls);
         }
 
         return false;
@@ -225,9 +226,10 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      *
      * @param exp PsiMethodCallExpression
      * @param stm PsiDeclarationStatement
+     * @param cls PsiClass
      * @return true if the parameter is valid
      */
-    private static boolean isVaildParameter(PsiMethodCallExpression exp, PsiDeclarationStatement stm) {
+    private static boolean isVaildParameter(PsiMethodCallExpression exp, PsiDeclarationStatement stm, PsiClass cls) {
         List<PsiReferenceExpression> frontReList = FindPsi.findChildPsiReferenceExpressions(exp);
         if (frontReList.size() != 1) return false;
 
@@ -243,7 +245,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         if (eList.size() != 0) return false;
 
         PsiReferenceExpression BackRe = behindReList.get(0);
-        if (isVaildParameter(BackRe, stm)) {
+        if (isVaildParameter(BackRe, stm, cls)) {
             utilityClassName = BackRe.getText();
             String param = FindPsi.findChildPsiIdentifiers(frontRe).get(0).getText();
             params.get(stm).add("arg." + param + "()");
@@ -259,12 +261,13 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      *
      * @param exp PsiReferenceExpression
      * @param stm PsiDeclarationStatement
+     * @param cls PsiClass
      * @return true if the parameter is valid
      */
-    private static boolean isVaildParameter(PsiReferenceExpression exp, PsiDeclarationStatement stm) {
+    private static boolean isVaildParameter(PsiReferenceExpression exp, PsiDeclarationStatement stm, PsiClass cls) {
         PsiMethod m = psiDclStateMap.get(stm);
 
-        List<PsiField> fList = FindPsi.findPsiFields(targetClass);
+        List<PsiField> fList = FindPsi.findPsiFields(cls);
         for (PsiField f : fList) {
             if (!f.getName().equals(exp.getText())) continue;
             else {
@@ -288,9 +291,10 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      *
      * @param exp PsiBinaryExpression
      * @param stm PsiDeclarationStatement
+     * @param cls PsiClass
      * @return true if the parameter is valid
      */
-    private static boolean isVaildParameter(PsiBinaryExpression exp, PsiDeclarationStatement stm) {
+    private static boolean isVaildParameter(PsiBinaryExpression exp, PsiDeclarationStatement stm, PsiClass cls) {
         List<PsiExpression> expList = FindPsi.findChildPsiExpressions(exp);
         PsiJavaToken token = FindPsi.findChildPsiJavaTokens(exp).get(0);
 
@@ -299,9 +303,9 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
         String param = "";
 
-        if (isVaildParameter(left, stm)) {
+        if (isVaildParameter(left, stm, cls)) {
             param += params.get(stm).remove(params.get(stm).size() - 1) + token.getText();
-            if (isVaildParameter(right, stm)) {
+            if (isVaildParameter(right, stm, cls)) {
                 param += params.get(stm).remove(params.get(stm).size() - 1);
                 params.get(stm).add(param);
                 return true;
@@ -317,9 +321,10 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      *
      * @param exp PsiLiteralExpression
      * @param stm PsiDeclarationStatement
+     * @param cls PsiClass
      * @return true if the parameter is valid
      */
-    private static boolean isVaildParameter(PsiLiteralExpression exp, PsiDeclarationStatement stm) {
+    private static boolean isVaildParameter(PsiLiteralExpression exp, PsiDeclarationStatement stm, PsiClass cls) {
         params.get(stm).add(exp.getText());
         return true;
     }
