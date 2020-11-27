@@ -11,18 +11,31 @@
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
-
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.java</depends>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <toolWindow id="Project Structure" anchor="right" factoryClass="wanted.ui.MyToolWindowFactory"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
         <group id="Wanted-Refactoring" text="Wanted_Refactoring">
             <add-to-group group-id="MainMenu" anchor="last"/>
-
-            <action id="Wanted-Refactoring.dummy" class="dummy.dummy" text="dummydummy"
-                    description="dummy action for testing making action"/>
+            <action id="Wanted-Refactoring.IFM" class="wanted.refactoring.IntroduceForeignMethodAction"
+                    text="Introduce Foreign Method" description="Moving Features between Objects: Introduce Foreign Method"/>
+            <action id="Wanted-Refactoring.RPA" class="wanted.refactoring.RemoveUnusedParameterAction"
+                    text="Remove Unused Parameter" description="Simplifying Method Calls: Remove Unused Parameter"/>
+            <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="Self Encapsulate Field"
+                    description="Data Organize: self encapsulate field"/>
+            <action id="Wanted-Refactoring.IM" class="wanted.refactoring.InlineMethodAction" text="Inline Method"
+                    description="Composing Methods: inline method"/>
+            <action id="Wanted-Refactoring.CCE" class="wanted.refactoring.ConsolidateCondExpr" text="consolidate conditional expression"
+                    description="Simplifying Conditional Expressions: consolidate conditional expression"/>
+            <action id="Wanted-Refactoring.EF" class="wanted.refactoring.EncapField" text="encapsulate field"
+                    description="Data Organize: encapsulate field"/>
+            <action id="Wanted-Refactoring.CDCF" class="wanted.refactoring.ConsolidateDupCondFrag" text="consolidate duplicate conditional fragments"
+                    description="Simplifying Conditional Expressions: consolidate duplicate conditional fragments"/>
         </group>
     </actions>
 </idea-plugin>
