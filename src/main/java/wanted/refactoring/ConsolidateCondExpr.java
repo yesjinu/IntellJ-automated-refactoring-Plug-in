@@ -10,21 +10,35 @@ import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 
 /**
- * class to provide consolidate conditional expression refactoring
+ * Class to provide refactoring: 'Consolidate Conditional Expression'
+ *
  * @author seungjae yoo
  */
 public class ConsolidateCondExpr extends BaseRefactorAction {
-
     private Project project;
     private PsiClass targetClass;
 
     private PsiIfStatement ifStatement;
 
+    /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
+     */
     @Override
     public String storyName() {
-        return "Consolidate Conditional Exp";
+        return "Consolidate Conditional Expression";
     }
 
+    /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Consolidate Conditional Expression'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
@@ -37,8 +51,18 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
         ifStatement = FindPsi.findIfStatement(targetClass, offset);
         if (ifStatement == null) return false;
 
-        PsiStatement thenStatement = ifStatement.getThenBranch();
-        PsiStatement elseStatement = ifStatement.getElseBranch();
+        return refactorValid(ifStatement);
+    }
+
+    /**
+     * Determine whether PsiIfStatement object can refactor
+     *
+     * @param s the target which should be validated
+     * @return true if s is valid to refactor
+     */
+    public static boolean refactorValid(PsiIfStatement s) {
+        PsiStatement thenStatement = s.getThenBranch();
+        PsiStatement elseStatement = s.getElseBranch();
         if (elseStatement == null) return false;
         else if (elseStatement instanceof PsiIfStatement) elseStatement = ((PsiIfStatement) elseStatement).getThenBranch();
 
@@ -47,6 +71,12 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
         return thenText.equals(elseText);
     }
 
+    /**
+     * Method that performs refactoring: 'Consolidate Conditional Expression'
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
+     */
     @Override
     protected void refactor(AnActionEvent e) {
         PsiStatement thenStatement;
@@ -91,9 +121,7 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
                     });
                 }
                 isFirstTime = false;
-
             }
         }
-
     }
 }

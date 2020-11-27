@@ -28,6 +28,7 @@ public class NavigatePsi {
     private static PsiFile focusFile;
     private static PsiClass focusClass;
     private static PsiMethod focusMethod;
+    private static PsiField focusField;
 
     private static Editor editor;
     private static int caret;
@@ -35,7 +36,7 @@ public class NavigatePsi {
     /**
      * Collect project and psi file from given context
      * 
-     * @param e
+     * @param e AnActionEvent
      */
     private NavigatePsi(AnActionEvent e)
     {
@@ -43,23 +44,33 @@ public class NavigatePsi {
 
         focusProject = e.getData(PlatformDataKeys.PROJECT);
         focusFile = e.getData(LangDataKeys.PSI_FILE); // ? look for only currently opened file
-        
-        try
-        {
-            // 파일의 첫번째 클래스, 첫번째 메소드만 받아온다는 한계가 있음 @Noh Jinu
-            focusClass = ((PsiClassOwner)focusFile).getClasses()[0];
-        }catch(ArrayIndexOutOfBoundsException exception)
-        {
-            // NO class in current file
-            focusClass = null;
-        }
 
-        try {
-            caret = editor.getCaretModel().getOffset();
-            focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
-        } catch(ArrayIndexOutOfBoundsException exception)
-        {
+        if (focusFile == null) {
+            focusClass = null;
             focusMethod = null;
+        }
+        else {
+            try {
+                focusClass = ((PsiClassOwner) focusFile).getClasses()[0];
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                // NO class in current file
+                focusClass = null;
+            }
+
+            try {
+                caret = editor.getCaretModel().getOffset();
+                focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
+                // focusMethod = FindPsi.getContainingMethod(focusClass, caret);
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                focusMethod = null;
+            }
+
+            try {
+                caret = editor.getCaretModel().getOffset();
+                focusField = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiField.class);
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                focusField = null;
+            }
         }
     }
 
@@ -71,64 +82,8 @@ public class NavigatePsi {
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e)
     {
-        if(navigator==null){ navigator = new NavigatePsi(e); }
-        else if(focusFile!=e.getData(LangDataKeys.PSI_FILE)){ navigator = new NavigatePsi(e); }
-
+        navigator = new NavigatePsi(e);
         return navigator;
-    }
-
-    /**
-     * Returns list of private members from focused class
-     * 
-     * @return list of private fields
-     */
-    public List<PsiField> findPrivateField() throws ProcessCanceledException
-    {
-        List<PsiField> ret = new ArrayList<>();
-
-        for(PsiField f : focusClass.getFields())
-        {
-            if(f.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ ret.add(f); }
-        }
-
-        return ret;
-    }
-
-    /**
-     * Returns list of public members from focused class
-     * @return list of public fields
-     */
-    public List<PsiField> findPublicField()
-    {
-        List<PsiField> ret = new ArrayList<>();
-
-        for(PsiField f : focusClass.getFields())
-        {
-            if(f.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)){ ret.add(f); }
-        }
-
-        return ret;
-    }
-
-    /**
-     * Check whether methods with given names are already implemented in class
-     * 
-     * @param methods List of method names in string
-     * @return names of methods that haven't implemented in current class
-     *         if all entries of methods are already implemented, return empty list
-     */
-    public List<String> findMethodByName(List<String> methods)
-    {
-        List<String> ret = methods;
-        for(PsiMethod m: focusClass.getMethods())
-        {
-            if(methods.contains(m.getName()))
-            {
-                ret.remove(m.getName());
-            }
-        }
-
-        return ret;
     }
 
     /* return currently open project */
@@ -142,4 +97,7 @@ public class NavigatePsi {
 
     /* return first method of focus class */
     public PsiMethod findMethod(){ return focusMethod; }
+
+    /* return chosen field */
+    public PsiField findField(){ return focusField; }
 }

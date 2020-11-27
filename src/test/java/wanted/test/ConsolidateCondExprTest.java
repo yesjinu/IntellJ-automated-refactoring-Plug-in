@@ -5,7 +5,8 @@ import wanted.refactoring.ConsolidateCondExpr;
 import wanted.test.base.LightActionTestCase;
 
 /**
- * Test class for consolidate conditional expression
+ * Test class for 'Consolidate Conditional Expression'
+ *
  * @author seungjae yoo
  */
 public class ConsolidateCondExprTest extends LightActionTestCase {

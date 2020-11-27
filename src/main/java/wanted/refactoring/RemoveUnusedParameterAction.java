@@ -4,17 +4,15 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import wanted.utils.AddPsi;
+import org.jetbrains.annotations.NotNull;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
-import wanted.utils.ReplacePsi;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**
- * Class to remove unused parameters
+ * Class to provide refactoring: 'Remove Unused Parameters'
  *
  * @author Jinu Noh
  */
@@ -23,15 +21,12 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     private PsiMethod focusMethod;
     Set<PsiParameter> parametersOfMethod;
     Set<PsiReferenceExpression> referenceUsedInMethod;
-    // TODO: Make Container of 'not used parameters'
-    //  -> In what datatype?
-    Set<PsiParameter> unusedParameter = new HashSet<>();
-
-
 
     /**
      * Returns the story name as a string format, for message.
-     * @return story name "Remove Unused Parameter"
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
      */
     @Override
     public String storyName() {
@@ -39,17 +34,33 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     }
 
     /**
-     * Returns the possibility of refactoring for current project with particular strategy.
-     * @param e An Actionevent
-     * @return true if refactoring is available, otherwise false.
+     * Method that checks whether candidate method is refactorable
+     * using 'Remove Unused Parameter'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
      */
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
         project = navigator.findProject();
         focusMethod = navigator.findMethod();
-        parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
-        referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
+
+        return refactorValid(project, focusMethod);
+    }
+
+    /**
+     * Static method that checks whether candidate method is refactorable using 'Remove Unused Parameter'.
+     *
+     * @param project Project
+     * @param focusMethod PsiMethod
+     * @return true if method is refactorable
+     */
+    public static boolean refactorValid(Project project, @NotNull PsiMethod focusMethod) {
+        Set<PsiParameter> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
+        Set<PsiReferenceExpression> referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
+        Set<PsiParameter> unusedParameter = new HashSet<>();
 
         if (parametersOfMethod.isEmpty()) return false;
         if (referenceUsedInMethod.isEmpty()) {
@@ -59,7 +70,6 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
         for (PsiParameter p : parametersOfMethod) {
             boolean appearFlag = false;
             for (PsiReferenceExpression r : referenceUsedInMethod) {
-//                if (p.getName().equals(r.getQualifiedName())) {
                 if (r.isReferenceTo(p)) {
                     appearFlag = true;
 
@@ -75,17 +85,32 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     }
 
 
+
+
     /**
-     * Do refactoring action
-     * @param e An Actionevent
+     * Method that performs refactoring: 'Remove Unused Parameter'
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
     protected void refactor(AnActionEvent e) {
-//        System.out.println("***************************************");
-//        System.out.println("parameter of method" + parametersOfMethod);
-//        System.out.println("used in method" + referenceUsedInMethod);
-//        System.out.println(unusedParameter);
-//        System.out.println("***************************************");
+        Set<PsiParameter> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
+        Set<PsiReferenceExpression> referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
+        Set<PsiParameter> unusedParameter = new HashSet<>();
+
+        for (PsiParameter p : parametersOfMethod) {
+            boolean appearFlag = false;
+            for (PsiReferenceExpression r : referenceUsedInMethod) {
+                if (r.isReferenceTo(p)) {
+                    appearFlag = true;
+                    break;
+                }
+            }
+            if (!appearFlag) {
+                unusedParameter.add(p);
+            }
+        }
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
             for (PsiParameter p : unusedParameter){
@@ -93,5 +118,4 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
             }
         });
     }
-
 }

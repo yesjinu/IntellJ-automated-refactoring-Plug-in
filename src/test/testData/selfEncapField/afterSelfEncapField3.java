@@ -1,4 +1,4 @@
-public class SEF_ex_synonym {
+public class SEF_shadowing {
     private int member;
 
     public void method1()

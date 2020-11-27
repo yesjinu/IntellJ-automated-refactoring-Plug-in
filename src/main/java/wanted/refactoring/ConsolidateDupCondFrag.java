@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * class to provide consolidate duplicate conditional fragments refactoring
+ * Class to provide refactoring: 'Consolidate Duplicate Conditional Fragments'
+ *
  * @author seungjae yoo
  */
 public class ConsolidateDupCondFrag extends BaseRefactorAction {
@@ -23,11 +24,25 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
 
     private PsiIfStatement ifStatement;
 
+    /**
+     * Returns the story name as a string format, for message.
+     *
+     * @return story name as a string format
+     * @see BaseRefactorAction#storyName()
+     */
     @Override
     public String storyName() {
         return "Consolidate Duplicate Conditional Fragments";
     }
 
+    /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Consolidate Duplicate Conditional Fragments'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
@@ -41,8 +56,18 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         if (ifStatement == null) return false;
         while (ifStatement.getParent() instanceof PsiIfStatement) ifStatement = (PsiIfStatement) ifStatement.getParent();
 
+        return refactorValid(ifStatement);
+    }
+
+    /**
+     * Determine whether PsiIfStatement object can refactor
+     *
+     * @param s the target which should be validated
+     * @return true if s is valid to refactor
+     */
+    public static boolean refactorValid(PsiIfStatement s) {
         List<PsiStatement> statementList = new ArrayList<>();
-        PsiStatement nowStatement = ifStatement;
+        PsiStatement nowStatement = s;
         while (nowStatement instanceof PsiIfStatement) {
             statementList.add(((PsiIfStatement) nowStatement).getThenBranch());
             nowStatement = ((PsiIfStatement) nowStatement).getElseBranch();
@@ -55,6 +80,12 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         return false;
     }
 
+    /**
+     * Method that performs refactoring: 'Consolidate Duplicate Conditional Fragments'
+     *
+     * @param e AnActionEvent
+     * @see BaseRefactorAction#refactor(AnActionEvent)
+     */
     @Override
     protected void refactor(AnActionEvent e) {
         List<PsiStatement> statementList = new ArrayList<>();
@@ -82,13 +113,13 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
     }
 
     /**
-     * Determine whether first statement of each condition is same
-     * @author seungjae yoo
-     * @param statementList
+     * Helper Method which determines whether first statement of each condition is same
+     *
+     * @param statementList List of Statement
      * @return true if first statement is same for every condition
      *         false otherwise
      */
-    private boolean isDupStatementFirst(List<PsiStatement> statementList) {
+    private static boolean isDupStatementFirst(List<PsiStatement> statementList) {
         PsiStatement nowStatement;
         PsiStatement standardStatement = statementList.get(0);
 
@@ -110,13 +141,13 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
     }
 
     /**
-     * Determine whether last statement of each condition is same
-     * @author seungjae yoo
-     * @param statementList
+     * Helper Method which determines whether last statement of each condition is same
+     *
+     * @param statementList List of Statement
      * @return true if last statement is same for every condition
      *         false otherwise
      */
-    private boolean isDupStatementLast(List<PsiStatement> statementList) {
+    private static boolean isDupStatementLast(List<PsiStatement> statementList) {
         PsiStatement nowStatement;
         PsiStatement standardStatement = statementList.get(0);
 

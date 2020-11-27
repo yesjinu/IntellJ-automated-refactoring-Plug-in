@@ -16,6 +16,7 @@ import java.util.List;
  * @author Mintae Kim
  */
 public class ReplacePsi {
+
     /**
      * Replace getter() and setter()
      *
@@ -54,8 +55,8 @@ public class ReplacePsi {
     /**
      * Remove elseStatement and bring elseElseStatement of elseStatement out
      *
-     * @param project
-     * @param ifStatement
+     * @param project target project
+     * @param ifStatement target ifStatement
      */
     public static void mergeCondStatement(Project project, PsiIfStatement ifStatement) {
         PsiStatement elseStatement = ifStatement.getElseBranch();
@@ -73,9 +74,8 @@ public class ReplacePsi {
     /**
      * Remove ifStatement and bring thenStatement of ifStatement out
      *
-     * @param project
-     * @param ifStatement
-     *
+     * @param project target project
+     * @param ifStatement target ifStatement
      */
     public static void removeCondStatement(Project project, PsiIfStatement ifStatement) {
         PsiStatement thenStatement = ifStatement.getThenBranch();
@@ -92,9 +92,9 @@ public class ReplacePsi {
     /**
      * merge Condition of ifStatement and elseifStatement with || symbol
      *
-     * @param project
-     * @param ifStatement
-     * @param isFirstTime
+     * @param project target proejct
+     * @param ifStatement target ifStatement
+     * @param isFirstTime check boolean parameter that this function was used before for this ifStatement
      */
     public static void mergeCondExpr(Project project, PsiIfStatement ifStatement, boolean isFirstTime) {
         PsiExpression ifCondition = ifStatement.getCondition();
@@ -149,7 +149,9 @@ public class ReplacePsi {
     }
 
 
-    /** Edit modifier of member
+    /**
+     * Edit modifier of member
+     *
      * @param member selected member
      * @param removeValues modifier to be removed
      * @param addValues modifier to be added
@@ -170,9 +172,9 @@ public class ReplacePsi {
     /**
      * pull out first statement in each conditions
      *
-     * @param project
-     * @param ifStatement
-     * @param statementList
+     * @param project target project
+     * @param ifStatement target ifStatement
+     * @param statementList list of Statement that should remove first statement inside each
      */
     public static void pulloutFirstCondExpr(Project project, PsiIfStatement ifStatement, List<PsiStatement> statementList) {
 
@@ -197,9 +199,9 @@ public class ReplacePsi {
     /**
      * pull out last statement in each conditions
      *
-     * @param project
-     * @param ifStatement
-     * @param statementList
+     * @param project target project
+     * @param ifStatement target ifStatement
+     * @param statementList list of Statement that should remove last statement inside each
      */
     public static void pulloutLastCondExpr(Project project, PsiIfStatement ifStatement, List<PsiStatement> statementList) {
         PsiStatement standardStatement = statementList.get(0);
@@ -225,8 +227,8 @@ public class ReplacePsi {
     /**
      * remove conditions that don't have any statements inside
      *
-     * @param project
-     * @param ifStatement
+     * @param project target project
+     * @param ifStatement target ifStatement
      */
     public static void removeUselessCondition(Project project, PsiIfStatement ifStatement) {
         PsiStatement statement = ifStatement;

@@ -12,16 +12,38 @@ import org.jetbrains.concurrency.Promise;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-// NEED NOT MODIFY
+
+/**
+ * Abstract class to implement light test through files before and after refactoring.
+ *
+ * @author Chanyoung Kim
+ * @author seha Park
+ * @author Mintae Kim
+ */
 public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCase {
+    /**
+     * Do Test and check the result by file
+     *
+     * before file: testData/basePath/before<TestName>.java
+     * after file: testData/basePath/after<TestName>.java
+     *
+     * @throws Exception
+     */
     protected void doTest() throws Exception {
         myFixture.configureByFile(getBasePath() + "/before" + getTestName(false) + ".java");
-        // myFixture.configureByFile(getBasePath() + "/input.java");
         performActionTest();
         checkResultByFile(getBasePath() + "/after" + getTestName(false) + ".java");
-        // checkResultByFile(getBasePath() + "/output.java");
     }
 
+    /**
+     * Do Test and check the result by files
+     *
+     * before files: testData/basePath/test<num>/input.java
+     * after files: testData/basePath/test<num>/output.java
+     *
+     * @param test_num the number of test cases
+     * @throws Exception
+     */
     protected void doTest_io(int test_num) throws Exception {
         myFixture.configureByFile(getBasePath() + "/test" + String.valueOf(test_num) + "/input.java");
         performActionTest();
@@ -50,6 +72,11 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
         checkResultByFiles(afterPath, beforePath);
     }
 
+    /**
+     * Perform action test with action that is acquired by getAction()
+     *
+     * @throws TimeoutException, ExecutionException
+     */
     private void performActionTest() throws TimeoutException, ExecutionException {
         AnAction anAction = getAction();
 
