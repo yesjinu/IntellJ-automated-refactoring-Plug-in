@@ -23,7 +23,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
     private static Project project;
     private static PsiClass targetClass;
 
-    private static List<PsiMethod> psiMethods;
+    private static Map<PsiMethod, PsiClass> psiMethodMap;
     private static Map<PsiDeclarationStatement, PsiMethod> psiDclStateMap;
 
     private static String variableName;
@@ -81,21 +81,18 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      *                     -> PsiExpressionList : Check if there is more than 1 parameter
      * 4. PsiExpressionList -> PsiExpression : Check whether each parameter is valid
      *
-     * @param _project Project
-     * @param _targetClass PsiField Object
+     * @param project Project
+     * @param targetClass PsiField Object
      * @return true if method is refactorable
      */
-    public static boolean refactorValid(Project _project, @NotNull PsiClass _targetClass) {
-        project = _project;
-        targetClass = _targetClass;
-
-        psiMethods = new ArrayList<>();
-        Arrays.stream(targetClass.getMethods()).forEach(method -> psiMethods.add(method));
-        if (psiMethods.isEmpty()) return false;
+    public static boolean refactorValid(Project project, @NotNull PsiClass targetClass) {
+        psiMethodMap = new HashMap<>();
+        Arrays.stream(targetClass.getMethods()).forEach(method -> psiMethodMap.put(method, targetClass));
+        if (psiMethodMap.isEmpty()) return false;
 
         // Find and save PsiDeclarationStatement in all class methods in the project.
         psiDclStateMap = new HashMap<>();
-        for (PsiMethod method : psiMethods) {
+        for (PsiMethod method : psiMethodMap.keySet()) {
             List<PsiDeclarationStatement> psiDclStateList = FindPsi.findPsiDeclarationStatements(method);
             if (!psiDclStateList.isEmpty())
                 psiDclStateList.forEach(psiDclState -> psiDclStateMap.put(psiDclState, method));
@@ -174,6 +171,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         WriteCommandAction.runWriteCommandAction(project, () -> {
             for (PsiDeclarationStatement stm : possible) {
                 PsiMethod mtd = psiDclStateMap.get(stm);
+                PsiClass cls = psiMethodMap.get(mtd);
 
                 // Create and replace a new PsiDeclarationStatement corresponding to the refactoring result.
                 String statement = utilityClassType + " " + variableName + " = " + variableName
@@ -186,7 +184,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
                         + " arg) { return new " + utilityClassType + "("
                         + StringUtils.join(params.get(stm), ", ") + "); }";
                 PsiMethod _mtd = factory.createMethodFromText(strMethod, null);
-                targetClass.addBefore(_mtd, targetClass.getLastChild());
+                cls.addBefore(_mtd, cls.getLastChild());
             }
         });
     }
