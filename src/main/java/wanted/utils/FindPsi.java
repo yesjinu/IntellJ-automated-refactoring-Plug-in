@@ -515,6 +515,8 @@ public class FindPsi {
      */
     public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries)
     {
+        if(searchClass==null){ return new ArrayList<>(); }
+
         List<String> ret = queries;
 
         for(PsiMethod m: searchClass.getMethods())
