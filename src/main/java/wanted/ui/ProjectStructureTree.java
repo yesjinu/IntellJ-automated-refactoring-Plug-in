@@ -25,8 +25,9 @@ import java.util.Optional;
 /**
  * A tree GUI for our Project Structure plugin. It displays the corresponding name and icon for the nodes in our tree
  * model using a custom cell renderer. Note that each node is an instance of DefaultMutableTreeNode, and its user data
- * is an instance of Project, PsiPackage, PsiClass, PsiMethod, or PsiField. The tree GUI detect detects double-click
- * mouse events for Method and Field nodes, and shows the corresponding methods or fields in the editor. Finally,
+ * is an instance of Project, String (Refactoring Technique Categories), or PsiElements including PsiClass, PsiMethod, or PsiStatement.
+ * The tree GUI detect detects double-click mouse events for PsiElement nodes,
+ * and shows the corresponding PsiElements in the editor. Finally,
  * whenever the underlying project changes, the corresponding node of the tree GUI is automatically chosen.
  *
  * @author Mintae Kim
@@ -61,6 +62,11 @@ class ProjectStructureTree extends Tree {
                     else if (v instanceof String){ // Category: Refactoring
                         setIcon(Icon2);
                         append((String) v);
+                    }
+                    else if (v instanceof PsiField) {
+                        setIcon(Icon3);
+                        String fileName = ((PsiField) v).getContainingFile().getName();
+                        append("[" + fileName + "] " + ((PsiField)v).getName());
                     }
                     else if (v instanceof PsiClass) {
                         setIcon(Icon3);
@@ -97,8 +103,8 @@ class ProjectStructureTree extends Tree {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    // TODO
-                    TreePath treePath = getPathForLocation(e.getX(), e.getY());
+                    // TODO: null treepath
+                    TreePath treePath = getClosestPathForLocation(e.getX(), e.getY());
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
                     Object element = node.getUserObject();
 

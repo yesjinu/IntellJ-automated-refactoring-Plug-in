@@ -5,7 +5,8 @@ import wanted.refactoring.ConsolidateDupCondFrag;
 import wanted.test.base.LightActionTestCase;
 
 /**
- * Test class for consolidate duplicate conditional fragments
+ * Test class for 'Consolidate Duplicate Conditional Fragments'
+ *
  * @author seungjae yoo
  */
 public class ConsolidateDupCondFragTest extends LightActionTestCase {

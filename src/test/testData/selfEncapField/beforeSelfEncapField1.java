@@ -1,5 +1,5 @@
 public class SEF_basic {
-    private int member;
+    private int me<caret>mber;
 
     public SEF_basic()
     {

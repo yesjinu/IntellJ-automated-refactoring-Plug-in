@@ -11,7 +11,14 @@ import junit.framework.ComparisonFailure;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
+/**
+ * Abstract class to create light plugin test environment.
+ *
+ * @author Chanyoung Kim
+ * @author seha Park
+ */
 public abstract class AbstractLightCodeInsightTestCase extends LightJavaCodeInsightFixtureTestCase {
 
     @Override
@@ -25,13 +32,11 @@ public abstract class AbstractLightCodeInsightTestCase extends LightJavaCodeInsi
     }
 
 
-    protected PsiFile loadToPsiFile(String fileName) {
-        final String sourceFilePath = getBasePath() + "/" + fileName;
-        VirtualFile virtualFile = myFixture.copyFileToProject(sourceFilePath, fileName);
-        myFixture.configureFromExistingVirtualFile(virtualFile);
-        return myFixture.getFile();
-    }
-
+    /**
+     * Check the result of action by file
+     *
+     * @throws IOException
+     */
     protected void checkResultByFile(String expectedFile) throws IOException {
         try {
             myFixture.checkResultByFile(expectedFile, true);
@@ -53,7 +58,6 @@ public abstract class AbstractLightCodeInsightTestCase extends LightJavaCodeInsi
      * @param afterPath Path of expected output files
      * @param beforePath Path of input files
      * @throws IOException
-     * @author seha Park
      * caution: this test checks for whitespace
      */
     protected void checkResultByFiles(final String afterPath, final String beforePath) throws IOException {
