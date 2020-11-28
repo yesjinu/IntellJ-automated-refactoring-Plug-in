@@ -3,7 +3,7 @@ public class advance {
     {
         double i = 0;  // Irrelevant
 
-        double x = 39876.5432; // DeclarationStatement
+        double x = 39876.543<caret>2; // DeclarationStatement
 
         i = 39876.5432;  // ExpressionStatement - AssignmentExpression
 

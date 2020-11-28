@@ -9,7 +9,8 @@ import wanted.utils.*;
 import java.util.List;
 
 /**
- * Class to replace magic number to constant symbol
+ * Class to provide refactoring: 'Replace Magic Number'
+ *
  * @author seha Park
  */
 public class ReplaceMagicNumber extends BaseRefactorAction{
@@ -39,6 +40,10 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         // if there's no constant worth to refactor, return false
 
         return true;
+    }
+
+    public static boolean refactorValid(Project project, PsiLiteralExpression literal) {
+        return false;
     }
 
     @Override

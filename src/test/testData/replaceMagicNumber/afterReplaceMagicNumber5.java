@@ -4,7 +4,7 @@ public class basic {
         System.out.println("Course: " + "CSED332");
         System.out.println("Course: CSED332");
 
-        if(str1.equals("CSED3<caret>12"))
+        if(str1.equals("CSED312"))
         {
             System.out.println("correct");
         }

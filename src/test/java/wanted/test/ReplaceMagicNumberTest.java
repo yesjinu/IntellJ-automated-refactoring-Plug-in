@@ -35,4 +35,18 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
         doTest();
     }
 
+    /* Test 5: caret points to invalid area */
+    public void testReplaceMagicNumber5() throws Exception {
+        doTest();
+    }
+
+    /* Test 6: name constant properly */
+    public void testReplaceMagicNumber6() throws Exception {
+        doTest();
+    }
+
+    /* Test 7: replace with pre-defined constant */
+    public void testReplaceMagicNumber7() throws Exception {
+        doTest();
+    }
 }
