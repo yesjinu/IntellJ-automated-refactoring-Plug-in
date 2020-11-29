@@ -5,10 +5,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
-import wanted.utils.AddPsi;
-import wanted.utils.FindPsi;
-import wanted.utils.NavigatePsi;
-import wanted.utils.ReplacePsi;
+import wanted.utils.*;
 
 import java.util.*;
 
@@ -61,7 +58,7 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
-//        project = navigator.findProject();
+        project = navigator.findProject();
         focusClass = navigator.findClass();
 //        focusMethod = navigator.findMethod();
 
@@ -186,6 +183,7 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
         //          =[PsiReferenceExpression:aa, PsiReferenceExpression:bb]
         // }
 
+        PsiReferenceExpression finalCallerObject = callerObject;
         WriteCommandAction.runWriteCommandAction(project, ()->{
             for (Map.Entry<PsiMethodCallExpression, List<PsiReferenceExpression>> entry : mapMethodToParam.entrySet()) {
                 PsiMethodCallExpression focusMethodCall = entry.getKey();
@@ -196,15 +194,27 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
                     Objects.requireNonNull(p.resolve()).delete();
                 }
 
+                System.out.println("focusMethodCall : " + focusMethodCall);
+                System.out.println("focusMethodCall.getMethodExpression() : " + focusMethodCall.getMethodExpression());
+                System.out.println("focusMethodCall.getMethodExpression().resolve() : " + focusMethodCall.getMethodExpression().resolve());
+
+
                 // 2. 메소드 호출 parameter 수정 :
-                //      1) obj.method(aa, bb)에서 aa, bb 부분 삭제
+                //      1) obj.method(aa, bb)에서 aa, bb 부분 삭제 <- 잘 지워짐 확인 focusMethodCall이 PsiMethodCallExpression:TestClass.testMethod( )가 출력됨
                 //      2) obj.method(obj) 로 obj 삽입 <-  TODO text로 만들어야 할까?
-                for (PsiReferenceExpression p : focusParams) p.delete();; // 여기까지 정상작동 확인
+                for (PsiReferenceExpression p : focusParams) {
+                    p.delete();
+                };
+                PsiMethodCallExpression newlyMadeMethodCall = CreatePsi.createMethodCall(project, (PsiMethod) focusMethodCall.getMethodExpression().resolve(), finalCallerObject, focusMethodCall.getMethodExpression().getQualifier());
+                focusMethodCall.replace(newlyMadeMethodCall);
+                System.out.println("focusMethodCall : " + focusMethodCall);
+                System.out.println("newlyMadeMethodCall : " + newlyMadeMethodCall);
 
 
                 // 3. method 본체 parameter 수정 :
                 //      1) method(int p_a, int p_b)에서 int p_a, int p_b 부분 삭제
                 //      2) method(Class obj) 부분 삽입
+
 
                 // 4. method 본체 code block 수정 :
                 //      1) 삭제한 aa, bb getter 추가
@@ -214,11 +224,5 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
 
             }
         });
-
-
-        // method 본체 :
-        //      parameter 부분 -> aa, bb 빼고 object 추가하기
-        //      본체 부분 -> object.getA(), object.getB() 추가하기
-
     }
 }

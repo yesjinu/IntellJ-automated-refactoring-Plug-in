@@ -1,7 +1,6 @@
 package wanted.utils;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 
 import java.util.List;
