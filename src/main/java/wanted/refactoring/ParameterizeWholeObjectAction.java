@@ -79,27 +79,36 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
 //        int refactorCounter = 0;
         HashMap<String, Integer> paramCounter;
 
-        // focusClass 내에 method call을 모두 검사한다.
+        // 클래스 내 모든 method call을 검사한다.
         List<PsiMethodCallExpression> methodCalls = FindPsi.findPsiMethodCallExpressions(focusClass);
         for (PsiMethodCallExpression meth : methodCalls) {
             paramCounter = new HashMap<>();
-//            refactorCounter = 0;
             Set<PsiReferenceExpression> paramsOfMethod = FindPsi.findReferenceExpression(meth.getArgumentList());
             if (paramsOfMethod.size() < 2) continue;
-            for (PsiReferenceExpression param : paramsOfMethod) {
-                PsiElement resolvedParam = param.resolve(); // PsiField:bb 형태로 출력됨
 
+            // 메소드 콜의 parameter 부분을 검사한다.
+            for (PsiReferenceExpression param : paramsOfMethod) {
+
+                // resolve한 파라미터에서 각종 값들을 추출해낸다.
+                PsiElement resolvedParam = param.resolve(); // PsiField:bb 형태로 출력
                 assert resolvedParam != null;
+
+                // resolvedParam에 메소드 호출 파트가 없으면 검사하지 않음
+                if (FindPsi.findPsiMethodCallExpressions(resolvedParam).isEmpty()) continue;
+
                 PsiMethodCallExpression methodCallPart = FindPsi.findPsiMethodCallExpressions(resolvedParam).get(0); // TestClass.testMethod(aa, bb) 형태
                 PsiReferenceExpression tempPsiReference = FindPsi.findChildPsiReferenceExpressions(methodCallPart).get(0); // TestClass.testMethod 형태
-                PsiReferenceExpression callerClass = FindPsi.findChildPsiReferenceExpressions(tempPsiReference).get(0); // TestClass 메소드를 호출한 클래스만 받아오기
+                PsiReferenceExpression callerObject = FindPsi.findChildPsiReferenceExpressions(tempPsiReference).get(0); // TestClass 메소드를 호출한 클래스만 받아오기
 //                System.out.println("methodCall part : " + methodCallPart); // PsiMethodCallExpression:p.getB()
 //                System.out.println("tempPsiReference part : " + tempPsiReference); // PsiReferenceExpression:p.getB
 //                System.out.println("callerClass part : " + callerClass); // PsiReferenceExpression:p
 //                System.out.println("callerClass resolve to : " + callerClass.resolve()); // PsiField:p
-
-                if (!paramCounter.containsKey(callerClass.toString())) paramCounter.put(callerClass.toString(), 0);
-                paramCounter.put(callerClass.toString(), paramCounter.get(callerClass.toString()) + 1);
+                if (tempPsiReference.toString().contains("get")) {
+                    if (!paramCounter.containsKey(callerObject.toString())) {
+                        paramCounter.put(callerObject.toString(), 0);
+                    }
+                    paramCounter.put(callerObject.toString(), paramCounter.get(callerObject.toString()) + 1);
+                }
             }
 
             System.out.println("Param counter : " + paramCounter); // for debugging
@@ -107,13 +116,12 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
                 if (entry.getValue() > 2) return true;
             }
         }
-//        return refactorCounter >= 2;
-        return true;
+        return false;
     }
 
     @Override
     protected void refactor(AnActionEvent e) {
-        int refactorCounter = 0;
+        HashMap<String, Integer> paramCounter;
 
         // 메소드콜과 그 parameter를 resolve한 값들을 hashmap으로 매핑
         HashMap<PsiMethodCallExpression, List<PsiElement>> mapMethodToParam = new HashMap<>();
@@ -121,21 +129,25 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
         // focusClass 내부의 refactoring이 필요한 method call을 methodsNeedRefactor에 넣음
         List<PsiMethodCallExpression> methodCalls = FindPsi.findPsiMethodCallExpressions(focusClass);
         for (PsiMethodCallExpression meth : methodCalls) {
-            refactorCounter = 0;
+            paramCounter = new HashMap<>();
+
             Set<PsiReferenceExpression> paramsOfMethod = FindPsi.findReferenceExpression(meth.getArgumentList());
             if (paramsOfMethod.size() < 2) continue;
-//            System.out.println("method resolve to " + FindPsi.findChildPsiReferenceExpressions(meth).get(0).resolve());
+
             List<PsiElement> listOfResolvedParam = new ArrayList<>();
             for (PsiReferenceExpression param : paramsOfMethod) {
                 PsiElement resolvedParam = param.resolve();
                 assert resolvedParam != null;
-                // TODO : 같은 object에서 get한 값인지 확인해야 함
-                if (FindPsi.findPsiMethodCallExpressions(resolvedParam).get(0).toString().contains("get")) {
-                    refactorCounter += 1;
-                    listOfResolvedParam.add(resolvedParam);
-                }
+                PsiMethodCallExpression methodCallPart = FindPsi.findPsiMethodCallExpressions(resolvedParam).get(0); // TestClass.testMethod(aa, bb) 형태
+                PsiReferenceExpression tempPsiReference = FindPsi.findChildPsiReferenceExpressions(methodCallPart).get(0); // TestClass.testMethod 형태
+                PsiReferenceExpression callerObject = FindPsi.findChildPsiReferenceExpressions(tempPsiReference).get(0); // TestClass 메소드를 호출한 클래스만 받아오기
+
+                if (!paramCounter.containsKey(callerObject.toString())) paramCounter.put(callerObject.toString(), 0);
+                paramCounter.put(callerObject.toString(), paramCounter.get(callerObject.toString()) + 1);
             }
-            if (refactorCounter >= 2) mapMethodToParam.put(meth, listOfResolvedParam);
+
+            for (Map.Entry<String, Integer> entry : paramCounter.entrySet()) {
+            }
         }
 
         // System.out.println("Test Print : " + mapMethodToParam); // <- map 잘 들어가나 확인
