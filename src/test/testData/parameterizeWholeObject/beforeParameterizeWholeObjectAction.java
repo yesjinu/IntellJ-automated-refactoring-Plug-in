@@ -3,9 +3,8 @@ public class Caller {
     ParamContainer q = new ParamContainer();
     int aa = p.getA();
     boolean bb = p.getB();
-    char cc = 'c';
+    char cc = p.getC();
     int result1 = TestClass.testMethod(aa, bb);
-    int result1 = TestClass.testMethod(aa, bb, cc);
 }
 
 
