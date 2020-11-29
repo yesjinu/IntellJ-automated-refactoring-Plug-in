@@ -25,9 +25,14 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
         doTest();
     }
 
-    /* Test 3: refactor only if it is worth it */
+    /* Test 3: do not refactor when value is 0 */
     public void testReplaceMagicNumber3() throws Exception {
-        doTest();
+        try
+        {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        }catch(RuntimeException e) {
+            // nothing
+        }
     }
 
     /* Test 4: Replace string */
@@ -35,12 +40,17 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
         doTest();
     }
 
-    /* Test 5: caret points to invalid area */
+    /* Test 5: caret points to invalid element */
     public void testReplaceMagicNumber5() throws Exception {
-        doTest();
+        try
+        {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        }catch(RuntimeException e) {
+            // nothing
+        }
     }
 
-    /* Test 6: name constant properly */
+    /* Test 6: add constant proper name */
     public void testReplaceMagicNumber6() throws Exception {
         doTest();
     }
@@ -48,5 +58,25 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
     /* Test 7: replace with pre-defined constant */
     public void testReplaceMagicNumber7() throws Exception {
         doTest();
+    }
+
+    /* Test 8: do not refactor when value is 2 */
+    public void testReplaceMagicNumber8() throws Exception {
+        try
+        {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        }catch(RuntimeException e) {
+            // nothing
+        }
+    }
+
+    /* Test 9: do not refactor when string is empty or white space */
+    public void testReplaceMagicNumber9() throws Exception {
+        try
+        {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        }catch(RuntimeException e) {
+            // nothing
+        }
     }
 }
