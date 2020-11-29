@@ -99,13 +99,14 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         // if not, create constant
         String[] modifiers = {PsiModifier.STATIC, PsiModifier.FINAL };
         PsiField newField = CreatePsi.createField(project, modifiers, literal.getType(), "CONSTANT"+num, literal.getText());
+        newField.getModifierList().setModifierProperty(PsiModifier.PRIVATE, false);
+
         List<PsiElement> addList = new ArrayList<>();
         addList.add(newField);
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
-            // introduce constant
-            AddPsi.addField(targetClass, addList);
-            // replace values
+            AddPsi.addField(targetClass, addList);  // introduce constant
+            // replace into constant
         });
     }
 }
