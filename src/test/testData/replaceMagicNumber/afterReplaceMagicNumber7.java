@@ -7,7 +7,7 @@ public class basic {
 
     double circumference(double radius) { return 2 * CONSTANT1 * radius;}
 
-    double sphere_volume(double radius) { return (4/3)*CONSTANT1*radius*radius*radius; }
+    double sphere_volume(double radius) { return (4/3) * CONSTANT1 * radius * radius * radius; }
 
-    double sphere_volume(double radius) { return 4*CONSTANT1*radius*radius; }
+    double sphere_volume(double radius) { return 4 * CONSTANT1 * radius * radius; }
 }

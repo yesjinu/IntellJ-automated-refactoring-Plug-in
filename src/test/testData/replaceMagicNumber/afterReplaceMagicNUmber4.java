@@ -3,10 +3,10 @@ public class basic {
 
     public void method1(String str1)
     {
-        System.out.println("Course: " + constant1);
+        System.out.println("Course: " + CONSTANT1);
         System.out.println("Course: CSED332");
 
-        if(str1.equals(constant1))
+        if(str1.equals(CONSTANT1))
         {
             System.out.println("correct");
         }

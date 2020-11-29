@@ -1,10 +1,10 @@
 public class advance {
-
-    public static final double CONSTANT1 = 39876.5432;
+    static final double CONSTANT1 = 39876.5432;
 
     public double method1()
     {
         double i = 0;  // Irrelevant
+        int j = 0;
 
         double x = CONSTANT1; // DeclarationStatement
 
@@ -12,11 +12,11 @@ public class advance {
 
         System.out.println(CONSTANT1); // ExpressionStatement - MethodCallExpression
 
-        if(CONSTANT1-i>0) // IfStatement - BinaryExpression
+        if(CONSTANT1 -i>0) // IfStatement - BinaryExpression
         { i++; } //  - BlockStatement - CodeBlock - ExpressionStatement - PostfixExpression
-        else{ i = CONSTANT1-1; } //  - BlockStatement - CodeBlock - ExpressionStatement - AssignmentExpression
+        else{ i = CONSTANT1 -1; } //  - BlockStatement - CodeBlock - ExpressionStatement - AssignmentExpression
 
-        switch(i) // SwitchStatement - keyword
+        switch(j) // SwitchStatement - keyword
         {
             case 0: i = CONSTANT1;
         }
@@ -26,6 +26,6 @@ public class advance {
             i++;
         }
 
-        return CONSTANT1-1; // ReturnStatement - BinaryExpression
+        return CONSTANT1 -1; // ReturnStatement - BinaryExpression
     }
 }

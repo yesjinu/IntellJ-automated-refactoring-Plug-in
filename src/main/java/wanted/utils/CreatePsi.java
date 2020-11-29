@@ -3,6 +3,7 @@ package wanted.utils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 
 /**
  * Class to create Psi Elements.
@@ -181,5 +182,15 @@ public class CreatePsi {
         newField.setInitializer(initialize);
 
         return newField;
+    }
+
+    // TODO
+    public static PsiElement createPsiExpression(@Nullable Project project, PsiClass focusClass, String name)
+    {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiElement ret = factory.createExpressionFromText(name, null);
+
+        return ret;
     }
 }

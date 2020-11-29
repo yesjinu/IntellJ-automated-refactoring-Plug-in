@@ -97,6 +97,9 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
 
         // find if there is constant with same value
         // if not, create constant
+
+
+
         String[] modifiers = {PsiModifier.STATIC, PsiModifier.FINAL };
         PsiField newField = CreatePsi.createField(project, modifiers, literal.getType(), "CONSTANT"+num, literal.getText());
         newField.getModifierList().setModifierProperty(PsiModifier.PRIVATE, false);
@@ -104,9 +107,12 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         List<PsiElement> addList = new ArrayList<>();
         addList.add(newField);
 
+        PsiElement ret = CreatePsi.createPsiExpression(project, targetClass, "CONSTANT"+num);
+
         WriteCommandAction.runWriteCommandAction(project, ()->{
             AddPsi.addField(targetClass, addList);  // introduce constant
             // replace into constant
+            for(PsiLiteralExpression expression : expressions){ expression.replace(ret); }
         });
     }
 }
