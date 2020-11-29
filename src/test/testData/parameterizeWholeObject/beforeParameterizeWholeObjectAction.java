@@ -3,11 +3,12 @@ public class Caller {
     int aa = p.getA();
     boolean bb = p.getB();
     char cc = p.getC();
-    int result = TestClass.testMethod(aa, bb);
+    int result1 = TestClass.testMethod(aa, bb);
+    int result1 = TestClass.testMethod(aa, bb, cc);
 }
 
 
-class Callee {
+class TestClass {
     public static int testMethod(int a_param, boolean b_param) {
         if (b_param) {
             a_param += 1;

@@ -5,7 +5,7 @@ public class Caller {
 }
 
 
-class Callee {
+class TestClass {
     public static void testMethod(paramContainer p) {
         int a_param = p.getA();
         boolean b_param = p.getB();
