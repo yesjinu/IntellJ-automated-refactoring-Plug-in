@@ -72,7 +72,6 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
             for (PsiReferenceExpression r : referenceUsedInMethod) {
                 if (r.isReferenceTo(p)) {
                     appearFlag = true;
-
                     break;
                 }
             }
