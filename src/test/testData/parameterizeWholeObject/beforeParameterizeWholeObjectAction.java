@@ -1,11 +1,10 @@
 public class Caller {
     ParamContainer p = new ParamContainer();
     ParamContainer q = new ParamContainer();
-    int c = 9;
     int aa = p.getA();
     boolean bb = p.getB();
-    char cc = q.getC();
-    int result1 = TestClass.testMethod(c, aa, bb);
+    char cc = 'c';
+    int result1 = TestClass.testMethod(aa, bb);
     int result1 = TestClass.testMethod(aa, bb, cc);
 }
 
