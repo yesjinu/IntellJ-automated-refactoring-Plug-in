@@ -165,4 +165,21 @@ public class CreatePsi {
         PsiStatement newStatement = factory.createStatementFromText("{}", null);
         return newStatement;
     }
+
+    // TODO
+    public static PsiField createField(@NotNull Project project, String[] modifiers, @NotNull PsiType type, @NotNull String name, String value)
+    {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiField newField = factory.createField(name, type);
+        for(String m : modifiers) // add modifiers
+        {
+            newField.getModifierList().setModifierProperty(m, true);
+        }
+
+        PsiExpression initialize = factory.createExpressionFromText(value, null); // add initializer
+        newField.setInitializer(initialize);
+
+        return newField;
+    }
 }

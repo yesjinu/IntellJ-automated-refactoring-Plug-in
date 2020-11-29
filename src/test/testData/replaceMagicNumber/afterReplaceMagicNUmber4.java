@@ -1,5 +1,5 @@
 public class basic {
-    static final String constant1 = "CSED332";
+    static final String CONSTANT1 = "CSED332";
 
     public void method1(String str1)
     {
@@ -12,7 +12,7 @@ public class basic {
         }
     }
 
-    public void CSED312()
+    public void CSED332()
     {
         System.out.println("correct");
     }

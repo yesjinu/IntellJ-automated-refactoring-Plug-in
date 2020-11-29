@@ -2,6 +2,8 @@ package wanted.utils;
 
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiField;
+import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.sun.istack.NotNull;
 
 import java.util.List;
@@ -25,6 +27,15 @@ public class AddPsi {
         for(PsiElement e :addList)
         {
             targetClass.addBefore(e, targetClass.getLastChild());
+        }
+    }
+
+    // TODO:
+    public static void addField(@NotNull PsiClass targetClass, @NotNull List<PsiElement> addList)
+    {
+        for(PsiElement e: addList)
+        {
+            targetClass.addBefore(e, targetClass.getLastChild()); //TODO:
         }
     }
 }

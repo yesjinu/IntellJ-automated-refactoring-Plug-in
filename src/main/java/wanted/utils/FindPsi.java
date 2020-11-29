@@ -22,12 +22,11 @@ import java.util.List;
  * @author CSED332 2019 Team 1
  */
 public class FindPsi {
-
     /**
      * Returns list of statements referring to given member
      *
      * @param focusClass search scope
-     * @param member PsiField object
+     * @param member     PsiField object
      * @return list of statements
      */
     public static List<PsiReferenceExpression> findMemberReference(PsiClass focusClass, PsiField member) {
@@ -60,27 +59,24 @@ public class FindPsi {
      * Find PsiReferenceExpression in same directory PsiFiles (not itself)
      * Search scope: directory of file. i.e, only check files in same package
      *
-     * @param file the file which own class with member field
+     * @param file   the file which own class with member field
      * @param member PsiField to find reference
      * @return List<PsiReferenceExpression> if PsiFiles  has PsiReferenceExpression, empty() otherwise
      */
-    public static List<PsiReferenceExpression> findMemberReference(PsiFile file, PsiField member)
-    {
+    public static List<PsiReferenceExpression> findMemberReference(PsiFile file, PsiField member) {
         List<PsiReferenceExpression> ret = new ArrayList<>();
 
         List<PsiFile> files = Arrays.asList(file.getContainingDirectory().getFiles());
 
-        for(PsiFile f : files)
-        {
-            if(f.equals(file)){ continue; } // do not check itself
-            else
-            {
+        for (PsiFile f : files) {
+            if (f.equals(file)) {
+                continue;
+            } // do not check itself
+            else {
                 PsiClass[] classes;
-                if(f instanceof PsiClassOwner)
-                {
-                    classes = ((PsiClassOwner)f).getClasses();
-                    for(PsiClass c : classes)
-                    {
+                if (f instanceof PsiClassOwner) {
+                    classes = ((PsiClassOwner) f).getClasses();
+                    for (PsiClass c : classes) {
                         ret.addAll(findMemberReference(c, member));
                     }
                 }
@@ -92,9 +88,9 @@ public class FindPsi {
 
     /**
      * method that returns set of parameters that passed to the method
-     * 
+     *
      * @param focusMethod : 검사하고 싶은 메소드 (PsiMethod)
-     * @return set of unused parameters 
+     * @return set of unused parameters
      */
     public static Set<PsiParameter> findParametersOfMethod(@NotNull PsiMethod focusMethod) {
         Set<PsiParameter> result = new HashSet<>();
@@ -143,38 +139,36 @@ public class FindPsi {
 
     /**
      * Return PsiIfstatement from cursor offset inside of PsiClass
-     * 
+     *
      * @param psiClass the scope this function find ifstatement
-     * @param offset the text offset of file containing this class
+     * @param offset   the text offset of file containing this class
      * @return PsiIfStatement which contains cursor
-     *         If various PsiIfStatements are correct, choose narrowest one
+     * If various PsiIfStatements are correct, choose narrowest one
      */
-    public static PsiIfStatement findIfStatement(PsiClass psiClass, int offset)
-    {
+    public static PsiIfStatement findIfStatement(PsiClass psiClass, int offset) {
         List<PsiIfStatement> ifStatementList = new ArrayList<>();
 
-        JavaRecursiveElementVisitor v = new JavaRecursiveElementVisitor(){
-                @Override
-                public void visitIfStatement(PsiIfStatement statement)
-                {
-                    if(statement.getTextRange().contains(offset)) ifStatementList.add(statement);
-                    super.visitIfStatement(statement);
-                }
+        JavaRecursiveElementVisitor v = new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitIfStatement(PsiIfStatement statement) {
+                if (statement.getTextRange().contains(offset)) ifStatementList.add(statement);
+                super.visitIfStatement(statement);
+            }
         };
         psiClass.accept(v);
 
         if (ifStatementList.isEmpty()) return null;
-        else return ifStatementList.get(ifStatementList.size()-1);
+        else return ifStatementList.get(ifStatementList.size() - 1);
     }
 
     /**
      * Searching for every subclasses
      *
      * @param superclass Superclass
-     * @param classList List of all classes in project
+     * @param classList  List of all classes in project
      * @return List of all subclasses extends superclass
      */
-    public static List<PsiClass> findEverySubClass (PsiClass superclass, List<PsiClass> classList) {
+    public static List<PsiClass> findEverySubClass(PsiClass superclass, List<PsiClass> classList) {
         List<PsiClass> subclassList = new ArrayList<>();
         for (PsiClass psiClass : classList)
             if (Arrays.asList(psiClass.getSupers()).contains(superclass))
@@ -182,14 +176,14 @@ public class FindPsi {
         return subclassList;
     }
 
-    public static PsiClass getContainingClass (PsiMethod method) {
+    public static PsiClass getContainingClass(PsiMethod method) {
         PsiElement targetClass = method;
         while (!(targetClass instanceof PsiClass)) {
             targetClass = targetClass.getParent();
             if (targetClass == null)
                 return null;
         }
-        return (PsiClass)targetClass;
+        return (PsiClass) targetClass;
     }
 
     /**
@@ -463,6 +457,21 @@ public class FindPsi {
     }
 
     /**
+    TODO:
+     */
+    public static List<PsiLiteralExpression> findPsiLiteralExpressions(PsiElement element) {
+        List<PsiLiteralExpression> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitLiteralExpression(PsiLiteralExpression element) {
+                super.visitLiteralExpression(element);
+                result.add(element);
+            }
+        });
+        return result;
+    }
+
+    /**
      * Return the List containing PsiLiteralExpression Object in current PsiElement children
      *
      * @param element the PsiElement.
@@ -510,18 +519,32 @@ public class FindPsi {
      * return the modified list such that queries with duplicate name are removed
      *
      * @param searchClass PsiClass to check
-     * @param queries list of strings which represents names of methods to check
+     * @param queries     list of strings which represents names of methods to check
      * @return modified queries such that duplicate strings are removed
      */
-    public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries)
-    {
+    public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries) {
         List<String> ret = queries;
 
-        for(PsiMethod m: searchClass.getMethods())
-        {
-            if(queries.contains(m.getName()))
-            {
+        for (PsiMethod m : searchClass.getMethods()) {
+            if (queries.contains(m.getName())) {
                 ret.remove(m.getName());
+            }
+        }
+
+        return ret;
+    }
+
+    /**
+     * TODO:
+     */
+    public static List<PsiLiteralExpression> findLiteralUsage(PsiClass focusClass, PsiLiteralExpression literal) {
+        List<PsiLiteralExpression> expressions = findPsiLiteralExpressions(focusClass);
+        List<PsiLiteralExpression> ret = new ArrayList<>();
+
+        for (PsiLiteralExpression l : expressions) {
+            if(l.getText().equals(literal.getText()))
+            {
+                ret.add(l);
             }
         }
 
