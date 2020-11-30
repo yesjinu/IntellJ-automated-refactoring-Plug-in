@@ -22,9 +22,10 @@
         <!-- Add your actions here -->
         <group id="Wanted-Refactoring" text="Wanted_Refactoring">
             <add-to-group group-id="MainMenu" anchor="last"/>
-
-            <action id="wanted.refactoring.RemoveUnusedParameterAction" class="wanted.refactoring.RemoveUnusedParameterAction"
-                    text="Remove Unused Parameter"/>
+            <action id="Wanted-Refactoring.IFM" class="wanted.refactoring.IntroduceForeignMethodAction"
+                    text="Introduce Foreign Method" description="Moving Features between Objects: Introduce Foreign Method"/>
+            <action id="Wanted-Refactoring.RPA" class="wanted.refactoring.RemoveUnusedParameterAction"
+                    text="Remove Unused Parameter" description="Simplifying Method Calls: Remove Unused Parameter"/>
             <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="Self Encapsulate Field"
                     description="Data Organize: self encapsulate field"/>
             <action id="Wanted-Refactoring.IM" class="wanted.refactoring.InlineMethodAction" text="Inline Method"
@@ -35,6 +36,8 @@
                     description="Data Organize: encapsulate field"/>
             <action id="Wanted-Refactoring.CDCF" class="wanted.refactoring.ConsolidateDupCondFrag" text="consolidate duplicate conditional fragments"
                     description="Simplifying Conditional Expressions: consolidate duplicate conditional fragments"/>
+            <action id="Wanted-Refactoring.INA" class="wanted.refactoring.IntroduceAssertion" text="introduce assertion"
+                    description="Simplifying Conditional Expressions: introduce assertion"/>
             <action id="Wanted-Refactoring.RMN" class="wanted.refactoring.ReplaceMagicNumber" text="replace magic number"
                     description="Data Organize: replace magic number"/>
         </group>

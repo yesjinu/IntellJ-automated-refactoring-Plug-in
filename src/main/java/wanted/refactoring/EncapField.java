@@ -96,6 +96,8 @@ public class EncapField extends BaseRefactorAction {
      * 1. Field should be public
      * 2. It has neither getter nor setter
      *
+     * @param project Project
+     * @param member PsiField
      * @return true if method is refactorable
      * @see InlineMethodAction#refactorValid(Project, PsiMethod)
      */

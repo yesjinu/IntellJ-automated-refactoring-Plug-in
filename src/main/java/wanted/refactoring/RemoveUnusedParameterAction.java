@@ -53,8 +53,9 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     /**
      * Static method that checks whether candidate method is refactorable using 'Remove Unused Parameter'.
      *
+     * @param project Project
+     * @param focusMethod PsiMethod
      * @return true if method is refactorable
-     * @see wanted.ui.ProjectTreeModelFactory#createProjectTreeModel(Project)
      */
     public static boolean refactorValid(Project project, @NotNull PsiMethod focusMethod) {
         Set<PsiParameter> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);

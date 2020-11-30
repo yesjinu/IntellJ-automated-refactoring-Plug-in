@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author seha Park
  * @author Mintae Kim
- * @author JINU NOH
+ * @author Jinu Noh
  * @author Chanyoung Kim
  * @author seungjae yoo
  * @author CSED332 2019 Team 1
@@ -534,6 +534,8 @@ public class FindPsi {
      * @return modified queries such that duplicate strings are removed
      */
     public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries) {
+        if(searchClass==null){ return new ArrayList<>(); }
+
         List<String> ret = queries;
 
         for (PsiMethod m : searchClass.getMethods()) {

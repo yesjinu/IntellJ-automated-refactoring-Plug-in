@@ -40,6 +40,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
 
         project = navigator.findProject();
         literal = navigator.findLiteral();
+        if(literal==null){ return false; }
 
         targetClass = FindPsi.getContainingClass(literal);
 

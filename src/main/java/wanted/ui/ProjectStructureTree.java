@@ -32,6 +32,9 @@ import java.util.Optional;
  *
  * @author Mintae Kim
  * @author seungjae yoo
+ * @author seha Park
+ * @author Jinu Noh
+ * @author Chanyoung Kim
  * @author CSED332 2020 TAs
  */
 class ProjectStructureTree extends Tree {
