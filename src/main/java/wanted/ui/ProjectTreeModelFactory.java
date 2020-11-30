@@ -132,6 +132,22 @@ class ProjectTreeModelFactory {
                     }
                     if (adding) addTreeNodes(root, rootRef, "CDCF", s);
                 }
+
+                // INA
+                s = ifStatement;
+                while (s.getParent() instanceof PsiIfStatement) s = s.getParent();
+                if (IntroduceAssertion.refactorValid((PsiIfStatement) s)) {
+                    boolean adding = true;
+                    if (rootRef.get("INA") != null) {
+                        for (int i = 0; i < rootRef.get("INA").getChildCount(); i++) {
+                            if (((DefaultMutableTreeNode)rootRef.get("INA").getChildAt(i)).getUserObject() == s) {
+                                adding = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (adding) addTreeNodes(root, rootRef, "INA", s);
+                }
             }
         };
 
@@ -167,12 +183,10 @@ class ProjectTreeModelFactory {
             // Scope: Statement
             case "CCE":
                 return new ConsolidateCondExpr().storyName();
-
             case "CDCF":
                 return new ConsolidateDupCondFrag().storyName();
-
-
-
+            case "INA":
+                return new IntroduceAssertion().storyName();
 
             default:
                 return null;
