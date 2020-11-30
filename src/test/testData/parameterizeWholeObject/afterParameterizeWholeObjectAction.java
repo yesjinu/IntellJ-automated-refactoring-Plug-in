@@ -6,7 +6,7 @@ public class Caller {
 
 
 class TestClass {
-    public static void testMethod(paramContainer p) {
+    public static int testMethod(ParamContainer p) {
         int a_param = p.getA();
         boolean b_param = p.getB();
         if (b_param) {

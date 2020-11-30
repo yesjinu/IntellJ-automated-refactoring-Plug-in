@@ -96,7 +96,7 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
                 // resolvedParam에서 특정 부분만 추출
                 PsiMethodCallExpression methodCallPart = FindPsi.findPsiMethodCallExpressions(resolvedParam).get(0); // TestClass.testMethod(aa, bb) 형태
                 PsiReferenceExpression tempPsiReference = FindPsi.findChildPsiReferenceExpressions(methodCallPart).get(0); // TestClass.testMethod 형태
-                PsiReferenceExpression callerObject = FindPsi.findChildPsiReferenceExpressions(tempPsiReference).get(0); // TestClass 메소드를 호출한 클래스만 받아오기
+                PsiReferenceExpression callerObject = FindPsi.findChildPsiReferenceExpressions(tempPsiReference).get(0); // TestClass, 메소드를 호출한 클래스만 받아오기
 //                System.out.println("methodCall part : " + methodCallPart); // PsiMethodCallExpression:p.getB()
 //                System.out.println("tempPsiReference part : " + tempPsiReference); // PsiReferenceExpression:p.getB
 //                System.out.println("callerClass part : " + callerClass); // PsiReferenceExpression:p
@@ -176,12 +176,6 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
             }
         }
 
-        // 이상하게 finalCallerObject로 하면 에러가 나는데, callerObject에서 getType, resolve를 호출하면 정상작동한다.
-//        System.out.println("finalCallerObject.getType : " + callerObject.getType()); // <- PsiType:ParamContainer 출력
-//        System.out.println("finalCallerObject.resolve : " + callerObject.resolve()); // <- PsiField:p 출력
-        PsiType callerObjectType = callerObject.getType();
-        PsiIdentifier callerObjectIdentifier = FindPsi.findChildPsiIdentifiers(callerObject).get(0);
-        
         // System.out.println("mapMethodToParam : " + mapMethodToParam);
         // 출력값 mapMethodToParam :
         // {
@@ -189,11 +183,19 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
         //          =[PsiReferenceExpression:aa, PsiReferenceExpression:bb]
         // }
 
+        // 이상하게 finalCallerObject로 하면 에러가 나는데, callerObject에서 getType, resolve를 호출하면 정상작동한다.
+//        System.out.println("finalCallerObject.getType : " + callerObject.getType()); // <- PsiType:ParamContainer 출력
+//        System.out.println("finalCallerObject.resolve : " + callerObject.resolve()); // <- PsiField:p 출력
+        PsiType callerObjectType = callerObject.getType();
+        PsiIdentifier callerObjectIdentifier = FindPsi.findChildPsiIdentifiers(callerObject).get(0);
+
         PsiReferenceExpression finalCallerObject = callerObject;
         WriteCommandAction.runWriteCommandAction(project, ()->{
             for (Map.Entry<PsiMethodCallExpression, List<PsiReferenceExpression>> entry : mapMethodToParam.entrySet()) {
                 PsiMethodCallExpression focusMethodCall = entry.getKey();
                 List<PsiReferenceExpression> focusParams = entry.getValue();
+
+                PsiMethod originalPsiMethod = focusMethodCall.resolveMethod();
 
                 // 1. parameter에서 resolve한 PsiField 삭제 : [int aa = obj.getA()] 부분
                 for (PsiReferenceExpression paramGetLine : focusParams) {
@@ -214,24 +216,20 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
                 for (PsiReferenceExpression p : focusParams) {
                     p.delete();
                 };
-                PsiMethodCallExpression newlyMadeMethodCall =
+                PsiMethodCallExpression replacingMethodCall =
                         CreatePsi.createMethodCall(project, (PsiMethod) focusMethodCall.getMethodExpression().resolve(),
                                 finalCallerObject, focusMethodCall.getMethodExpression().getQualifier());
-                focusMethodCall.replace(newlyMadeMethodCall);
+                focusMethodCall.replace(replacingMethodCall);
 
                 System.out.println("2. focusMethodCall : " + focusMethodCall);
-
-
+                System.out.println("2. newlyMadeMethodCall : " + replacingMethodCall);
 
                 // 3. method 본체 parameter 수정 :
                 //      1) method(int p_a, int p_b)에서 int p_a, int p_b 부분 삭제
-                //      2) method(Class obj) 부분 삽입 <- TODO: 새로 PsiParameterList 만들어서 replace() 하기
-
+                //      2) method(Class obj) 부분 삽입
                 PsiParameterList newlyMadeParameterList = CreatePsi.createMethodParameterList(project, callerObjectType, callerObjectIdentifier);
-                System.out.println("3. newlyMadeParameterList : " + newlyMadeParameterList);
-
-                //                originalMethod.getParameterList().replace(newlyMadeParameterList);
-//                System.out.println("3. originalMethod : " + originalMethod);
+                assert originalPsiMethod != null;
+                originalPsiMethod.getParameterList().replace(newlyMadeParameterList);
 
 
 
