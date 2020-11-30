@@ -114,6 +114,20 @@ class ProjectTreeModelFactory {
                     if (adding) addTreeNodes(root, rootRef, "CDCF", s);
                 }
             }
+
+            @Override
+            public void visitLiteralExpression(PsiLiteralExpression literalExpression)
+            {
+                super.visitLiteralExpression(literalExpression);
+
+                // RPM
+                // TODO: Remove duplicate
+                if(ReplaceMagicNumber.refactorValid(project, literalExpression))
+                {
+                    addTreeNodes(root, rootRef, "RPM", literalExpression);
+                }
+
+            }
         };
 
         TraverseProjectPsi.getRootPackages(project).forEach(aPackage -> aPackage.accept(visitor));
@@ -155,6 +169,10 @@ class ProjectTreeModelFactory {
             case "RPA":
                 return new RemoveUnusedParameterAction().storyName();
             // TODO: ADD
+
+            // Scope: expression
+            case "RPM":
+                return new ReplaceMagicNumber().storyName();
 
             default:
                 return null;

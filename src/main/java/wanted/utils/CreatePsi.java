@@ -185,7 +185,7 @@ public class CreatePsi {
     }
 
     // TODO
-    public static PsiElement createPsiExpression(@Nullable Project project, PsiClass focusClass, String name)
+    public static PsiElement createPsiExpression(@Nullable Project project, String name)
     {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 

@@ -186,6 +186,17 @@ public class FindPsi {
         return (PsiClass) targetClass;
     }
 
+    // TODO:
+    public static PsiClass getContainingClass(PsiElement element) {
+        PsiElement targetClass = element;
+        while (!(targetClass instanceof PsiClass)) {
+            targetClass = targetClass.getParent();
+            if (targetClass == null)
+                return null;
+        }
+        return (PsiClass)targetClass;
+    }
+
     /**
      * Return the List containing PsiClass Object in current PsiElement
      *
