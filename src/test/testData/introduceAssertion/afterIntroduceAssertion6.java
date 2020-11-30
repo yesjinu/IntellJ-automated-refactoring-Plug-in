@@ -3,7 +3,7 @@ public class INAdata {
     private y;
 
     public void INA(INAdata p, int num) {
-        if (num == <caret>0) {
+        if (num == 0) {
             p.setX(0);
         }
         else {

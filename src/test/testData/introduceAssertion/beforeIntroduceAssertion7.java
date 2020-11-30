@@ -4,7 +4,7 @@ public class INAdata {
 
     public void INA(INAdata p, int num) {
         if (num == <caret>0) {
-            p.setX(0);
+            num = 1;
         }
         else {
             num = 0;

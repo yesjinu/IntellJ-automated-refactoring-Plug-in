@@ -185,7 +185,10 @@ public class CreatePsi {
             context = "(" + condition.getText() + ")" + " || " + "(";
             boolean first = true;
             for (PsiReferenceExpression exp : elseSet) {
-                if (first) context = context + "(" + exp.getText() + " != null)";
+                if (first) {
+                    if (elseSet.size() == 1) context = context + exp.getText() + " != null";
+                    else context = context + "(" + exp.getText() + " != null)";
+                }
                 else context = context + " && " + "(" + exp.getText() + " != null)";
                 first = false;
             }
@@ -195,7 +198,10 @@ public class CreatePsi {
             context = "!(" + condition.getText() + ")" + " || " + "(";
             boolean first = true;
             for (PsiReferenceExpression exp : thenSet) {
-                if (first) context = context + "(" + exp.getText() + " != null)";
+                if (first) {
+                    if (thenSet.size() == 1) context = context + exp.getText() + " != null";
+                    else context = context + "(" + exp.getText() + " != null)";
+                }
                 else context = context + " && " + "(" + exp.getText() + " != null)";
                 first = false;
             }

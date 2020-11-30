@@ -2,8 +2,8 @@ public class INAdata {
     private x;
     private y;
 
-    public void INA(INAdata p, int num) {
-        if (num == <caret>0) {
+    public void INA(INAdata <caret>p, int num) {
+        if (num == 0) {
             p.setX(0);
         }
         else {
