@@ -66,4 +66,9 @@ public class IntroduceAssertionTest extends LightActionTestCase {
             assertEquals(e.getMessage(), "Nothing to do");
         }
     }
+
+    // Test when else statement doesn't exist
+    public void testIntroduceAssertion8() throws Exception {
+        doTest();
+    }
 }

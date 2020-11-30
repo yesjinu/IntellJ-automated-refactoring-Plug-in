@@ -101,6 +101,8 @@ public class IntroduceAssertion extends BaseRefactorAction {
      * @return set of PsiReferenceExpression
      */
     private static Set<PsiReferenceExpression> getReferenceSet(PsiStatement s) {
+        if (s == null) return new HashSet<>();
+
         Set<PsiReferenceExpression> referenceSet = FindPsi.findReferenceExpression(s);
 
         Set<PsiReferenceExpression> nestedReferenceSet = new HashSet<>();

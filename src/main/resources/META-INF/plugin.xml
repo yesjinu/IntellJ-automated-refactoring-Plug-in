@@ -36,6 +36,8 @@
                     description="Data Organize: encapsulate field"/>
             <action id="Wanted-Refactoring.CDCF" class="wanted.refactoring.ConsolidateDupCondFrag" text="consolidate duplicate conditional fragments"
                     description="Simplifying Conditional Expressions: consolidate duplicate conditional fragments"/>
+            <action id="Wanted-Refactoring.INA" class="wanted.refactoring.IntroduceAssertion" text="introduce assertion"
+                    description="Simplifying Conditional Expressions: introduce assertion"/>
         </group>
     </actions>
 </idea-plugin>
