@@ -4,12 +4,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 
+import java.util.List;
+
 /**
  * Class to create Psi Elements.
  *
  * @author seha Park
  * @author Mintae Kim
  * @author seungjae yoo
+ * @author Jinu Noh
  */
 public class CreatePsi {
     /**
@@ -164,5 +167,20 @@ public class CreatePsi {
 
         PsiStatement newStatement = factory.createStatementFromText("{}", null);
         return newStatement;
+    }
+
+    /**
+     * Return parameter list of method
+     *
+     * @param paramType
+     * @param paramIdentifier
+     * @return Newly created parameter list
+     */
+    public static PsiParameterList createMethodParameterList(@NotNull Project project, PsiType paramType, PsiIdentifier paramIdentifier) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        String[] paramNameList = {paramIdentifier.getText()};
+        PsiType[] paramTypeList = {paramType};
+
+        return factory.createParameterList(paramNameList, paramTypeList);
     }
 }
