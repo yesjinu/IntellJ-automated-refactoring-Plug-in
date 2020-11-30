@@ -2,9 +2,10 @@ package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
+import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
@@ -85,22 +86,34 @@ public class IntroduceAssertion extends BaseRefactorAction {
         Set<PsiReferenceExpression> thenSet = getReferenceSet(thenStatement);
         Set<PsiReferenceExpression> elseSet = getReferenceSet(elseStatement);
 
+        WriteCommandAction.runWriteCommandAction(project, ()-> {
+            ifStatement.getParent().addBefore(CreatePsi.createAssertStatement(project, ifStatement.getCondition(), thenSet, elseSet), ifStatement);
+        });
+
     }
 
     /**
      * Method that get ReferenceExpression set by given statement
-     * However, if one is parent of another, excluded.
+     * If one isn't child of another, excluded.
+     * If one is parent of another, excluded.
      *
      * @param s given statement
      * @return set of PsiReferenceExpression
      */
     private static Set<PsiReferenceExpression> getReferenceSet(PsiStatement s) {
         Set<PsiReferenceExpression> referenceSet = FindPsi.findReferenceExpression(s);
-        Set<PsiReferenceExpression> newSet = new HashSet<>();
 
-        for (PsiReferenceExpression me : referenceSet) {
+        Set<PsiReferenceExpression> nestedReferenceSet = new HashSet<>();
+        for (PsiReferenceExpression exp : referenceSet) {
+            for (PsiElement elem : exp.getChildren()) {
+                nestedReferenceSet.addAll(FindPsi.findReferenceExpression(elem));
+            }
+        }
+
+        Set<PsiReferenceExpression> newSet = new HashSet<>();
+        for (PsiReferenceExpression me : nestedReferenceSet) {
             boolean putThis = true;
-            for (PsiReferenceExpression other : referenceSet) {
+            for (PsiReferenceExpression other : nestedReferenceSet) {
                 if (me.equals(other)) continue;
                 if (me.getTextRange().contains(other.getTextRange())) {
                     putThis = false;

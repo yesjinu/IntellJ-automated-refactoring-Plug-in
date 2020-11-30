@@ -4,6 +4,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 
+import java.util.Set;
+
 /**
  * Class to create Psi Elements.
  *
@@ -163,6 +165,55 @@ public class CreatePsi {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiStatement newStatement = factory.createStatementFromText("{}", null);
+        return newStatement;
+    }
+
+    /**
+     * Create Assert Statement that check not null in if statement
+     *
+     * @param project project
+     * @param condition condition of ifStatement
+     * @param thenSet set of expressions in then statement that should be check not null
+     * @param elseSet set of expressions in else statement that should be check not null
+     * @return Assert Statement
+     */
+    public static PsiStatement createAssertStatement(@NotNull Project project, PsiExpression condition, Set<PsiReferenceExpression> thenSet, Set<PsiReferenceExpression> elseSet) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        String context = "";
+
+        if (thenSet.isEmpty()) {
+            context = "(" + condition.getText() + ")" + " || " + "(";
+            boolean first = true;
+            for (PsiReferenceExpression exp : elseSet) {
+                if (first) context = context + "(" + exp.getText() + " != null)";
+                else context = context + " && " + "(" + exp.getText() + " != null)";
+                first = false;
+            }
+            context = context + ")";
+        }
+        else if (elseSet.isEmpty()) {
+            context = "!(" + condition.getText() + ")" + " || " + "(";
+            boolean first = true;
+            for (PsiReferenceExpression exp : thenSet) {
+                if (first) context = context + "(" + exp.getText() + " != null)";
+                else context = context + " && " + "(" + exp.getText() + " != null)";
+                first = false;
+            }
+            context = context + ")";
+        }
+        else {
+            context = "(" + "(" + condition.getText() + ")";
+            for (PsiReferenceExpression exp : thenSet) {
+                context = context + " && " + "(" + exp.getText() + " != null)";
+            }
+            context = context + ")" + " || " + "(" + "!(" + condition.getText() + ")";
+            for (PsiReferenceExpression exp : elseSet) {
+                context = context + " && " + "(" + exp.getText() + " != null)";
+            }
+            context = context + ")";
+        }
+
+        PsiStatement newStatement = factory.createStatementFromText("assert (" + context + ");", null);
         return newStatement;
     }
 }
