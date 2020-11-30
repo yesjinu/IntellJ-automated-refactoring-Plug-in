@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author seha Park
  * @author Mintae Kim
- * @author JINU NOH
+ * @author Jinu Noh
  * @author Chanyoung Kim
  * @author seungjae yoo
  * @author CSED332 2019 Team 1

@@ -39,4 +39,13 @@ public class IntroduceForeignMethodActionTest extends LightActionTestCase {
     public void testIntroduceForeignMethodAction5() throws Exception {
         doTest();
     }
+
+    public void testIntroduceForeignMethodAction6() throws Exception {
+        try {
+            doTest();
+        }
+        catch(RuntimeException e) {
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
+    }
 }
