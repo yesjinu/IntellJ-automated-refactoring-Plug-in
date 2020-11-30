@@ -1,6 +1,6 @@
 public class INAdata {
-    private x;
-    private y;
+    private int x;
+    private int y;
 
     public void INA(INAdata <caret>p, int num) {
         if (num == 0) {

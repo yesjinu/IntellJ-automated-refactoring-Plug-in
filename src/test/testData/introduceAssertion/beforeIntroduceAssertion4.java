@@ -1,6 +1,6 @@
 public class INAdata {
-    private x;
-    private y;
+    private int x;
+    private int y;
 
     public void INA(INAdata p, INAdata q, INAdata[] r, int num) {
         if (num == 1) num += 1;

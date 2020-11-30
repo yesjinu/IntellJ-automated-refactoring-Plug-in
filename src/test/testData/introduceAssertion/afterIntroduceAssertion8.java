@@ -1,6 +1,6 @@
 public class INAdata {
-    private x;
-    private y;
+    private int x;
+    private int y;
 
     public void INA(INAdata p, int num) {
         assert (!(num == 0) || (p != null));
