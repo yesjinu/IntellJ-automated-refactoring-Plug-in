@@ -49,7 +49,7 @@ public abstract class BaseRefactorAction extends AnAction {
      */
     @Override
     public void actionPerformed(AnActionEvent e) {
-        refactorRequest(e);
+        refactorRequestWithWindow(e);
     }
 
     /**
@@ -100,7 +100,24 @@ public abstract class BaseRefactorAction extends AnAction {
      *
      * @param e AnActionEvent
      */
-    private void refactorRequest(AnActionEvent e)
+    public void refactorRequest(AnActionEvent e)
+    {
+        if(!refactorValid(e)) {
+            Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);
+        }
+        else
+        {
+            refactor(e);
+        }
+    }
+
+    /**
+     * Helper Method that applies refactoring if it's available.
+     * When refactor is valid, open window to show before-after
+     *
+     * @param e AnActionEvent
+     */
+    private void refactorRequestWithWindow(AnActionEvent e)
     {
         if(!refactorValid(e)) {
             Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);

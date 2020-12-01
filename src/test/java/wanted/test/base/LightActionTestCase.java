@@ -8,6 +8,7 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 
 import org.jetbrains.concurrency.Promise;
+import wanted.refactoring.BaseRefactorAction;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +85,8 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
         AnActionEvent anActionEvent = new AnActionEvent(null, contextResult.blockingGet(10, TimeUnit.SECONDS),
                 "", anAction.getTemplatePresentation(), ActionManager.getInstance(), 0);
 
-        anAction.actionPerformed(anActionEvent);
+        if (anAction instanceof BaseRefactorAction) ((BaseRefactorAction) anAction).refactorRequest(anActionEvent);
+        else anAction.actionPerformed(anActionEvent);
         FileDocumentManager.getInstance().saveAllDocuments();
     }
 
