@@ -194,21 +194,18 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
             for (Map.Entry<PsiMethodCallExpression, List<PsiReferenceExpression>> entry : mapMethodToParam.entrySet()) {
                 PsiMethodCallExpression focusMethodCall = entry.getKey();
                 List<PsiReferenceExpression> focusParams = entry.getValue();
-
                 PsiMethod originalPsiMethod = focusMethodCall.resolveMethod();
+                List<PsiField> getterField = new ArrayList<>();
+
 
                 // 1. parameter에서 resolve한 PsiField 삭제 : [int aa = obj.getA()] 부분
                 for (PsiReferenceExpression paramGetLine : focusParams) {
+                    getterField.add((PsiField) paramGetLine.resolve());
                     Objects.requireNonNull(paramGetLine.resolve()).delete();
                 }
-
                 System.out.println("1. focusMethodCall : " + focusMethodCall);
                 System.out.println("1. focusMethodCall.getMethodExpression() : " + focusMethodCall.getMethodExpression());
                 System.out.println("1. focusMethodCall.getMethodExpression().resolve() : " + focusMethodCall.getMethodExpression().resolve());
-
-
-
-
 
                 // 2. 메소드 호출 parameter 수정 :
                 //      1) obj.method(aa, bb)에서 aa, bb 부분 삭제
@@ -229,18 +226,32 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction{
                 //      2) method(Class obj) 부분 삽입
                 PsiParameterList newlyMadeParameterList = CreatePsi.createMethodParameterList(project, callerObjectType, callerObjectIdentifier);
                 assert originalPsiMethod != null;
+                PsiParameterList oldParameterList = originalPsiMethod.getParameterList(); // <- PsiParameterList:(int aa, boolean bb) 출력
                 originalPsiMethod.getParameterList().replace(newlyMadeParameterList);
 
-
-
-
-
-
-
                 // 4. method 본체 code block 수정 :
+                //      1)
                 //      1) 삭제한 aa, bb getter 추가
+//                System.out.println(oldParameterList);
 
+                PsiJavaToken leftBracketOfOriginalMethod = FindPsi.findChildPsiJavaTokens(originalPsiMethod.getBody()).get(0);
+//                System.out.println("bracketOfMethod : " + bracketOfMethod);
 
+                for (int i = 0; i < getterField.size(); i++) { // <- [boolean b = p.getB();, ...]
+//                    System.out.println("p.getText() : " + p.getText());   // <- boolean b = p.getB(); 출력
+//                    System.out.println("p.toString() : " + p.toString()); // <- PsiField:b 출력
+//                    System.out.println("p.getTypeElement() : " + p.getTypeElement()); // <- PsiTypeElement:boolean 출력
+//                    System.out.println("FindPsi.findPsiMethodCallExpressions(p)" + FindPsi.findPsiMethodCallExpressions(p)); // <- [PsiMethodCallExpression:p.getB()] 출력
+//                    System.out.println("CreatePsi :: " + CreatePsi.createGetDeclarationStatement(project, Objects.requireNonNull(p.getTypeElement()), "randomName", FindPsi.findPsiMethodCallExpressions(p).get(0))); // <- [PsiMethodCallExpression:p.getB()] 출력
+                    PsiField pField = getterField.get(i);
+                    PsiParameter oldParamName = oldParameterList.getParameter(getterField.size() - i - 1);
+                    System.out.println(pField.getText());
+                    System.out.println(oldParamName.getText());
+
+                    PsiDeclarationStatement paramGetterStatement = CreatePsi.createGetDeclarationStatement(project, Objects.requireNonNull(pField.getTypeElement()), oldParamName.getName(), FindPsi.findPsiMethodCallExpressions(pField).get(0));
+                    originalPsiMethod.getBody().addAfter(paramGetterStatement, leftBracketOfOriginalMethod);
+                }
+                System.out.println(originalPsiMethod);
 
 
             }

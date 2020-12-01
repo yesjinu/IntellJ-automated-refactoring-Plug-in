@@ -1,18 +1,18 @@
 public class Caller {
     ParamContainer p = new ParamContainer();
-    int aa = p.getA();
-    boolean bb = p.getB();
-    char cc = p.getC();
-    int result = TestClass.testMethod(aa, bb);
+    int a = p.getA();
+    boolean b = p.getB();
+    char c = p.getC();
+    int result = TestClass.testMethod(a, b, c);
 }
 
 
 class TestClass {
-    public static int testMethod(int a_param, boolean b_param) {
-        if (b_param) {
-            a_param += 1;
+    public static int testMethod(int a, boolean b, char c) {
+        if (b) {
+            a += 1;
         } else {
-            a_param -= 1;
+            a -= 1;
         }
         return 1;
     }

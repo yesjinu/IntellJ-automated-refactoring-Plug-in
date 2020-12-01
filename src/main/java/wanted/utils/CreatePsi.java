@@ -170,7 +170,7 @@ public class CreatePsi {
     }
 
     /**
-     * Return parameter list of method
+     * Return parameter list of given method
      *
      * @param paramType
      * @param paramIdentifier
@@ -182,5 +182,19 @@ public class CreatePsi {
         PsiType[] paramTypeList = {paramType};
 
         return factory.createParameterList(paramNameList, paramTypeList);
+    }
+
+    /**
+     * Return declaration statement
+     *
+     * @param
+     * @param
+     * @return Newly created parameter list
+     */
+    public static PsiDeclarationStatement createGetDeclarationStatement(Project project, PsiTypeElement typeElem, String varName, PsiMethodCallExpression methodCallExp) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        String str = typeElem.getText() + " " + varName + " = " + methodCallExp.getText() + ";\n";
+
+        return (PsiDeclarationStatement) factory.createStatementFromText(str, null);
     }
 }
