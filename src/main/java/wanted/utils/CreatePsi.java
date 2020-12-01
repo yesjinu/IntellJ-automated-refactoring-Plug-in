@@ -92,6 +92,23 @@ public class CreatePsi {
     }
 
     /**
+     * Returns newly created statement based on string.
+     *
+     * @param project Project
+     * @param statAsString Statement as String
+     * @return Newly created PsiStatement
+     */
+    public static PsiStatement createStatement(@NotNull Project project,
+                                               String statAsString) {
+
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText(
+                statAsString, null);
+        return newStatement;
+    }
+
+    /**
      * Return same statement which is copied
      *
      * @param project factory context
@@ -126,13 +143,30 @@ public class CreatePsi {
     }
 
     /**
+     * Returns newly created expression based on string.
+     *
+     * @param project Project
+     * @param expAsString Exp as String
+     * @return Newly created PsiExpression
+     */
+    public static PsiExpression createExpression(@NotNull Project project,
+                                               String expAsString) {
+
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression newExpression = factory.createExpressionFromText(
+                expAsString, null);
+        return newExpression;
+    }
+
+    /**
      * Method which creates new Duplicate PsiExpression object for replacement.
      *
      * @param project Project
      * @param psiExpression Target PsiExpression to duplicate
      * @return Newly copied PsiExpression Object
      */
-    public static PsiExpression createDuplicateExpression (@NotNull Project project, @NotNull PsiExpression psiExpression) {
+    public static PsiExpression copyExpression (@NotNull Project project, @NotNull PsiExpression psiExpression) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
@@ -156,13 +190,36 @@ public class CreatePsi {
     /**
      * Return empty block statement
      *
-     * @param project target context
+     * @param project Project
      * @return Newly created Empty PsiBlockStatement
      */
     public static PsiStatement createEmptyBlockStatement(@NotNull Project project) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiStatement newStatement = factory.createStatementFromText("{}", null);
+        return newStatement;
+    }
+
+    /**
+     * Returns Assignment Statement for Extract Variables
+     *
+     * " final {TYPE} {NAME} = {PsiExpression}; "
+     *
+     * @param project Project
+     * @param varName Variable Name
+     * @param exp PsiExpression to extract
+     * @return Newly created PsiStatement (Assingnment)
+     */
+    public static PsiStatement createExtractVariableAssignStatement(@NotNull Project project,
+                                                                        String varName,
+                                                                        @NotNull PsiExpression exp) {
+
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        if (exp.getType() == null) return null;
+
+        PsiStatement newStatement = factory.createStatementFromText(
+                "final " + exp.getType().getPresentableText() + " " + varName + " = " + exp.getText() + ";", null);
         return newStatement;
     }
 }

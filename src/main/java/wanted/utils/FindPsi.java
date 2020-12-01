@@ -142,6 +142,57 @@ public class FindPsi {
     }
 
     /**
+     * Return PsiExpression from cursor offset inside of PsiClass
+     *
+     * @param psiClass the scope this function find expression
+     * @param offset the text offset of file containing this class
+     * @return PsiStatement which contains cursor
+     *         If various PsiStatements are correct, choose widest one
+     */
+    public static PsiExpression findExpression(PsiClass psiClass, int offset)
+    {
+        List<PsiExpression> ExpressionList = new ArrayList<>();
+
+        JavaRecursiveElementVisitor v = new JavaRecursiveElementVisitor(){
+            @Override
+            public void visitExpression(PsiExpression expression)
+            {
+                if(expression.getTextRange().contains(offset)) ExpressionList.add(expression);
+            }
+        };
+        psiClass.accept(v);
+
+        if (ExpressionList.isEmpty()) return null;
+        else return ExpressionList.get(0);
+    }
+
+    /**
+     * Return PsiStatement from cursor offset inside of PsiClass
+     *
+     * @param psiClass the scope this function find Statement
+     * @param offset the text offset of file containing this class
+     * @return PsiStatement which contains cursor
+     *         If various PsiStatements are correct, choose widest one
+     */
+    public static PsiStatement findStatement(PsiClass psiClass, int offset)
+    {
+        List<PsiStatement> StatementList = new ArrayList<>();
+
+        JavaRecursiveElementVisitor v = new JavaRecursiveElementVisitor(){
+            @Override
+            public void visitStatement(PsiStatement statement)
+            {
+                if(statement.getTextRange().contains(offset)) StatementList.add(statement);
+                super.visitStatement(statement);
+            }
+        };
+        psiClass.accept(v);
+
+        if (StatementList.isEmpty()) return null;
+        else return StatementList.get(0);
+    }
+    
+    /**
      * Return PsiIfstatement from cursor offset inside of PsiClass
      * 
      * @param psiClass the scope this function find ifstatement
