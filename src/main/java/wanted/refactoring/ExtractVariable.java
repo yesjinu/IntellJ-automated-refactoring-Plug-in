@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import org.eclipse.jdt.internal.compiler.ast.ModuleStatement;
 import org.jetbrains.annotations.NotNull;
 import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
@@ -21,8 +22,8 @@ import java.util.List;
  */
 public class ExtractVariable extends BaseRefactorAction {
     private static int extVarNum = 0;
-    private PsiExpression psiExpression;
     private PsiStatement psiStatement;
+    private static List<PsiExpression> expRefactorList;
 
     /**
      * Returns the story name as a string format, for message.
@@ -53,12 +54,10 @@ public class ExtractVariable extends BaseRefactorAction {
         if(targetClass==null) return false;
 
         int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
-        psiExpression = FindPsi.findExpression(targetClass, offset);
         psiStatement = FindPsi.findStatement(targetClass, offset);
+        if (psiStatement == null) return false;
 
-        if (psiExpression == null) return false;
-
-        return refactorValid(psiExpression);
+        return refactorValid(psiStatement);
     }
 
     /**
@@ -67,14 +66,127 @@ public class ExtractVariable extends BaseRefactorAction {
      * Candidate methods must have at least one refactorable statement;
      * 1.
      *
-     * @param exp Target Expression
+     * @param statement Target Statement
      * @return true if method is refactorable
      */
-    public static boolean refactorValid(PsiExpression exp) {
-        if (!(exp instanceof PsiAssignmentExpression)) {
-            if (exp instanceof )
+    public static boolean refactorValid(PsiStatement statement) {
+        expRefactorList = new ArrayList<>();
 
-        }
+        JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitAssertStatement(PsiAssertStatement statement) {
+                super.visitAssertStatement(statement);
+            }
+
+            @Override
+            public void visitBlockStatement(PsiBlockStatement statement) {
+                super.visitBlockStatement(statement);
+            }
+
+            @Override
+            public void visitBreakStatement(PsiBreakStatement statement) {
+                super.visitBreakStatement(statement);
+            }
+
+            @Override
+            public void visitYieldStatement(PsiYieldStatement statement) {
+                super.visitYieldStatement(statement);
+            }
+
+            @Override
+            public void visitContinueStatement(PsiContinueStatement statement) {
+                super.visitContinueStatement(statement);
+            }
+
+            @Override
+            public void visitDeclarationStatement(PsiDeclarationStatement statement) {
+                super.visitDeclarationStatement(statement);
+            }
+
+            @Override
+            public void visitDoWhileStatement(PsiDoWhileStatement statement) {
+                super.visitDoWhileStatement(statement);
+            }
+
+            @Override
+            public void visitEmptyStatement(PsiEmptyStatement statement) {
+                super.visitEmptyStatement(statement);
+            }
+
+            @Override
+            public void visitExpression(PsiExpression expression) {
+                super.visitExpression(expression);
+            }
+
+            @Override
+            public void visitExpressionListStatement(PsiExpressionListStatement statement) {
+                super.visitExpressionListStatement(statement);
+            }
+
+            @Override
+            public void visitExpressionStatement(PsiExpressionStatement statement) {
+                super.visitExpressionStatement(statement);
+            }
+
+            @Override
+            public void visitForStatement(PsiForStatement statement) {
+                super.visitForStatement(statement);
+            }
+
+            @Override
+            public void visitForeachStatement(PsiForeachStatement statement) {
+                super.visitForeachStatement(statement);
+            }
+
+            @Override
+            public void visitIfStatement(PsiIfStatement statement) {
+                super.visitIfStatement(statement);
+            }
+
+            @Override
+            public void visitLabeledStatement(PsiLabeledStatement statement) {
+                super.visitLabeledStatement(statement);
+            }
+
+            @Override
+            public void visitReturnStatement(PsiReturnStatement statement) {
+                super.visitReturnStatement(statement);
+            }
+
+            @Override
+            public void visitSwitchLabelStatement(PsiSwitchLabelStatement statement) {
+                super.visitSwitchLabelStatement(statement);
+            }
+
+            @Override
+            public void visitSwitchLabeledRuleStatement(PsiSwitchLabeledRuleStatement statement) {
+                super.visitSwitchLabeledRuleStatement(statement);
+            }
+
+            @Override
+            public void visitSwitchStatement(PsiSwitchStatement statement) {
+                super.visitSwitchStatement(statement);
+            }
+
+            @Override
+            public void visitTryStatement(PsiTryStatement statement) {
+                super.visitTryStatement(statement);
+            }
+
+            @Override
+            public void visitCatchSection(PsiCatchSection section) {
+                super.visitCatchSection(section);
+            }
+
+            @Override
+            public void visitWhileStatement(PsiWhileStatement statement) {
+                super.visitWhileStatement(statement);
+                PsiWhileStatement
+            }
+        };
+
+        statement.accept(visitor);
+        return !expRefactorList.isEmpty();
     }
 
     /**
@@ -92,19 +204,21 @@ public class ExtractVariable extends BaseRefactorAction {
 
         String extVarName = "extVar" + Integer.toString(extVarNum++);
 
-        // Delete Original Method
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            PsiExpression varExp = CreatePsi.createExpression(project, extVarName);
-            PsiStatement assignStatement = CreatePsi.createExtractVariableAssignStatement(
-                    project, extVarName, psiExpression);
+        for (PsiExpression psiExpression : expRefactorList) {
+            // Delete Original Method
+            WriteCommandAction.runWriteCommandAction(project, () -> {
+                PsiExpression varExp = CreatePsi.createExpression(project, extVarName);
+                PsiStatement assignStatement = CreatePsi.createExtractVariableAssignStatement(
+                        project, extVarName, psiExpression);
 
-            if (assignStatement != null && psiStatement != null) {
-                // TODO: Insert AssignExp
-                psiStatement.addBefore(assignStatement, psiStatement.getLastChild());
+                if (assignStatement != null && psiStatement != null) {
+                    // Insert AssignExp
+                    psiStatement.addBefore(assignStatement, psiStatement.getLastChild());
 
-                // TODO: Exchange Var Exp
-                psiStatement.replace(varExp);
-            }
-        });
+                    // Exchange Exp into Var
+                    psiStatement.replace(varExp);
+                }
+            });
+        }
     }
 }
