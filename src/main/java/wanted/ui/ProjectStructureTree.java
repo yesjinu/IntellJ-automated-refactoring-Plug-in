@@ -99,7 +99,7 @@ class ProjectStructureTree extends Tree {
                     else if (v instanceof PsiLiteralExpression){ // TODO
                         setIcon(Icon3);
                         String fileName = ((PsiLiteralExpression) v).getContainingFile().getName();
-                        append("[" + fileName + "] " + ((PsiLiteralExpression)v).toString());
+                        append("[" + fileName + "] " + ((PsiLiteralExpression)v).getValue().toString());
                     }
                 }
 

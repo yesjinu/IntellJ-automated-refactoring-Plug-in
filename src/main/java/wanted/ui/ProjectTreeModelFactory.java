@@ -4,12 +4,16 @@ import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
+import com.intellij.vcs.log.Hash;
+import groovy.lang.Tuple2;
 import wanted.refactoring.*;
+import wanted.utils.FindPsi;
 import wanted.utils.TraverseProjectPsi;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import java.util.*;
 
 /**
@@ -44,6 +48,7 @@ class ProjectTreeModelFactory {
 
         // traverse
         final JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
+
             @Override
             public void visitPackage(PsiPackage pack) {
                 for (PsiPackage subPack : pack.getSubPackages()) subPack.accept(this);
@@ -62,6 +67,16 @@ class ProjectTreeModelFactory {
                 if(IntroduceForeignMethodAction.refactorValid(project, psiClass)) {
                     addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
+
+                // RMN
+                if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; } //
+                Set<String> literals = new HashSet<>();
+                FindPsi.findPsiLiteralExpressions(psiClass).forEach(e -> {
+                    if (!literals.contains(e.getText()) && ReplaceMagicNumber.refactorValid(project, e)) { // if new refactorable literal
+                        addTreeNodes(root, rootRef, "RMN", e);
+                        literals.add(e.getText());
+                    }
+                });
             }
 
             /**
@@ -149,20 +164,6 @@ class ProjectTreeModelFactory {
                     if (adding) addTreeNodes(root, rootRef, "INA", s);
                 }
             }
-
-            @Override
-            public void visitLiteralExpression(PsiLiteralExpression literalExpression)
-            {
-                super.visitLiteralExpression(literalExpression);
-
-                // RPM
-                // TODO: Remove duplicate
-                if(ReplaceMagicNumber.refactorValid(project, literalExpression))
-                {
-                    addTreeNodes(root, rootRef, "RPM", literalExpression);
-                }
-
-            }
         };
 
         TraverseProjectPsi.getRootPackages(project).forEach(aPackage -> aPackage.accept(visitor));
@@ -203,7 +204,7 @@ class ProjectTreeModelFactory {
                 return new IntroduceAssertion().storyName();
 
             // Scope: expression
-            case "RPM":
+            case "RMN":
                 return new ReplaceMagicNumber().storyName();
 
             default:
@@ -231,6 +232,7 @@ class ProjectTreeModelFactory {
             addRefactoringTechniques(root, rootRef, id);
 
         rootRefNode = rootRef.get(id);
+
         rootRefNode.add(
                 new DefaultMutableTreeNode (psiElement));
     }
