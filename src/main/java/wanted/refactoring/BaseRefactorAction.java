@@ -145,8 +145,10 @@ public abstract class BaseRefactorAction extends AnAction {
             Map<PsiFile, String> fileMap = new HashMap<>();
             for (PsiFile f : fileList) fileMap.put(f, f.getText());
 
+            // Refactor
             refactor(e);
 
+            // Composing changeMap (PsiFile -> PsiFile for Changed PsiFiles)
             List<SimpleDiffRequest> requestList = new ArrayList<>();
             Map<PsiFile, String> changeMap = new HashMap<>();
             PsiFile[] ff = fileMap.keySet().toArray(new PsiFile[fileMap.size()]);
@@ -163,9 +165,12 @@ public abstract class BaseRefactorAction extends AnAction {
                     });
                 }
             }
-            SimpleDiffRequestChain requestChain = new SimpleDiffRequestChain(requestList);
 
-            DiffWindowWithButton window = new DiffWindowWithButton(project, requestChain, new DiffDialogHints(WindowWrapper.Mode.FRAME), changeMap);
+            // Opening Window
+            SimpleDiffRequestChain requestChain = new SimpleDiffRequestChain(requestList);
+            DiffWindowWithButton window = new DiffWindowWithButton(
+                    project, requestChain, new DiffDialogHints(WindowWrapper.Mode.FRAME),
+                    changeMap, this);
             window.show();
         }
     }
