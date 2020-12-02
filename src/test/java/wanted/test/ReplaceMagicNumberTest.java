@@ -79,4 +79,9 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
             // nothing
         }
     }
+
+    /* Test 10: replace with pre-defined constant(string case) */
+    public void testReplaceMagicNumber10() throws Exception {
+        doTest();
+    }
 }
