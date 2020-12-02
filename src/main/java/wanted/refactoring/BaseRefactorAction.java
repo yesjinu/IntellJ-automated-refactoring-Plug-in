@@ -20,6 +20,7 @@ import com.intellij.openapi.ui.WindowWrapperBuilder;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import wanted.ui.RefactorPreviewWindow;
 import wanted.utils.NavigatePsi;
 
 import javax.swing.*;
@@ -140,32 +141,7 @@ public abstract class BaseRefactorAction extends AnAction {
             Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);
         }
         else {
-            NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
-            Project project = navigator.findProject();
-
-            PsiFile file = navigator.findFile();
-            DiffContent contentBefore = DiffContentFactory.getInstance().create(project, file.getText());
-
-            refactor(e);
-
-            DiffContent contentAfter = DiffContentFactory.getInstance().create(project, file.getText());
-
-            SimpleDiffRequest request = new SimpleDiffRequest("Before - After", contentBefore, contentAfter, "Before", "After");
-
-            SimpleDiffRequestChain requestChain = new SimpleDiffRequestChain(Arrays.asList(request, request));
-
-
-
-            JComponent dialogPanel = new JPanel();
-            DiffWindow b = new DiffWindow(project, requestChain, new DiffDialogHints(WindowWrapper.Mode.FRAME, dialogPanel));
-            JFrame f = new JFrame();
-            f.add(dialogPanel);
-            f.setVisible(true);
-
-
-
-
-
+            new RefactorPreviewWindow(this, e).showAndGet();
         }
     }
 }
