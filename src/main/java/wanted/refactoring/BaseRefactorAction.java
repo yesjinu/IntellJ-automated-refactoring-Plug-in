@@ -5,18 +5,23 @@ import com.intellij.diff.chains.SimpleDiffRequestChain;
 import com.intellij.diff.contents.DiffContent;
 import com.intellij.diff.requests.SimpleDiffRequest;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.WindowWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import wanted.ui.DiffWindowWithButton;
 import wanted.utils.NavigatePsi;
+import wanted.utils.TraverseProjectPsi;
 
-import java.util.Arrays;
+import java.util.*;
+import java.util.List;
 
 /**
  * Abstract class to provide refactoring techniques.
@@ -26,6 +31,8 @@ import java.util.Arrays;
  * @author Chanyoung Kim
  */
 public abstract class BaseRefactorAction extends AnAction {
+
+    protected int changedCount = 0;
 
     /**
      * Returns the story name as a string format, for message.
@@ -133,20 +140,32 @@ public abstract class BaseRefactorAction extends AnAction {
         else {
             NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
             Project project = navigator.findProject();
+            List<PsiFile> fileList = TraverseProjectPsi.findFile(project);
 
-            PsiFile file = navigator.findFile();
-            DiffContent contentBefore = DiffContentFactory.getInstance().create(project, file.getText());
+            Map<PsiFile, String> fileMap = new HashMap<>();
+            for (PsiFile f : fileList) fileMap.put(f, f.getText());
 
             refactor(e);
 
-            DiffContent contentAfter = DiffContentFactory.getInstance().create(project, file.getText());
+            List<SimpleDiffRequest> requestList = new ArrayList<>();
+            Map<PsiFile, String> changeMap = new HashMap<>();
+            PsiFile[] ff = fileMap.keySet().toArray(new PsiFile[fileMap.size()]);
+            for (PsiFile f : ff) {
+                if (!f.getText().equals(fileMap.get(f))) {
+                    DiffContent contentBefore = DiffContentFactory.getInstance().create(project, fileMap.get(f));
+                    DiffContent contentAfter = DiffContentFactory.getInstance().create(project, f.getText());
+                    requestList.add(new SimpleDiffRequest(f.getName(), contentBefore, contentAfter, "Original", "Refactor"));
 
-            SimpleDiffRequest request = new SimpleDiffRequest("Before - After", contentBefore, contentAfter, "Before", "After");
-            SimpleDiffRequest request2 = new SimpleDiffRequest("Before - After", contentAfter, contentBefore, "Before", "After");
-            SimpleDiffRequestChain requestChain = new SimpleDiffRequestChain(Arrays.asList(request, request2));
+                    changeMap.put(f, f.getText());
+                    WriteCommandAction.runWriteCommandAction(project, ()-> {
+                        Document document = PsiDocumentManager.getInstance(project).getDocument(f);
+                        document.setText(fileMap.get(f));
+                    });
+                }
+            }
+            SimpleDiffRequestChain requestChain = new SimpleDiffRequestChain(requestList);
 
-            DiffWindowWithButton window = new DiffWindowWithButton(project, requestChain, new DiffDialogHints(WindowWrapper.Mode.FRAME));
-
+            DiffWindowWithButton window = new DiffWindowWithButton(project, requestChain, new DiffDialogHints(WindowWrapper.Mode.FRAME), changeMap);
             window.show();
         }
     }

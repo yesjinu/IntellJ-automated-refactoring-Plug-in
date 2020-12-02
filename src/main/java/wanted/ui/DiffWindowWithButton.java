@@ -6,13 +6,14 @@ import com.intellij.diff.impl.CacheDiffRequestChainProcessor;
 import com.intellij.diff.impl.DiffRequestProcessor;
 import com.intellij.diff.util.DiffUserDataKeys;
 import com.intellij.diff.util.DiffUtil;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.WindowWrapper;
 import com.intellij.openapi.ui.WindowWrapperBuilder;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.util.NlsContexts;
-import com.intellij.ui.CommonActionsPanel;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +22,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 public class DiffWindowWithButton {
     @NotNull private final DiffRequestChain myRequestChain;
@@ -31,10 +33,13 @@ public class DiffWindowWithButton {
     private DiffRequestProcessor myProcessor;
     private WindowWrapper myWrapper;
 
-    public DiffWindowWithButton(@Nullable Project project, @NotNull DiffRequestChain requestChain, @NotNull DiffDialogHints hints) {
+    private Map<PsiFile, String> changeMap;
+
+    public DiffWindowWithButton(@Nullable Project project, @NotNull DiffRequestChain requestChain, @NotNull DiffDialogHints hints, Map<PsiFile, String> changeMap) {
         myProject = project;
         myHints = hints;
         myRequestChain = requestChain;
+        this.changeMap = changeMap;
     }
 
     protected void init() {
@@ -87,6 +92,13 @@ public class DiffWindowWithButton {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     myWrapper.close();
+                    PsiFile[] ff = changeMap.keySet().toArray(new PsiFile[changeMap.size()]);
+                    for (PsiFile f : ff) {
+                        WriteCommandAction.runWriteCommandAction(myProject, ()-> {
+                            Document document = PsiDocumentManager.getInstance(myProject).getDocument(f);
+                            document.setText(changeMap.get(f));
+                        });
+                    }
                 }
             });
 
