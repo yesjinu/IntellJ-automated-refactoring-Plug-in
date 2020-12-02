@@ -9,9 +9,7 @@ import com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl;
 import com.intellij.psi.tree.IElementType;
 import wanted.utils.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class to provide refactoring: 'Replace Magic Number'
@@ -61,7 +59,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
      * also, due to the PsiType implementation of Intellij,
      * - short and byte literal expressions are treated as integer
      * - for long type literal without L notation, if it's value is between -2^31 ~ 2^31-1 it is treated as integer
-     * - for char type literal without single quote notation, if it's value is between -2^31 ~ 2^31-1 it is treated as integer
+     * - for char type literal, if it's value is between -2^31 ~ 2^31-1 it is treated as integer
      */
     public static boolean refactorValid(Project project, PsiLiteralExpression literal) {
         if((literal==null)||(literal.getType()==null||(literal.getValue()==null))){ return false; }
@@ -101,6 +99,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         int num = 1;
         PsiField constant = null;
         boolean needNewSymbol = true;
+        Set<String> names = new HashSet<>();
 
         // find if there is constant with same value or name CONSTANT#N
         for(PsiField f : targetClass.getFields())
@@ -115,7 +114,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
                     break;
                 }
             }
-            if(f.getName().equals("CONSTANT"+num)){ num++; }
+            if(f.getName().contains("CONSTANT")){ names.add(f.getName()); }
         }
 
         // introduce constant if needed
@@ -123,6 +122,9 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         if(needNewSymbol)
         {
             String[] modifiers = { PsiModifier.STATIC, PsiModifier.FINAL };
+
+            while(names.contains("CONSTANT"+num)){ num++; } // find unreserved constant number
+
             constant = CreatePsi.createField(project, modifiers, literal.getType(), "CONSTANT"+num, literal.getText());
             constant.getModifierList().setModifierProperty(PsiModifier.PRIVATE, false); // remove default private modifier
             addList.add(constant);
