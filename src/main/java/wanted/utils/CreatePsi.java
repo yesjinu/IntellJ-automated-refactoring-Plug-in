@@ -169,8 +169,17 @@ public class CreatePsi {
         return newStatement;
     }
 
-    // TODO
-    public static PsiField createField(@NotNull Project project, String[] modifiers, @NotNull PsiType type, @NotNull String name, String value)
+    /**
+     * Create PsiField with given parameters
+     *
+     * @param project target context
+     * @param modifiers modifier of PsiField, 'private' modifier is added as default
+     * @param type type of field
+     * @param name name of field
+     * @param value initializer of field, null if initializer is not needed
+     * @return
+     */
+    public static  PsiField createField(@NotNull Project project, String[] modifiers, @NotNull PsiType type, @NotNull String name, String value)
     {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -180,17 +189,26 @@ public class CreatePsi {
             newField.getModifierList().setModifierProperty(m, true);
         }
 
-        PsiExpression initialize = factory.createExpressionFromText(value, null); // add initializer
-        newField.setInitializer(initialize);
+        if(value!=null)
+        {
+            PsiExpression initialize = factory.createExpressionFromText(value, null); // add initializer
+            newField.setInitializer(initialize);
+        }
 
         return newField;
     }
 
-    // TODO
-    public static PsiElement createPsiExpression(@Nullable Project project, String name) {
+    /**
+     * Create PsiElement by text
+     *
+     * @param project context
+     * @param content content of expression to create
+     * @return PsiElement
+     */
+    public static PsiElement createPsiElement(@Nullable Project project, @NotNull String content) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
-        PsiElement ret = factory.createExpressionFromText(name, null);
+        PsiElement ret = factory.createExpressionFromText(content, null);
 
         return ret;
     }

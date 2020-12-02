@@ -34,8 +34,14 @@ public class AddPsi {
         }
     }
 
-    // TODO:
-    public static void addField(@NotNull PsiClass targetClass, @NotNull List<PsiElement> addList)
+    /**
+     * add all PsiField of addList to target class
+     * append at end of existing fields
+     *
+     * @param targetClass class to modify
+     * @param addList PsiFields to add, element of list will be appended in order
+     */
+    public static void addField(@NotNull PsiClass targetClass, @NotNull List<PsiField> addList)
     {
         PsiElement element;
 

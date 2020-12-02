@@ -17,6 +17,7 @@ import java.util.List;
  * Class to provide refactoring: 'Replace Magic Number'
  *
  * @author seha Park
+ * look refactorValid() to find refactoring condition
  */
 public class ReplaceMagicNumber extends BaseRefactorAction{
     private Project project;
@@ -47,41 +48,47 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
     }
 
     /**
-     * Refactoring condition:
-     * string - not whitespace or empty string
-     * numerical - not 0, 1, 2 (0.0, 1.0, 2.0 is ok)
-     * - int, long, float, double, short(int)
-     * char - not whitespace
-     * @param project
-     * @param literal
-     * @return
+     * Check if literal is valid and it is worth to refactor
+     *
+     * @param project not used
+     * @param literal literal expression selected by user
+     * @return true if it is refotorable, else return false
+     * @note refactoring condition
+     * - String : not whitespace or empty string
+     * - Char : not whitespace
+     * - Int : not 0, 1, 2
+     *
+     * also, due to the PsiType implementation of Intellij,
+     * - short and byte literal expressions are treated as integer
+     * - for long type literal without L notation, if it's value is between -2^31 ~ 2^31-1 it is treated as integer
+     * - for char type literal without single quote notation, if it's value is between -2^31 ~ 2^31-1 it is treated as integer
      */
-    //TODO: short ??
     public static boolean refactorValid(Project project, PsiLiteralExpression literal) {
-        if(literal==null){ return false; }
+        if((literal==null)||(literal.getType()==null)){ return false; }
 
         IElementType literalType = ((PsiLiteralExpressionImpl)literal).getLiteralElementType();
 
-        PsiType[] types = {PsiType.INT, PsiType.LONG, PsiType.FLOAT, PsiType.DOUBLE};
         List<PsiType> numericalTypes = new ArrayList<>(); // PsiTypes representing numerical types
+        PsiType[] types = {PsiType.INT, PsiType.LONG, PsiType.FLOAT, PsiType.DOUBLE};
         numericalTypes.addAll(Arrays.asList(types));
 
         // decide whether literal is worth to refactor
         if(ElementType.STRING_LITERALS.contains(literalType)) // string
         {
-            if(literal.getValue().equals("")||literal.getValue().equals(" ")){ return false; }
-            else { return true; }
-        } else if(literal.getType().equals(PsiType.CHAR)) // char
+            if((!literal.getValue().equals(""))&&(!literal.getValue().equals(" "))){ return true; }
+        } else if(literal.getType().equals(PsiType.CHAR) && (!literal.getValue().equals(' '))) // refactor non-blank char
         {
-            if(literal.getValue().equals(' ')){ return false; }
-            else { return true; }
-        } else if(numericalTypes.contains(literal.getType())) // numerical value
+            return true;
+        } else if(literal.getType().equals(PsiType.INT)) //  for int, bytes, short, and some of long, char that represent int
         {
             Object val = literal.getValue();
-            if(val.equals(0)||val.equals(1)||val.equals(2)){ return false; }
-            else{ return true; }
+            if(!((val.equals(0)) || val.equals(1) || val.equals(2))){ return true; } // refactor non-trivial values
+        } else if(numericalTypes.contains(literal.getType()))
+        {
+            return true;
         }
-        else { return false; } // do not refactor others (ex. user-defined class, boolean ... )
+
+        return false; // do not refactor others (ex. user-defined class, boolean ... )
     }
 
     @Override
@@ -92,17 +99,17 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
 
         // build symbolic constant with name constant#N
         int num = 1;
-        PsiField symbol = null;
+        PsiField constant = null;
         boolean needNewSymbol = true;
 
         // find if there is constant with same value or name CONSTANT#N
         for(PsiField f : targetClass.getFields())
         {
-            if(f.hasInitializer() && f.getInitializer().toString().equals(literal.toString()))
+            if(f.hasInitializer() && f.getInitializer().getText().equals(literal.getValue().toString())) // if value is same
             {
-                if(f.hasModifierProperty(PsiModifier.STATIC) && f.hasModifierProperty(PsiModifier.FINAL)) // field already exist
+                if(f.hasModifierProperty(PsiModifier.STATIC) && f.hasModifierProperty(PsiModifier.FINAL)) // if static final field already exists
                 {
-                    symbol  = f;
+                    constant  = f;
                     needNewSymbol = false;
                     expressions.remove(FindPsi.findChildPsiLiteralExpressions(f).get(0));
                     break;
@@ -111,24 +118,24 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
             if(f.getName().equals("CONSTANT"+num)){ num++; }
         }
 
-        List<PsiElement> addList = new ArrayList<>();
-
+        // introduce constant if needed
+        List<PsiField> addList = new ArrayList<>();
         if(needNewSymbol)
         {
-            String[] modifiers = {PsiModifier.STATIC, PsiModifier.FINAL };
-            symbol = CreatePsi.createField(project, modifiers, literal.getType(), "CONSTANT"+num, literal.getText());
-            symbol.getModifierList().setModifierProperty(PsiModifier.PRIVATE, false);
-            addList.add(symbol);
+            String[] modifiers = { PsiModifier.STATIC, PsiModifier.FINAL };
+            constant = CreatePsi.createField(project, modifiers, literal.getType(), "CONSTANT"+num, literal.getText());
+            constant.getModifierList().setModifierProperty(PsiModifier.PRIVATE, false); // remove default private modifier
+            addList.add(constant);
 
             WriteCommandAction.runWriteCommandAction(project, ()->{
                 AddPsi.addField(targetClass, addList);  // add constant to field
             });
         }
 
-        PsiElement ret = CreatePsi.createPsiExpression(project, symbol.getName());
+        PsiElement ret = CreatePsi.createPsiElement(project, constant.getName());
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
-            // replace into constant
+            // replace literal expression into constant
             for(PsiLiteralExpression expression : expressions){ expression.replace(ret); }
         });
     }
