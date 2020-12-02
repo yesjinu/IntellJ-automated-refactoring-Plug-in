@@ -4,8 +4,6 @@ import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
-import com.intellij.vcs.log.Hash;
-import groovy.lang.Tuple2;
 import wanted.refactoring.*;
 import wanted.utils.FindPsi;
 import wanted.utils.TraverseProjectPsi;
@@ -13,7 +11,6 @@ import wanted.utils.TraverseProjectPsi;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
 import java.util.*;
 
 /**
@@ -69,7 +66,7 @@ class ProjectTreeModelFactory {
                 }
 
                 // RMN
-                if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; } //
+                if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; }
                 Set<String> literals = new HashSet<>();
                 FindPsi.findPsiLiteralExpressions(psiClass).forEach(e -> {
                     if (!literals.contains(e.getText()) && ReplaceMagicNumber.refactorValid(project, e)) { // if new refactorable literal

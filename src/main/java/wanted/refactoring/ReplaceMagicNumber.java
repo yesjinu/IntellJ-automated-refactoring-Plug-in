@@ -4,18 +4,15 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.ResolveScopeManager;
-import com.intellij.psi.impl.source.PsiClassReferenceType;
 import com.intellij.psi.impl.source.tree.ElementType;
 import com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl;
 import com.intellij.psi.tree.IElementType;
 import wanted.utils.*;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-//TODO: write docs
+
 /**
  * Class to provide refactoring: 'Replace Magic Number'
  *
@@ -42,7 +39,9 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         literal = navigator.findLiteral();
         if(literal==null){ return false; }
 
+        /* get class containing literal expression */
         targetClass = FindPsi.getContainingClass(literal);
+        if(targetClass==null){ return false; }
 
         return refactorValid(project, literal);
     }
@@ -66,6 +65,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         PsiType[] types = {PsiType.INT, PsiType.LONG, PsiType.FLOAT, PsiType.DOUBLE};
         List<PsiType> numericalTypes = new ArrayList<>(); // PsiTypes representing numerical types
         numericalTypes.addAll(Arrays.asList(types));
+
         // decide whether literal is worth to refactor
         if(ElementType.STRING_LITERALS.contains(literalType)) // string
         {

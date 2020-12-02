@@ -1,9 +1,19 @@
 public class basic {
-    public void method1()
+    static final String CONSTANT1 = "CSED332";
+
+    public void method1(String str1)
     {
-        for(int i=0; i<5; i++)
+        System.out.println("Course: " + CONSTANT1);
+        System.out.println("Course: CSED332");
+
+        if(str1.equals(CONSTANT1))
         {
-            System.out.println(i);
+            System.out.println("correct");
         }
+    }
+
+    public void CSED332()
+    {
+        System.out.println("correct");
     }
 }

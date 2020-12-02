@@ -1,10 +1,9 @@
 package wanted.utils;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.ArrayList;
@@ -186,14 +185,20 @@ public class FindPsi {
         return (PsiClass) targetClass;
     }
 
-    // TODO:
-    public static PsiClass getContainingClass(PsiElement element) {
+    /**
+     * Return containing class of element
+     *
+     * @param element PsiElement to find containing class
+     * @return PsiClass, or null if there's no containing class
+     */
+    public static @Nullable PsiClass getContainingClass(@NotNull PsiElement element) {
         PsiElement targetClass = element;
         while (!(targetClass instanceof PsiClass)) {
             targetClass = targetClass.getParent();
             if (targetClass == null)
                 return null;
         }
+
         return (PsiClass)targetClass;
     }
 
@@ -468,7 +473,10 @@ public class FindPsi {
     }
 
     /**
-    TODO:
+     * Return the List containing PsiLiteralExpression in current PsiElement
+     *
+     * @param element search scope
+     * @return List<PsiLiteralExpression> if element has PsiLiteralExpression, empty() otherwise
      */
     public static List<PsiLiteralExpression> findPsiLiteralExpressions(PsiElement element) {
         List<PsiLiteralExpression> result = new ArrayList<>();
@@ -548,14 +556,19 @@ public class FindPsi {
     }
 
     /**
-     * TODO:
+     * Return list with same literal value in current PsiElement
+     *
+     * @param element search scope
+     * @param literal value to find
+     * @return List<PsiLiteralExpression> that both value and type matches with literal, which contains itself
+     * @note short, byte, long with value ~2^31 ~ 2^31-1, and char with value ~2^31 ~ 2^31-1 are treated as Integer
      */
-    public static List<PsiLiteralExpression> findLiteralUsage(PsiClass focusClass, PsiLiteralExpression literal) {
-        List<PsiLiteralExpression> expressions = findPsiLiteralExpressions(focusClass);
+    public static List<PsiLiteralExpression> findLiteralUsage(@NotNull PsiElement element, @NotNull PsiLiteralExpression literal) {
+        List<PsiLiteralExpression> expressions = findPsiLiteralExpressions(element);
         List<PsiLiteralExpression> ret = new ArrayList<>();
 
         for (PsiLiteralExpression l : expressions) {
-            if(l.getText().equals(literal.getText()))
+            if(l.getValue().equals(literal.getValue()) && l.getType().equals(literal.getType()))
             {
                 ret.add(l);
             }

@@ -25,23 +25,23 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
         doTest();
     }
 
-    /* Test 3: do not refactor when value is 0 */
+    /* Test 3: Replace string */
     public void testReplaceMagicNumber3() throws Exception {
-        try
-        {
-            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
-        }catch(RuntimeException e) {
-            // nothing
-        }
+        doTest();
     }
 
-    /* Test 4: Replace string */
+    /* Test 4: add constant proper name */
     public void testReplaceMagicNumber4() throws Exception {
         doTest();
     }
 
-    /* Test 5: caret points to invalid element */
+    /* Test 5: replace with pre-defined constant */
     public void testReplaceMagicNumber5() throws Exception {
+        doTest();
+    }
+
+    /* Test 6: caret points to invalid element */
+    public void testReplaceMagicNumber6() throws Exception {
         try
         {
             doTest(); // This cause error since refactorValid() returns false and Message dialog appears
@@ -50,14 +50,14 @@ public class ReplaceMagicNumberTest extends LightActionTestCase  {
         }
     }
 
-    /* Test 6: add constant proper name */
-    public void testReplaceMagicNumber6() throws Exception {
-        doTest();
-    }
-
-    /* Test 7: replace with pre-defined constant */
+    /* Test 7: do not refactor when value is 0 */
     public void testReplaceMagicNumber7() throws Exception {
-        doTest();
+        try
+        {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        }catch(RuntimeException e) {
+            // nothing
+        }
     }
 
     /* Test 8: do not refactor when value is 2 */

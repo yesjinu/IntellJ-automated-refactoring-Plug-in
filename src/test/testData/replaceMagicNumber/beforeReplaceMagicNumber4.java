@@ -1,17 +1,13 @@
 public class basic {
-    public void method1(String str1)
-    {
-        System.out.println("Course: " + "CSED332");
-        System.out.println("Course: CSED332");
+    static final double CONSTANT1 = 3.141592;
 
-        if(str1.equals("CSED3<caret>32"))
-        {
-            System.out.println("correct");
-        }
+    double area(double radius) {
+        return radius * radius * CONSTANT1;
     }
 
-    public void CSED332()
-    {
-        System.out.println("correct");
-    }
+    double circumference(double radius) { return 2 * CONSTANT1 * radius;}
+
+    String method1(String input) { return "Good" + input; }
+
+    String method2(String input) { return "Not" + "Go<caret>od" + input; }
 }
