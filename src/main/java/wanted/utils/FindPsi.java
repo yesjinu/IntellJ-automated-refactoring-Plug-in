@@ -568,7 +568,8 @@ public class FindPsi {
         List<PsiLiteralExpression> ret = new ArrayList<>();
 
         for (PsiLiteralExpression l : expressions) {
-            if(l.getValue().equals(literal.getValue()) && l.getType().equals(literal.getType()))
+            Object value = l.getValue();
+            if(value!=null && value.equals(literal.getValue()) && l.getType().equals(literal.getType()))
             {
                 ret.add(l);
             }

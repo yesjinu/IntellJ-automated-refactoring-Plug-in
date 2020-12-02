@@ -64,7 +64,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
      * - for char type literal without single quote notation, if it's value is between -2^31 ~ 2^31-1 it is treated as integer
      */
     public static boolean refactorValid(Project project, PsiLiteralExpression literal) {
-        if((literal==null)||(literal.getType()==null)){ return false; }
+        if((literal==null)||(literal.getType()==null||(literal.getValue()==null))){ return false; }
 
         IElementType literalType = ((PsiLiteralExpressionImpl)literal).getLiteralElementType();
 
