@@ -3,8 +3,8 @@ public class basic {
 
     public void method1()
     {
-        String x = "aaa";
-        System.out.println("aaa");
-        System.out.println("aaa"+"bbb");
+        String x = CONSTANT1;
+        System.out.println(CONSTANT1);
+        System.out.println(CONSTANT1+"bbb");
     }
 }

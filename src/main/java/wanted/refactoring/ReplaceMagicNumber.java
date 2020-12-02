@@ -105,7 +105,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         // find if there is constant with same value or name CONSTANT#N
         for(PsiField f : targetClass.getFields())
         {
-            if(f.hasInitializer() && f.getInitializer().getText().equals(literal.getValue().toString())) // if value is same
+            if(f.hasInitializer() && f.getInitializer().getText().equals(literal.getText())) // if value is same
             {
                 if(f.hasModifierProperty(PsiModifier.STATIC) && f.hasModifierProperty(PsiModifier.FINAL)) // if static final field already exists
                 {
