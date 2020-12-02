@@ -1,6 +1,8 @@
 package wanted.utils;
 
+import com.intellij.openapi.project.DefaultProjectFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 

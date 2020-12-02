@@ -9,6 +9,7 @@ import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import wanted.ui.RefactorPreviewWindow;
 
 /**
  * Abstract class to provide refactoring techniques.
@@ -39,7 +40,7 @@ public abstract class BaseRefactorAction extends AnAction {
      *
      * @param e AnActionEvent
      */
-    protected abstract void refactor(AnActionEvent e);
+    public abstract void refactor(AnActionEvent e);
 
     /**
      * Implement this method to provide your action handler.
@@ -124,6 +125,7 @@ public abstract class BaseRefactorAction extends AnAction {
         }
         else
         {
+            new RefactorPreviewWindow(this, e).showAndGet();
             refactor(e);
         }
     }

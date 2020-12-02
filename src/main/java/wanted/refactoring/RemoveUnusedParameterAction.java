@@ -93,7 +93,7 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e) {
+    public void refactor(AnActionEvent e) {
         Set<PsiParameter> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
         Set<PsiReferenceExpression> referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
         Set<PsiParameter> unusedParameter = new HashSet<>();
