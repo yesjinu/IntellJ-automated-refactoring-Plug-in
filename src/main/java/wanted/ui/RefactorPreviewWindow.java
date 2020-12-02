@@ -27,11 +27,6 @@ public class RefactorPreviewWindow extends DialogWrapper {
 
     private JPanel dialogPanel;
 
-    private Editor editorBefore;
-    private JComponent editorCompBefore;
-
-    private Editor editorAfter;
-    private JComponent editorCompAfter;
 
     private BaseRefactorAction refactorAction;
     private AnActionEvent e;
@@ -60,7 +55,7 @@ public class RefactorPreviewWindow extends DialogWrapper {
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
-        dialogPanel = new JPanel(new BorderLayout());
+        dialogPanel = new JPanel();
 
         fetchDiffUI(dialogPanel);
 

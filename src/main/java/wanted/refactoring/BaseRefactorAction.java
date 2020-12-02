@@ -1,15 +1,31 @@
 package wanted.refactoring;
 
+import com.google.wireless.android.sdk.stats.LayoutEditorState;
+import com.intellij.diff.*;
+import com.intellij.diff.chains.DiffRequestChain;
+import com.intellij.diff.chains.SimpleDiffRequestChain;
+import com.intellij.diff.contents.DiffContent;
+import com.intellij.diff.impl.DiffWindow;
+import com.intellij.diff.requests.SimpleDiffRequest;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.StdFileTypes;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.WindowWrapper;
+import com.intellij.openapi.ui.WindowWrapperBuilder;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
-import wanted.ui.RefactorPreviewWindow;
+import wanted.utils.NavigatePsi;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Abstract class to provide refactoring techniques.
@@ -123,10 +139,33 @@ public abstract class BaseRefactorAction extends AnAction {
         if(!refactorValid(e)) {
             Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);
         }
-        else
-        {
-            new RefactorPreviewWindow(this, e).showAndGet();
+        else {
+            NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+            Project project = navigator.findProject();
+
+            PsiFile file = navigator.findFile();
+            DiffContent contentBefore = DiffContentFactory.getInstance().create(project, file.getText());
+
             refactor(e);
+
+            DiffContent contentAfter = DiffContentFactory.getInstance().create(project, file.getText());
+
+            SimpleDiffRequest request = new SimpleDiffRequest("Before - After", contentBefore, contentAfter, "Before", "After");
+
+            SimpleDiffRequestChain requestChain = new SimpleDiffRequestChain(Arrays.asList(request, request));
+
+
+
+            JComponent dialogPanel = new JPanel();
+            DiffWindow b = new DiffWindow(project, requestChain, new DiffDialogHints(WindowWrapper.Mode.FRAME, dialogPanel));
+            JFrame f = new JFrame();
+            f.add(dialogPanel);
+            f.setVisible(true);
+
+
+
+
+
         }
     }
 }
