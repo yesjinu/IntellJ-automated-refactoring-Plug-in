@@ -87,7 +87,7 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e) {
+    public void refactor(AnActionEvent e) {
 
         while (isDupStatementFirst(getStatementList(ifStatement))) {
             WriteCommandAction.runWriteCommandAction(project, ()->{

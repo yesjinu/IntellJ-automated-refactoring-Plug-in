@@ -92,7 +92,7 @@ public class SelfEncapField extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e)
+    public void refactor(AnActionEvent e)
     {
         references = FindPsi.findMemberReference(member.getContainingClass(), member);
 
