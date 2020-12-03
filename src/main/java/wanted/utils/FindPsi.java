@@ -43,7 +43,7 @@ public class FindPsi {
                     continue;
                 }
 
-                Set<PsiReferenceExpression> refers = findReferenceExpression(s);
+                List<PsiReferenceExpression> refers = findReferenceExpression(s);
                 for (PsiReferenceExpression r : refers) {
                     if (r.isReferenceTo(member)) {
                         ret.add(r);
@@ -106,13 +106,13 @@ public class FindPsi {
     }
 
     /**
-     * returns set of reference expressions(symbols) in a method
+     * returns list of reference expressions(symbols) in a method
      *
      * @param focusElement : 검사하고 싶은 요소 (PsiElement)
      * @return set of used reference in PsiElement
      */
-    public static Set<PsiReferenceExpression> findReferenceExpression(PsiElement focusElement) {
-        Set<PsiReferenceExpression> result = new HashSet<>();
+    public static List<PsiReferenceExpression> findReferenceExpression(PsiElement focusElement) {
+        List<PsiReferenceExpression> result = new ArrayList<>();
         focusElement.accept((new JavaRecursiveElementVisitor() {
             @Override
             public void visitReferenceExpression(PsiReferenceExpression expression) {
@@ -527,5 +527,6 @@ public class FindPsi {
 
         return ret;
     }
+
 }
 
