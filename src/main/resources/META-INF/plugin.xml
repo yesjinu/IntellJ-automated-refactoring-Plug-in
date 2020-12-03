@@ -38,6 +38,8 @@
                     description="Simplifying Conditional Expressions: consolidate duplicate conditional fragments"/>
             <action id="Wanted-Refactoring.INA" class="wanted.refactoring.IntroduceAssertion" text="introduce assertion"
                     description="Simplifying Conditional Expressions: introduce assertion"/>
+            <action id="Wanted-Refactoring.RMN" class="wanted.refactoring.ReplaceMagicNumber" text="replace magic number"
+                    description="Data Organize: replace magic number"/>
         </group>
     </actions>
 </idea-plugin>

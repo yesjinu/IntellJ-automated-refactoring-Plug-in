@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 
 import java.util.Set;
 
@@ -171,6 +172,50 @@ public class CreatePsi {
     }
 
     /**
+     * Create PsiField with given parameters
+     *
+     * @param project target context
+     * @param modifiers modifier of PsiField, 'private' modifier is added as default
+     * @param type type of field
+     * @param name name of field
+     * @param value initializer of field, null if initializer is not needed
+     * @return
+     */
+    public static  PsiField createField(@NotNull Project project, String[] modifiers, @NotNull PsiType type, @NotNull String name, String value)
+    {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiField newField = factory.createField(name, type);
+        for(String m : modifiers) // add modifiers
+        {
+            newField.getModifierList().setModifierProperty(m, true);
+        }
+
+        if(value!=null)
+        {
+            PsiExpression initialize = factory.createExpressionFromText(value, null); // add initializer
+            newField.setInitializer(initialize);
+        }
+
+        return newField;
+    }
+
+    /**
+     * Create PsiElement by text
+     *
+     * @param project context
+     * @param content content of expression to create
+     * @return PsiElement
+     */
+    public static PsiElement createPsiElement(@Nullable Project project, @NotNull String content) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiElement ret = factory.createExpressionFromText(content, null);
+
+        return ret;
+    }
+
+    /**
      * Create Assert Statement that check not null in if statement
      *
      * @param project project
@@ -179,8 +224,8 @@ public class CreatePsi {
      * @param elseSet set of expressions in else statement that should be check not null
      * @return Assert Statement
      */
-    public static PsiStatement createAssertStatement(@NotNull Project project, PsiExpression condition, Set<PsiReferenceExpression> thenSet, Set<PsiReferenceExpression> elseSet) {
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+    public static PsiStatement createAssertStatement(@NotNull Project project, PsiExpression condition, Set<PsiReferenceExpression> thenSet, Set<PsiReferenceExpression> elseSet)
+    {    PsiElementFactory factory = PsiElementFactory.getInstance(project);
         String context = "";
 
         if (thenSet.isEmpty()) {

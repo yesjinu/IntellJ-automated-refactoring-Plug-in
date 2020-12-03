@@ -29,6 +29,7 @@ public class NavigatePsi {
     private static PsiClass focusClass;
     private static PsiMethod focusMethod;
     private static PsiField focusField;
+    private static PsiLiteralExpression focusLiteral;
 
     private static Editor editor;
     private static int caret;
@@ -71,6 +72,13 @@ public class NavigatePsi {
             } catch (ArrayIndexOutOfBoundsException exception) {
                 focusField = null;
             }
+
+            try {
+                caret = editor.getCaretModel().getOffset();
+                focusLiteral = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiLiteralExpression.class);
+            } catch (ArrayIndexOutOfBoundsException exception) {
+                focusLiteral = null;
+            }
         }
     }
 
@@ -100,4 +108,7 @@ public class NavigatePsi {
 
     /* return chosen field */
     public PsiField findField(){ return focusField; }
+
+    /* return chosen literal expression */
+    public PsiLiteralExpression findLiteral(){ return focusLiteral; }
 }
