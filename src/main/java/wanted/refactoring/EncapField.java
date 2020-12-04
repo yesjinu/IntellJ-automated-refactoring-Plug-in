@@ -64,7 +64,7 @@ public class EncapField extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e)
+    public void refactor(AnActionEvent e)
     {
        references = FindPsi.findMemberReference(file, member);
 

@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class SelfEncapField extends BaseRefactorAction {
     private Project project;
-    private PsiClass targetClass;
     private PsiField member;
     private List<PsiReferenceExpression> references;
 
@@ -47,8 +46,7 @@ public class SelfEncapField extends BaseRefactorAction {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
-        targetClass = navigator.findClass();
-        if(targetClass==null){ return false; }
+        if(project==null){ return false; }
 
         // find member from caret
         member = navigator.findField();
@@ -69,9 +67,10 @@ public class SelfEncapField extends BaseRefactorAction {
      * @see InlineMethodAction#refactorValid(Project, PsiMethod)
      */
     public static boolean refactorValid(Project project, PsiField member) {
-        if(member==null){ return false; } // nothing is chosen
+        if(member==null || member.getContainingClass()==null){ return false; } // nothing is chosen or invalid member
 
-        if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // member is not private
+        if(member.getModifierList()==null){ return false; } // PsiField with no modifier is public
+        else if(!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)){ return false; } // member is not private
 
         // check if there's getter or setter
         String newName = CreatePsi.capitalize(member);
@@ -91,9 +90,9 @@ public class SelfEncapField extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e)
+    public void refactor(AnActionEvent e)
     {
-        references = FindPsi.findMemberReference(targetClass, member);
+        references = FindPsi.findMemberReference(member.getContainingClass(), member);
 
         List<PsiElement> addList = new ArrayList<>();
 
@@ -104,7 +103,7 @@ public class SelfEncapField extends BaseRefactorAction {
         addList.add(setMember);
 
         WriteCommandAction.runWriteCommandAction(project, ()->{
-            AddPsi.addMethod(targetClass, addList); // add method in addList to targetClass
+            AddPsi.addMethod(member.getContainingClass(), addList); // add method in addList to targetClass
             ReplacePsi.encapFied(project, (PsiMethod)addList.get(0), (PsiMethod)addList.get(1), references); // encapsulate with getter and setter
         });
     }

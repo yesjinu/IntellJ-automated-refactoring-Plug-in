@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
 import wanted.refactoring.*;
+import wanted.utils.FindPsi;
 import wanted.utils.TraverseProjectPsi;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -44,6 +45,7 @@ class ProjectTreeModelFactory {
 
         // traverse
         final JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
+
             @Override
             public void visitPackage(PsiPackage pack) {
                 for (PsiPackage subPack : pack.getSubPackages()) subPack.accept(this);
@@ -62,6 +64,16 @@ class ProjectTreeModelFactory {
                 if(IntroduceForeignMethodAction.refactorValid(project, psiClass)) {
                     addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
+
+                // RMN
+                if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; }
+                Set<String> literals = new HashSet<>();
+                FindPsi.findPsiLiteralExpressions(psiClass).forEach(e -> {
+                    if (!literals.contains(e.getText()) && ReplaceMagicNumber.refactorValid(project, e)) { // if new refactorable literal
+                        addTreeNodes(root, rootRef, "RMN", e);
+                        literals.add(e.getText());
+                    }
+                });
             }
 
             /**
@@ -132,6 +144,22 @@ class ProjectTreeModelFactory {
                     }
                     if (adding) addTreeNodes(root, rootRef, "CDCF", s);
                 }
+
+                // INA
+                s = ifStatement;
+                while (s.getParent() instanceof PsiIfStatement) s = s.getParent();
+                if (IntroduceAssertion.refactorValid((PsiIfStatement) s)) {
+                    boolean adding = true;
+                    if (rootRef.get("INA") != null) {
+                        for (int i = 0; i < rootRef.get("INA").getChildCount(); i++) {
+                            if (((DefaultMutableTreeNode)rootRef.get("INA").getChildAt(i)).getUserObject() == s) {
+                                adding = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (adding) addTreeNodes(root, rootRef, "INA", s);
+                }
             }
         };
 
@@ -167,12 +195,14 @@ class ProjectTreeModelFactory {
             // Scope: Statement
             case "CCE":
                 return new ConsolidateCondExpr().storyName();
-
             case "CDCF":
                 return new ConsolidateDupCondFrag().storyName();
+            case "INA":
+                return new IntroduceAssertion().storyName();
 
-
-
+            // Scope: expression
+            case "RMN":
+                return new ReplaceMagicNumber().storyName();
 
             default:
                 return null;
@@ -199,6 +229,7 @@ class ProjectTreeModelFactory {
             addRefactoringTechniques(root, rootRef, id);
 
         rootRefNode = rootRef.get(id);
+
         rootRefNode.add(
                 new DefaultMutableTreeNode (psiElement));
     }
