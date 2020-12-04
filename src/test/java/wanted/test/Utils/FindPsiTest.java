@@ -1,4 +1,5 @@
-package wanted.test;
+
+package wanted.test.Utils;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.test.base.LightActionTestCase;

@@ -1,4 +1,4 @@
-package wanted.test;
+package wanted.test.Utils;
 
 public class NavigatePsiTest {
 }
