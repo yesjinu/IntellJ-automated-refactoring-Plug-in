@@ -1,9 +1,9 @@
 package wanted.test.Utils;
 
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiField;
 import wanted.test.base.LightActionTestCase;
-import wanted.utils.PsiUtilsTest;
 import wanted.utils.ReplacePsi;
 
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ public class ReplacePsiTest extends LightActionTestCase {
         params[2] = List.class;
 
         Object[] parameters = new Object[3];
+
         parameters[1] = del;
         parameters[2] = add;
 
