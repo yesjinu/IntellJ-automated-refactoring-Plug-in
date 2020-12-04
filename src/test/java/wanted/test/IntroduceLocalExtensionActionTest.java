@@ -22,7 +22,12 @@ public class IntroduceLocalExtensionActionTest extends LightActionTestCase {
     }
 
     public void testIntroduceLocalExtensionAction1() throws Exception {
-        doTest();
+        try {
+            doTest();
+        }
+        catch(RuntimeException e) {
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
     }
 
     public void testIntroduceLocalExtensionAction2() throws Exception {

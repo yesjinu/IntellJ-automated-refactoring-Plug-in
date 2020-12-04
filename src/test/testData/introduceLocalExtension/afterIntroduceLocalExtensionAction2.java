@@ -1,12 +1,12 @@
 import java.util.Date;
 
 class ModifiedDate extends Date {
-    public ModifiedDate (int year, int month, int date) {
-        super(year, month, date);
+    public ModifiedDate(int arg1, int arg2, int arg3) {
+        super(arg1, arg2, arg3);
     }
 
-    Date nextDay() {
-        return new Date(getYear(), getMonth(), getDate() + 1);
+    ModifiedDate nextDay() {
+        return new ModifiedDate(getYear(), getMonth(), getDate() + 1);
     }
 }
 
@@ -14,7 +14,6 @@ class Test {
     ModifiedDate previousEnd = new ModifiedDate(2020, 11, 1);
 
     void sendReport() {
-        Date nextDay = previousEnd.nextDay();
+        ModifiedDate nextDay = previousEnd.nextDay();
     }
-    PsiLiteralExpression
 }

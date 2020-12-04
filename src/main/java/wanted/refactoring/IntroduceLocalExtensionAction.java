@@ -1,9 +1,11 @@
 package wanted.refactoring;
 
+import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.PsiJavaParserFacade;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import wanted.utils.FindPsi;
@@ -157,6 +159,7 @@ public class IntroduceLocalExtensionAction extends BaseRefactorAction {
             List<PsiNewExpression> newExpressionList = FindPsi.findPsiNewExpressions(targetClass);
 
             for (PsiNewExpression nexp : newExpressionList) {
+
                 List<PsiJavaCodeReferenceElement> JCREList = FindPsi.findChildPsiJavaCodeReferenceElements(nexp);
                 if (JCREList.size() != 1) continue;
 
@@ -172,9 +175,12 @@ public class IntroduceLocalExtensionAction extends BaseRefactorAction {
                 List<PsiLiteralExpression> LEList = FindPsi.findChildPsiLiteralExpressions(EL);
                 if (LEList.size() != paramCounts.get(stm)) continue;
 
+                int count = 1;
                 for (PsiExpression exp : LEList) {
-                    utilityClassParamsType.get(stm).add(exp.getType().getCanonicalText());
+                    utilityClassParamsType.get(stm).add(exp.getType().getCanonicalText() + " arg" + Integer.toString(count++));
                 }
+
+                break;
             }
 
             // Determine whether the number of input parameters and the number of valid parameters are the same,
@@ -206,6 +212,7 @@ public class IntroduceLocalExtensionAction extends BaseRefactorAction {
     public void refactor(AnActionEvent e)
     {
         Project project = e.getProject();
+
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
@@ -213,20 +220,59 @@ public class IntroduceLocalExtensionAction extends BaseRefactorAction {
                 PsiMethod mtd = psiDclStateMap.get(stm);
                 PsiClass cls = psiMethodMap.get(mtd);
 
+                String className = "Modified" + utilityClassType.get(stm);
+                String classParams = StringUtils.join(utilityClassParamsType.get(stm), ", ");
+                int count = 1;
+                List<String> temp = new ArrayList<>();
+                for (int i = 0; i < utilityClassParamsType.get(stm).size(); i++) {
+                    temp.add("arg" + Integer.toString(count++));
+                }
+                String superParams = StringUtils.join(temp, ", ");
+                String newParams = StringUtils.join(params.get(stm), ", ");
+                newParams = newParams.replace("arg.", "");
+
+                String insertClass = "class " + className + " extends " + utilityClassType.get(stm) +" {" +
+                        "    public " + className + " (" + classParams + ") {" +
+                        "        super(" + superParams + ");" +
+                        "    }" +
+                        "" +
+                        "    " + className + " " + variableName.get(stm) + "() {" +
+                        "        return new " + className + "(" + newParams + ");" +
+                        "    }" +
+                        "}";
+
+                PsiFile javaFile = PsiFileFactory.getInstance(project).createFileFromText(Language.findLanguageByID("JAVA"), insertClass);
+                PsiClass newTempClass = getFirstClassFromFile(javaFile);
+
+                List<PsiJavaCodeReferenceElement> jcreList = FindPsi.findPsiJavaCodeReferenceElements(cls);
+                for (PsiJavaCodeReferenceElement jcre : jcreList) {
+                    if (jcre.getText().equals(utilityClassType.get(stm))) {
+                        PsiJavaCodeReferenceElement replace = factory.createReferenceFromText(className, null);
+                        jcre.replace(replace);
+                    }
+                }
+
+                cls.addBefore(newTempClass, cls.getFirstChild());
+
                 // Create and replace a new PsiDeclarationStatement corresponding to the refactoring result.
-                String statement = utilityClassType.get(stm) + " " + variableName.get(stm) + " = " + variableName.get(stm)
-                        + "(" + utilityClassName.get(stm) + ");";
+                String statement = className + " " + variableName.get(stm) + " = " + utilityClassName.get(stm)
+                        + "." + variableName.get(stm) + "();";
                 PsiStatement _stm = factory.createStatementFromText(statement, null);
                 stm.replace(_stm);
 
-                // Create and add a new method corresponding to the refactoring result.
-                String strMethod = "private static " + utilityClassType.get(stm) + " " + variableName.get(stm) + "(" + utilityClassType
-                        + " arg) { return new " + utilityClassType.get(stm) + "("
-                        + StringUtils.join(params.get(stm), ", ") + "); }";
-                PsiMethod _mtd = factory.createMethodFromText(strMethod, null);
-                cls.addBefore(_mtd, cls.getLastChild());
+
             }
         });
+    }
+
+    private PsiClass getFirstClassFromFile(PsiFile psiFile) {
+        for (PsiElement psiElement: psiFile.getChildren()) {
+            if (psiElement instanceof PsiClass) {
+                return (PsiClass) psiElement;
+            }
+        }
+
+        return null;
     }
 
     /**

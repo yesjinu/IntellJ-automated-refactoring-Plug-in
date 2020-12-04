@@ -1,15 +1,10 @@
 import java.util.Date;
 
-class ModifiedDate extends Date {
-    Date nextDay() {
-        return new Date(getYear(), getMonth(), getDate() + 1);
-    }
-}
-
 class Test {
-    ModifiedDate previousEnd = new ModifiedDate(2020, 12, 1);;
+    Date previousEnd;
 
     void sendReport() {
-        Date nextDay = previousEnd.nextDay();
+        Date nextDay = new Date(previousEnd.getYear(), previousEnd.getMonth(), previousEnd.getDate() + 1);
+        long k = 3;
     }
 }
