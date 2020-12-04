@@ -1,9 +1,9 @@
-<<<<<<< HEAD
 build/
 .gradle/
 src/.idea
-=======
-# IntelliJ project files 
+.vs/
+
+# IntelliJ project files
 *.iml
 .idea/
 
