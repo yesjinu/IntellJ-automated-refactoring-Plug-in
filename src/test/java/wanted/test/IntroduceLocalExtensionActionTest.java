@@ -24,4 +24,8 @@ public class IntroduceLocalExtensionActionTest extends LightActionTestCase {
     public void testIntroduceLocalExtensionAction1() throws Exception {
         doTest();
     }
+
+    public void testIntroduceLocalExtensionAction2() throws Exception {
+        doTest();
+    }
 }
