@@ -79,7 +79,7 @@ public class IntroduceAssertion extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e) {
+    public void refactor(AnActionEvent e) {
         PsiStatement thenStatement = ifStatement.getThenBranch();
         PsiStatement elseStatement = ifStatement.getElseBranch();
 

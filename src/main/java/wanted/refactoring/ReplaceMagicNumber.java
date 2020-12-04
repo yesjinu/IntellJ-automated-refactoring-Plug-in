@@ -92,7 +92,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
     }
 
     @Override
-    protected void refactor(AnActionEvent e)
+    public void refactor(AnActionEvent e)
     {
         // find expression with same value (it can be numeric value or string)
         expressions = FindPsi.findLiteralUsage(targetClass, literal);

@@ -167,7 +167,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e)
+    public void refactor(AnActionEvent e)
     {
         Project project = e.getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
