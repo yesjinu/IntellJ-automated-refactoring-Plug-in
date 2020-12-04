@@ -1,4 +1,4 @@
-package wanted.test.Utils;
+package wanted.test;
 
 public class DeletePsiTest {
 }
