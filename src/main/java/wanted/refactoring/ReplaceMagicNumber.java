@@ -35,6 +35,8 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
+        if(project==null){ return false; }
+
         literal = navigator.findLiteral();
         if(literal==null){ return false; }
 
@@ -90,7 +92,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
     }
 
     @Override
-    protected void refactor(AnActionEvent e)
+    public void refactor(AnActionEvent e)
     {
         // find expression with same value (it can be numeric value or string)
         expressions = FindPsi.findLiteralUsage(targetClass, literal);

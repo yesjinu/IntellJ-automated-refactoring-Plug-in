@@ -117,4 +117,29 @@ public class TraverseProjectPsi {
 
         return rootClasses;
     }
+
+    public static List<PsiFile> findFile(Project project) {
+        List<PsiFile> fileList = new ArrayList<>();
+
+        PsiElementVisitor visitor = new PsiElementVisitor() {
+            @Override
+            public void visitFile(PsiFile file) {
+                if (file != null) fileList.add(file);
+            }
+            @Override
+            public void visitDirectory(PsiDirectory dir) {
+                Arrays.stream(dir.getSubdirectories()).forEach(sd -> sd.accept(this));
+                Arrays.stream(dir.getFiles()).forEach(f -> f.accept(this));
+            }
+        };
+
+        ProjectRootManager rootManager = ProjectRootManager.getInstance(project);
+        PsiManager psiManager = PsiManager.getInstance(project);
+        Arrays.stream(rootManager.getContentSourceRoots())
+                .map(psiManager::findDirectory)
+                .filter(Objects::nonNull)
+                .forEach(dir -> dir.accept(visitor));
+
+        return fileList;
+    }
 }
