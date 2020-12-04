@@ -22,9 +22,10 @@ public class CreatePsi {
      *
      * @param project factory context
      * @param member member to build setter
+     * @param accessModifier modifier of setter. recommend private or public
      * @return PsiMethod with name setMember
      */
-    public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member, String accessModifier)
+    public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member, @NotNull String accessModifier)
     {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -44,9 +45,10 @@ public class CreatePsi {
      *
      * @param project factory context
      * @param member member to build getter
+     * @param accessModifier modifier of setter. recommend private or public
      * @return PsiMethod with name getMember
      */
-    public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member, String accessModifier)
+    public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member, @NotNull String accessModifier)
     {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 

@@ -10,7 +10,9 @@ import wanted.utils.ReplacePsi;
 import java.util.ArrayList;
 import java.util.List;
 
-/* style 1 */
+/**
+ * @author seha Park
+ */
 public class ReplacePsiTest extends LightActionTestCase {
     PsiUtilsTest testRunner;
 
