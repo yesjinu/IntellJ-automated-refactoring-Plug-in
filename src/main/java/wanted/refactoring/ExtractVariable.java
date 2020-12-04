@@ -25,6 +25,8 @@ public class ExtractVariable extends BaseRefactorAction {
     private PsiStatement psiStatement;
     private static List<PsiExpression> expRefactorList;
 
+    public static final int EXP_THRESHOLD = 30;
+
     /**
      * Returns the story name as a string format, for message.
      *
@@ -73,116 +75,48 @@ public class ExtractVariable extends BaseRefactorAction {
         expRefactorList = new ArrayList<>();
 
         JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
+            // Type 1: Unary: Do not Refactor
             @Override
-            public void visitAssertStatement(PsiAssertStatement statement) {
-                super.visitAssertStatement(statement);
+            public void visitUnaryExpression(PsiUnaryExpression expression) {
             }
 
+            // Type 1: New: Do not Refactor
             @Override
-            public void visitBlockStatement(PsiBlockStatement statement) {
-                super.visitBlockStatement(statement);
+            public void visitNewExpression(PsiNewExpression expression) {
             }
 
+            // Type 1: Lambda Expression: Do not Refactor
             @Override
-            public void visitBreakStatement(PsiBreakStatement statement) {
-                super.visitBreakStatement(statement);
+            public void visitLambdaExpression(PsiLambdaExpression expression) {
             }
 
+            // Type 2: Binary/Polyadic
             @Override
-            public void visitYieldStatement(PsiYieldStatement statement) {
-                super.visitYieldStatement(statement);
+            public void visitBinaryExpression(PsiBinaryExpression expression) {
+                if (expression.getTextLength() > EXP_THRESHOLD)
+                    expRefactorList.add(expression);
+            }
+            @Override
+            public void visitPolyadicExpression(PsiPolyadicExpression expression) {
+                if (expression.getTextLength() > EXP_THRESHOLD)
+                    expRefactorList.add(expression);
             }
 
+            // Type 2: Array Access
             @Override
-            public void visitContinueStatement(PsiContinueStatement statement) {
-                super.visitContinueStatement(statement);
+            public void visitArrayAccessExpression(PsiArrayAccessExpression expression) {
+                if (expression.getTextLength() > EXP_THRESHOLD)
+                    expRefactorList.add(expression);
             }
 
+            // Type 2: Instanceof
             @Override
-            public void visitDeclarationStatement(PsiDeclarationStatement statement) {
-                super.visitDeclarationStatement(statement);
+            public void visitInstanceOfExpression(PsiInstanceOfExpression expression) {
+                if (expression.getTextLength() > EXP_THRESHOLD)
+                    expRefactorList.add(expression);
             }
 
-            @Override
-            public void visitDoWhileStatement(PsiDoWhileStatement statement) {
-                super.visitDoWhileStatement(statement);
-            }
-
-            @Override
-            public void visitEmptyStatement(PsiEmptyStatement statement) {
-                super.visitEmptyStatement(statement);
-            }
-
-            @Override
-            public void visitExpression(PsiExpression expression) {
-                super.visitExpression(expression);
-            }
-
-            @Override
-            public void visitExpressionListStatement(PsiExpressionListStatement statement) {
-                super.visitExpressionListStatement(statement);
-            }
-
-            @Override
-            public void visitExpressionStatement(PsiExpressionStatement statement) {
-                super.visitExpressionStatement(statement);
-            }
-
-            @Override
-            public void visitForStatement(PsiForStatement statement) {
-                super.visitForStatement(statement);
-            }
-
-            @Override
-            public void visitForeachStatement(PsiForeachStatement statement) {
-                super.visitForeachStatement(statement);
-            }
-
-            @Override
-            public void visitIfStatement(PsiIfStatement statement) {
-                super.visitIfStatement(statement);
-            }
-
-            @Override
-            public void visitLabeledStatement(PsiLabeledStatement statement) {
-                super.visitLabeledStatement(statement);
-            }
-
-            @Override
-            public void visitReturnStatement(PsiReturnStatement statement) {
-                super.visitReturnStatement(statement);
-            }
-
-            @Override
-            public void visitSwitchLabelStatement(PsiSwitchLabelStatement statement) {
-                super.visitSwitchLabelStatement(statement);
-            }
-
-            @Override
-            public void visitSwitchLabeledRuleStatement(PsiSwitchLabeledRuleStatement statement) {
-                super.visitSwitchLabeledRuleStatement(statement);
-            }
-
-            @Override
-            public void visitSwitchStatement(PsiSwitchStatement statement) {
-                super.visitSwitchStatement(statement);
-            }
-
-            @Override
-            public void visitTryStatement(PsiTryStatement statement) {
-                super.visitTryStatement(statement);
-            }
-
-            @Override
-            public void visitCatchSection(PsiCatchSection section) {
-                super.visitCatchSection(section);
-            }
-
-            @Override
-            public void visitWhileStatement(PsiWhileStatement statement) {
-                super.visitWhileStatement(statement);
-                PsiWhileStatement
-            }
+            // Type 3: Structures -> Inherited from JavaRecursiveElementVisitor
         };
 
         statement.accept(visitor);
@@ -196,13 +130,15 @@ public class ExtractVariable extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e) {
+    public void refactor(AnActionEvent e) {
         assert refactorValid(e);
 
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
         Project project = navigator.findProject();
 
-        String extVarName = "extVar" + Integer.toString(extVarNum++);
+        String extVarName;
+
+        extVarName = "extVar" + Integer.toString(extVarNum++);
 
         for (PsiExpression psiExpression : expRefactorList) {
             // Delete Original Method

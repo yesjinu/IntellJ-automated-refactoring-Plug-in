@@ -167,7 +167,7 @@ public class FindPsi {
      * @param psiClass the scope this function find Statement
      * @param offset the text offset of file containing this class
      * @return PsiStatement which contains cursor
-     *         If various PsiStatements are correct, choose widest one
+     *         If various PsiStatements are correct, choose narrowest one
      */
     public static PsiStatement findStatement(PsiClass psiClass, int offset)
     {
@@ -184,7 +184,7 @@ public class FindPsi {
         psiClass.accept(v);
 
         if (StatementList.isEmpty()) return null;
-        else return StatementList.get(0);
+        else return StatementList.get(StatementList.size() - 1);
     }
     
     /**
