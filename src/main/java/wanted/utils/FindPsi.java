@@ -1,7 +1,6 @@
 package wanted.utils;
 
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -199,7 +198,7 @@ public class FindPsi {
                 return null;
         }
 
-        return (PsiClass)targetClass;
+        return (PsiClass) targetClass;
     }
 
     /**
@@ -542,7 +541,9 @@ public class FindPsi {
      * @return modified queries such that duplicate strings are removed
      */
     public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries) {
-        if(searchClass==null){ return new ArrayList<>(); }
+        if (searchClass == null) {
+            return new ArrayList<>();
+        }
 
         List<String> ret = queries;
 
@@ -569,8 +570,7 @@ public class FindPsi {
 
         for (PsiLiteralExpression l : expressions) {
             Object value = l.getValue();
-            if(value!=null && value.equals(literal.getValue()) && l.getType().equals(literal.getType()))
-            {
+            if (value != null && value.equals(literal.getValue()) && l.getType().equals(literal.getType())) {
                 ret.add(l);
             }
         }
