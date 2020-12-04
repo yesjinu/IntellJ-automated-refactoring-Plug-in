@@ -1,13 +1,17 @@
 package wanted.test;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.intellij.openapi.actionSystem.AnAction;
+import wanted.test.base.LightActionTestCase;
 
 /**
  * Test class for 'FindPsi' util
  *
  * @author Jinu Noh
  */
-public class FindPsiTest {
+public class FindPsiTest extends LightActionTestCase {
 
+    @Override
+    protected AnAction getAction() {
+        return null;
+    }
 }
