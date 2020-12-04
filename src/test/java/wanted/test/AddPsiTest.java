@@ -1,22 +1,16 @@
 package wanted.test;
 
-import com.intellij.openapi.actionSystem.AnAction;
-import wanted.test.base.LightActionTestCase;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for 'AddPsi' util
  *
  * @author Jinu Noh
  */
-public class AddPsiTest extends LightActionTestCase {
-    @Override
-    protected AnAction getAction() {
-        return null;
-    }
+public class AddPsiTest {
+    @Test
+    public void testOOO() {
 
-    @Override
-    protected String getBasePath() {
-        return super.getBasePath() + "/addPsi";
     }
-
 }
