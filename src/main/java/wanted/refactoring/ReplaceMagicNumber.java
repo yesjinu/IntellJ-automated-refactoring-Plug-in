@@ -35,6 +35,8 @@ public class ReplaceMagicNumber extends BaseRefactorAction{
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
+        if(project==null){ return false; }
+
         literal = navigator.findLiteral();
         if(literal==null){ return false; }
 
