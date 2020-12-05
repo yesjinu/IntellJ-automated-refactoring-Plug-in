@@ -2,7 +2,6 @@ package wanted.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import groovy.transform.NamedParam;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -16,23 +15,24 @@ import java.util.List;
  * @author Mintae Kim
  */
 public class ReplacePsi {
-
     /**
-     * Replace getter() and setter()
+     * Replace direct access to certain variable with method call for getter() and setter()
+     * if reference expression to variable is left operand of assignment expression(i.e, var=x), replace assignment expression by setter(x)
+     * else replace reference expression by getter()
      *
-     * @param project     context
-     * @param getter      getter PsiMethod
-     * @param setter      setter PsiMethod
-     * @param expressions Statements that refers 'member'
+     * @param project     target project
+     * @param getter      PsiMethod such that return type is variable.getType()
+     * @param setter      PsiMethod such that parameter is variable.getType()
+     * @param expressions target statements that refers variable
      */
     public static void encapField(@NotNull Project project, @NotNull PsiMethod getter, @NotNull PsiMethod setter, @NotNull List<PsiReferenceExpression> expressions) {
         for (PsiReferenceExpression old : expressions) {
             if (old.getParent() instanceof PsiAssignmentExpression) {
                 PsiAssignmentExpression assignment = (PsiAssignmentExpression) old.getParent();
-                if (assignment.getLExpression().isEquivalentTo(old)) // assignment to member
+                if (assignment.getLExpression().isEquivalentTo(old)) // for the case var = x
                 {
                     PsiElement newValue = assignment.getRExpression();
-                    PsiMethodCallExpression callSetter = CreatePsi.createMethodCall(project, setter, newValue, old.getQualifier());
+                    PsiMethodCallExpression callSetter = CreatePsi.createMethodCall(project, setter, newValue, old.getQualifier()); //add qualifier if necessary
                     (old.getParent()).replace(callSetter);
                 } else {
                     PsiMethodCallExpression callGetter = CreatePsi.createMethodCall(project, getter, null, old.getQualifier());
@@ -47,9 +47,10 @@ public class ReplacePsi {
 
     /**
      * Remove elseStatement and bring elseElseStatement of elseStatement out
+     * i.e, remove second conditional branch
      *
      * @param project     target project
-     * @param ifStatement target ifStatement with elseBranch
+     * @param ifStatement target ifStatement that has else branch
      */
     public static void mergeCondStatement(@NotNull Project project, @NotNull PsiIfStatement ifStatement) {
         PsiStatement elseStatement = ifStatement.getElseBranch();
@@ -65,6 +66,7 @@ public class ReplacePsi {
 
     /**
      * Remove ifStatement and bring thenStatement of ifStatement out
+     * i.e, remove first conditional branch, erase entire ifStatement if there's only one branch
      *
      * @param project     target project
      * @param ifStatement target ifStatement
@@ -84,8 +86,8 @@ public class ReplacePsi {
      * merge Condition of ifStatement and elseifStatement with || symbol
      *
      * @param project     target project
-     * @param ifStatement target ifStatement
-     * @param isFirstTime check boolean parameter that this function was used before for this ifStatement
+     * @param ifStatement target ifStatement that has else branch
+     * @param isFirstTime parameter to check this function was used before for this ifStatement
      */
     public static void mergeCondExpr(@NotNull Project project, @NotNull PsiIfStatement ifStatement, boolean isFirstTime) {
         PsiExpression ifCondition = ifStatement.getCondition();
@@ -96,12 +98,12 @@ public class ReplacePsi {
     }
 
     /**
-     * Replace vars in paramList to vars in paramRefList for PsiElement element.
-     * ith var in paramList is replaced to ith var in paraRefList
+     * Replace variables in paramList by variables in paramRefList for element.
+     * nth variable in paramList is replaced by nth variable in paramRefList
      *
-     * @param element      Target PsiElement to refactor
-     * @param paramList    List of PsiMethod parameters
-     * @param paramRefList List of expressions for calling target PsiMethod
+     * @param element      target PsiElement to replace variables
+     * @param paramList    List of target PsiMethod parameters
+     * @param paramRefList List of expressions that invokes target PsiMethod
      *                     lengths of paramList and paramRefList need to be same
      * @return PsiElement with altered PsiTree
      */
@@ -145,10 +147,10 @@ public class ReplacePsi {
     /**
      * Edit modifier of member
      *
-     * @param member       selected member
-     * @param removeValues modifier to be removed
-     * @param addValues    modifier to be added
-     *                     if some removeValues and addValues have common element, that modifier will be added
+     * @param member       target member
+     * @param removeValues modifiers to be removed
+     * @param addValues    modifiers to be added
+     *                     if removeValues and addValues have common elements, those modifiers will be added
      */
     public static void changeModifier(@NotNull PsiField member, @NotNull List<String> removeValues, @NotNull List<String> addValues) {
         for (String removeValue : removeValues) {
@@ -161,14 +163,14 @@ public class ReplacePsi {
     }
 
     /**
-     * pull out first statement in each conditions
+     * pull out first statement in each condition
      *
      * @param project       target project
      * @param ifStatement   target ifStatement
-     * @param statementList list of Statement that should remove first statement inside each
+     * @param statementList list of Statements that first inner statement should be removed
+     *                      statementList.size() must be bigger than 0
      */
     public static void pulloutFirstCondExpr(@NotNull Project project, @NotNull PsiIfStatement ifStatement, @NotNull List<PsiStatement> statementList) {
-
         PsiStatement standardStatement = statementList.get(0);
         if (standardStatement instanceof PsiBlockStatement) {
             standardStatement = ((PsiBlockStatement) standardStatement).getCodeBlock().getStatements()[0];
@@ -187,11 +189,12 @@ public class ReplacePsi {
     }
 
     /**
-     * pull out last statement in each conditions
+     * pull out last statement in each condition
      *
      * @param project       target project
      * @param ifStatement   target ifStatement
-     * @param statementList list of Statement that should remove last statement inside each
+     * @param statementList list of Statements that last inner statement should be removed
+     *                      statementList.size() must be bigger than 0
      */
     public static void pulloutLastCondExpr(@NotNull Project project, @NotNull PsiIfStatement ifStatement, @NotNull List<PsiStatement> statementList) {
         PsiStatement standardStatement = statementList.get(0);
@@ -214,10 +217,10 @@ public class ReplacePsi {
     }
 
     /**
-     * remove conditions that don't have any statements inside
+     * remove condition that don't have any statements inside
      *
      * @param project     target project
-     * @param ifStatement target ifStatement which has else branch
+     * @param ifStatement target ifStatement with else branch
      */
     public static void removeUselessCondition(@NotNull Project project, @NotNull PsiIfStatement ifStatement) {
         PsiStatement statement = ifStatement;
