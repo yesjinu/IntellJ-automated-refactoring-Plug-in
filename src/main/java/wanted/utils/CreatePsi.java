@@ -1,11 +1,8 @@
 package wanted.utils;
 
-import com.intellij.openapi.project.DefaultProjectFactory;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 
 import java.util.Set;
 
@@ -222,32 +219,17 @@ public class CreatePsi {
     }
 
     /**
-     * Method which creates new Duplicate PsiExpression object for replacement.
+     * Return some expression which is copied
      *
-     * @param project       Project
-     * @param psiExpression Target PsiExpression to duplicate
-     * @return Newly copied PsiExpression Object
+     * @param project    factory context
+     * @param psiElement element to make expression
+     * @return new expression which is same with element
      */
-    public static PsiExpression createDuplicateExpression(@NotNull Project project, @NotNull PsiExpression psiExpression) {
+    public static PsiExpression createDuplicateExpression(@NotNull Project project, @NotNull PsiElement psiElement) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
-        PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
-        return newElement;
-    }
-
-    /**
-     * Create PsiElement by text
-     *
-     * @param project context
-     * @param content content of expression to create
-     * @return PsiElement
-     */
-    public static PsiElement createPsiElement(@Nullable Project project, @NotNull String content) {
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiElement ret = factory.createExpressionFromText(content, null);
-
-        return ret;
+        PsiExpression newExpression = factory.createExpressionFromText(psiElement.getText(), null);
+        return newExpression;
     }
 
     /**

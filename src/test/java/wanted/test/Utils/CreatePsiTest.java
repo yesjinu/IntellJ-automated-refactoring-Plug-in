@@ -2,14 +2,9 @@ package wanted.test.Utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.sun.istack.NotNull;
 import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.CreatePsi;
-
-import java.util.HashSet;
-import java.util.Set;
-
 
 /**
  * Test class for Utils.CreatePsi
@@ -205,18 +200,6 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         PsiExpression createElement = CreatePsi.createDuplicateExpression(project, expression);
 
         String expected = "x";
-
-        Assertions.assertTrue(createElement.isValid());
-        Assertions.assertEquals(expected, createElement.getText());
-    }
-
-    public void testCreatePsiElement() {
-        Project project = getProject();
-
-        String content = "newElement";
-        PsiElement createElement = CreatePsi.createPsiElement(project, content);
-
-        String expected = "newElement";
 
         Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
