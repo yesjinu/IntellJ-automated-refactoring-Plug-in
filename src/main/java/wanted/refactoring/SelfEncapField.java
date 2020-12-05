@@ -55,7 +55,7 @@ public class SelfEncapField extends BaseRefactorAction {
 
     /**
      * Helper method that checks whether candidate method is refactorable using 'Self Encapsulate Field'.
-     * <p>
+     *
      * Every candidate fields should follow these two requisites:
      * 1. Field should be private
      * 2. It has neither getter nor setter
@@ -72,7 +72,7 @@ public class SelfEncapField extends BaseRefactorAction {
 
         if (member.getModifierList() == null) {
             return false;
-        } // PsiField with no modifier is public
+        }
         else if (!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)) {
             return false;
         } // member is not private

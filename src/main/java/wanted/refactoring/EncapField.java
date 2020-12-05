@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class EncapField extends BaseRefactorAction {
     private Project project;
-    private PsiClass targetClass;
     private PsiField member;
     private PsiFile file;
     private List<PsiReferenceExpression> references;
@@ -45,9 +44,12 @@ public class EncapField extends BaseRefactorAction {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
+        if (project == null) {
+            return false;
+        }
+
         file = navigator.findFile();
-        targetClass = navigator.findClass();
-        if (targetClass == null) {
+        if (file == null) {
             return false;
         }
 
@@ -58,7 +60,44 @@ public class EncapField extends BaseRefactorAction {
     }
 
     /**
-     * Method that performs refactoring: 'Encapsulate Field'
+     * Helper method that checks whether candidate method is refactorable using 'Encapsulate Field'.
+     * <p>
+     * Every candidate fields should follow these two requisites:
+     * 1. Field should be public
+     * 2. It has neither getter nor setter
+     *
+     * @param project Project
+     * @param member  PsiField
+     * @return true if method is refactorable
+     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
+     */
+    public static boolean refactorValid(Project project, PsiField member) {
+        if (member == null || member.getContainingClass() == null) {
+            return false;
+        } // nothing is chosen or invalid member
+
+        if (member.getModifierList() == null) {
+            return false;
+        } else if (!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)) {
+            return false;
+        } // member is not public
+
+        // check if there's getter or setter
+        String newName = CreatePsi.capitalize(member);
+        List<String> methods = new ArrayList<>();
+        methods.add("get" + newName);
+        methods.add("set" + newName);
+
+        methods = FindPsi.checkDuplicateName(member.getContainingClass(), methods);
+        if (methods.size() != 2) {
+            return false;
+        } // there's either getMember or setMember already
+
+        return true;
+    }
+
+    /**
+     * Method that performs refactoring: 'Self Encapsulate Field'
      *
      * @param e AnActionEvent
      * @see BaseRefactorAction#refactor(AnActionEvent)
@@ -82,44 +121,9 @@ public class EncapField extends BaseRefactorAction {
         addValue.add(PsiModifier.PRIVATE);
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
-            AddPsi.addMethod(targetClass, addList); // add method in addList to targetClass
+            AddPsi.addMethod(member.getContainingClass(), addList); // add method in addList to targetClass
             ReplacePsi.changeModifier(member, removeValue, addValue); // replace modifier
             ReplacePsi.encapFied(project, (PsiMethod) addList.get(0), (PsiMethod) addList.get(1), references); // encapsulate with getter and setter
         });
-    }
-
-    /**
-     * Helper method that checks whether candidate method is refactorable using 'Encapsulate Field'.
-     * <p>
-     * Every candidate fields should follow these two requisites:
-     * 1. Field should be public
-     * 2. It has neither getter nor setter
-     *
-     * @param project Project
-     * @param member  PsiField
-     * @return true if method is refactorable
-     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
-     */
-    public static boolean refactorValid(Project project, PsiField member) {
-        if (member == null) {
-            return false;
-        } // nothing is chosen
-
-        if (!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)) {
-            return false;
-        } // member is not public
-
-        // check if there's getter or setter
-        String newName = CreatePsi.capitalize(member);
-        List<String> methods = new ArrayList<>();
-        methods.add("get" + newName);
-        methods.add("set" + newName);
-
-        methods = FindPsi.checkDuplicateName(member.getContainingClass(), methods);
-        if (methods.size() != 2) {
-            return false;
-        } // there's either getMember or setMember already
-
-        return true;
     }
 }
