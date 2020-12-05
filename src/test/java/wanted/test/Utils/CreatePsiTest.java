@@ -3,6 +3,7 @@ package wanted.test.Utils;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
+import com.sun.istack.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +19,6 @@ import java.util.List;
  * @author seha Park
  */
 public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
-    private Project project;
-    private PsiElementFactory factory;
 
     public void testCreateSetMethod() {
         Project project = getProject();
@@ -134,7 +133,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
     }
 
     /* no initializer for field */
-    public void testCreateField() {
+    public void testCreateField1() {
         Project project = getProject();
 
         String[] modifiers = { PsiModifier.STATIC };
@@ -142,7 +141,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         String name = "test1";
         PsiField createElement = CreatePsi.createField(project, modifiers, type, name, null);
 
-        String expected = "private static double test1";
+        String expected = "private static double test1;";
 
         Assertions.assertEquals(expected, createElement.getText());
     }
@@ -154,19 +153,26 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         String[] modifiers = { PsiModifier.STATIC, PsiModifier.PUBLIC };
         PsiType type = PsiType.LONG;
         String name = "test1";
-        String value = "3.0L";
+        String value = "2147483648L";
         PsiField createElement = CreatePsi.createField(project, modifiers, type, name, value);
 
-        String expected = "static private long test1 = 3.0L";
+        String expected = "public static long test1=2147483648L;";
 
         Assertions.assertEquals(expected, createElement.getText());
     }
 
 
     public void testCreatePsiElement() {
+        Project project = getProject();
 
+        String content = "newElement";
+        PsiElement createElement = CreatePsi.createPsiElement(project, content);
+
+        String expected = "newElement";
+
+        Assertions.assertEquals(expected, createElement.getText());
     }
-
+/*
     public void testCreateAssertStatement() {
 
     }
@@ -189,5 +195,5 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
     public void testCapitalize() {
 
-    }
+    } */
 }
