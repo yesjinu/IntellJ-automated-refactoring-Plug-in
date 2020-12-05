@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.CreatePsi;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Test class for Utils.CreatePsi
  *
@@ -43,7 +46,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    /* create method call with no parameter */
+    /* CreateMethodCall test 1: create method call with no parameter and no qualifier */
     public void testCreateMethodCall1() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -57,7 +60,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    /* create method call with parameter */
+    /* CreateMethodCall test 2: create method call with parameter */
     public void testCreateMethodCall2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -73,7 +76,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
     }
 
-    /* create method call with qualifier */
+    /* CreateMethodCall test 3: create method call with qualifier */
     public void testCreateMethodCall3() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -90,7 +93,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
     }
 
-    /* when CreateMergeCondition first invoked */
+    /* CreateMergeCondition test 1: when CreateMergeCondition() first invoked */
     public void testCreateMergeCondition1() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -106,7 +109,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    /* when CreateMergeCondition was invoked before */
+    /* CreateMergeCondition test 2: when CreateMergeCondition() has been invoked before */
     public void testCreateMergeCondition2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -133,7 +136,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    /* no initializer for field */
+    /* CreateField test 1: when there's no initializer */
     public void testCreateField1() {
         Project project = getProject();
 
@@ -148,7 +151,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    /* initializer for field provided */
+    /* CreateField test 2: when initializer is provided */
     public void testCreateField2() {
         Project project = getProject();
 
@@ -164,19 +167,75 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    public void testCreateAssertStatement() { // TODO
-       /* Project project = getProject();
+    /* CreateAssertStatement test 1: when elseSet is empty */
+    public void testCreateAssertStatement1() {
+        Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiExpression condition = factory.createExpressionFromText("x==1", null);
+
         Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
+        thenSet.add(expression1);
+        PsiReferenceExpression expression2 = (PsiReferenceExpression) factory.createExpressionFromText("b", null);
+        thenSet.add(expression2);
+
         Set<PsiReferenceExpression> elseSet = new HashSet<>();
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
-        String expected = "public static long test1=2147483648L;";
+        String expected = "assert (!(x==1) || ((a != null) && (b != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertEquals(expected, createElement.getText()); */
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* CreateAssertStatement test 2: thenSet is empty */
+    public void testCreateAssertStatement2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression condition = factory.createExpressionFromText("x==1", null);
+
+        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
+        elseSet.add(expression1);
+        PsiReferenceExpression expression2 = (PsiReferenceExpression) factory.createExpressionFromText("b", null);
+        elseSet.add(expression2);
+
+        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
+
+        String expected = "assert ((x==1) || ((a != null) && (b != null)));";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* CreateAssertStatement test 3: both elseSet and thenSet are not empty */
+    public void testCreateAssertStatement3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression condition = factory.createExpressionFromText("x==1", null);
+
+        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
+        thenSet.add(expression1);
+        PsiReferenceExpression expression2 = (PsiReferenceExpression) factory.createExpressionFromText("b", null);
+        thenSet.add(expression2);
+
+        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        PsiReferenceExpression expression3 = (PsiReferenceExpression) factory.createExpressionFromText("c", null);
+        elseSet.add(expression3);
+        PsiReferenceExpression expression4 = (PsiReferenceExpression) factory.createExpressionFromText("d", null);
+        elseSet.add(expression4);
+
+        PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
+
+        String expected = "assert (((x==1) && (a != null) && (b != null)) || (!(x==1) && (c != null) && (d != null)));";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
     }
 
     public void testCopyStatement() {

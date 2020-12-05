@@ -160,6 +160,7 @@ public class CreatePsi {
      * @param condition condition of ifStatement
      * @param thenSet   set of expressions in then statement that should be check not null
      * @param elseSet   set of expressions in else statement that should be check not null
+     *                  either thenSet.size() or elseSet.size() is not empty
      * @return Assert Statement
      */
     public static PsiStatement createAssertStatement(@NotNull Project project, @NotNull PsiExpression condition, @NotNull Set<PsiReferenceExpression> thenSet, @NotNull Set<PsiReferenceExpression> elseSet) {
@@ -238,7 +239,7 @@ public class CreatePsi {
      * @param member PsiField object
      * @return new name with its letter capitalized
      */
-    public static String capitalize(PsiField member) {
+    public static String capitalize(@NotNull PsiField member) {
         String name = member.getName(); // make first character uppercase
         String newName = name.substring(0, 1).toUpperCase() + name.substring(1);
         return newName;
