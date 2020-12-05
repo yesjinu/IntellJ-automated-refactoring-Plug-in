@@ -17,10 +17,10 @@ public class CreatePsi {
     /**
      * Create setter method for given member
      *
-     * @param project        factory context
-     * @param member         member to build setter
+     * @param project        target project
+     * @param member         target PsiField to construct setter
      * @param accessModifier modifier of setter. recommend private or public
-     * @return PsiMethod with name setMember
+     * @return setter PsiMethod of given member with name 'setMember'
      */
     public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member, @NotNull String accessModifier) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -39,10 +39,10 @@ public class CreatePsi {
     /**
      * Create getter method for given member
      *
-     * @param project        factory context
-     * @param member         member to build getter
-     * @param accessModifier modifier of setter. recommend private or public
-     * @return PsiMethod with name getMember
+     * @param project        target project
+     * @param member         target PsiField to construct getter
+     * @param accessModifier modifier of getter. recommend private or public
+     * @return getter PsiMethod of given member with name 'getMember'
      */
     public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member, @NotNull String accessModifier) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -60,11 +60,11 @@ public class CreatePsi {
 
     /**
      * Create MethodCallExpression for given method and parameter
-     * Method can have only one parameter
      *
-     * @param project   factory context
-     * @param method    method to call
+     * @param project   target project
+     * @param method    target method to create method call expression
      * @param par       parameter of method, null if there's no parameter
+     *                  method can have only one parameter
      * @param qualifier qualifier of method, null if there's no qualifier
      * @return Method Call expression. ex) qualifier.method(par)
      */
@@ -95,10 +95,10 @@ public class CreatePsi {
     /**
      * Return merged conditionExpression with || symbol
      *
-     * @param project     factory context
-     * @param Left        the conditional expression it would be left side
-     * @param Right       the conditional expression it would be right side
-     * @param isFirstTime check boolean parameter that this function was used before for this ifStatement
+     * @param project     target project
+     * @param Left        the conditional expression. It would be left side
+     * @param Right       the conditional expression. It would be right side
+     * @param isFirstTime parameter to check whether this function was used before for this ifStatement
      * @return newExpression which is "Left || Right"
      */
     public static PsiExpression createMergeCondition(@NotNull Project project, @NotNull PsiExpression Left, @NotNull PsiExpression Right, @NotNull boolean isFirstTime) {
@@ -115,7 +115,7 @@ public class CreatePsi {
     /**
      * Return empty block statement
      *
-     * @param project target context
+     * @param project target project
      * @return Newly created Empty PsiBlockStatement
      */
     public static PsiStatement createEmptyBlockStatement(@NotNull Project project) {
@@ -128,7 +128,7 @@ public class CreatePsi {
     /**
      * Create PsiField with given parameters
      *
-     * @param project   target context
+     * @param project   target project
      * @param modifiers modifier of PsiField, 'private' modifier is added as default
      * @param type      type of field
      * @param name      name of field
@@ -156,7 +156,7 @@ public class CreatePsi {
     /**
      * Create Assert Statement that check not null in if statement
      *
-     * @param project   project
+     * @param project   target project
      * @param condition condition of ifStatement
      * @param thenSet   set of expressions in then statement that should be check not null
      * @param elseSet   set of expressions in else statement that should be check not null
@@ -208,9 +208,9 @@ public class CreatePsi {
     /**
      * Return same statement which is copied
      *
-     * @param project   factory context
-     * @param statement the original version of the statement
-     * @return newStatement which is same with statement
+     * @param project   target project
+     * @param statement original statement
+     * @return newStatement which is same with the statement
      */
     public static PsiStatement copyStatement(@NotNull Project project, @NotNull PsiStatement statement) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -222,9 +222,9 @@ public class CreatePsi {
     /**
      * Return some expression which is copied
      *
-     * @param project    factory context
-     * @param psiElement element to make expression
-     * @return new expression which is same with element
+     * @param project    target project
+     * @param psiElement original element
+     * @return new expression which is same with the psiElement
      */
     public static PsiExpression createDuplicateExpression(@NotNull Project project, @NotNull PsiElement psiElement) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -234,10 +234,10 @@ public class CreatePsi {
     }
 
     /**
-     * Method that capitalize name of given member
+     * Capitalize name of given member
      *
      * @param member PsiField object
-     * @return new name with its letter capitalized
+     * @return capitalized name of member
      */
     public static String capitalize(@NotNull PsiField member) {
         String name = member.getName(); // make first character uppercase

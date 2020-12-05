@@ -21,7 +21,8 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiField member = factory.createField("abc", PsiType.INT);
-        String accessModifier = "public";
+        String accessModifier = PsiModifier.PUBLIC;
+
         PsiMethod createElement = CreatePsi.createSetMethod(project, member, accessModifier);
 
         String expected = "public void setAbc(int newValue) {\n" +
@@ -36,7 +37,8 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiField member = factory.createField("abc", PsiType.DOUBLE);
-        String accessModifier = "public";
+        String accessModifier = PsiModifier.PUBLIC;
+
         PsiMethod createElement = CreatePsi.createGetMethod(project, member, accessModifier);
 
         String expected = "public double getAbc() {\n" +
@@ -52,6 +54,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiMethod method = factory.createMethod("testMethod", PsiType.BOOLEAN);
+
         PsiMethodCallExpression createElement = CreatePsi.createMethodCall(project, method, null, null);
 
         String expected = "testMethod()";
@@ -67,13 +70,13 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiMethod method = factory.createMethod("testMethod", PsiType.BOOLEAN);
         PsiElement param = factory.createExpressionFromText("firstParam", null);
+
         PsiMethodCallExpression createElement = CreatePsi.createMethodCall(project, method, param, null);
 
         String expected = "testMethod(firstParam)";
 
         Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
-
     }
 
     /* CreateMethodCall test 3: create method call with qualifier */
@@ -90,10 +93,9 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
-
     }
 
-    /* CreateMergeCondition test 1: when CreateMergeCondition() first invoked */
+    /* CreateMergeCondition test 1: createMergeCondition() hasn't been called before */
     public void testCreateMergeCondition1() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -109,7 +111,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    /* CreateMergeCondition test 2: when CreateMergeCondition() has been invoked before */
+    /* CreateMergeCondition test 2: createMergeCondition() has been called before */
     public void testCreateMergeCondition2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -143,6 +145,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         String[] modifiers = {PsiModifier.STATIC};
         PsiType type = PsiType.DOUBLE;
         String name = "test1";
+
         PsiField createElement = CreatePsi.createField(project, modifiers, type, name, null);
 
         String expected = "private static double test1;";
@@ -159,6 +162,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         PsiType type = PsiType.LONG;
         String name = "test1";
         String value = "2147483648L";
+
         PsiField createElement = CreatePsi.createField(project, modifiers, type, name, value);
 
         String expected = "public static long test1=2147483648L;";
@@ -181,6 +185,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         thenSet.add(expression2);
 
         Set<PsiReferenceExpression> elseSet = new HashSet<>();
+
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
         String expected = "assert (!(x==1) || ((a != null) && (b != null)));";
