@@ -20,22 +20,21 @@ public class CreatePsi {
     /**
      * Create setter method for given member
      *
-     * @param project factory context
-     * @param member member to build setter
+     * @param project        factory context
+     * @param member         member to build setter
      * @param accessModifier modifier of setter. recommend private or public
      * @return PsiMethod with name setMember
      */
-    public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member, @NotNull String accessModifier)
-    {
+    public static PsiMethod createSetMethod(@NotNull Project project, @NotNull PsiField member, @NotNull String accessModifier) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         String type = member.getType().toString().substring(8); // erase PsiType:
         String newName = capitalize(member);
 
         PsiMethod newMethod = factory.createMethodFromText(
-                        accessModifier + " void " + "set" + newName + "(" + type + " newValue) {\n"
-                            + member.getName() + " = newValue;\n}",
-                            null);
+                accessModifier + " void " + "set" + newName + "(" + type + " newValue) {\n"
+                        + member.getName() + " = newValue;\n}",
+                null);
 
         return newMethod;
     }
@@ -43,22 +42,21 @@ public class CreatePsi {
     /**
      * Create getter method for given member
      *
-     * @param project factory context
-     * @param member member to build getter
+     * @param project        factory context
+     * @param member         member to build getter
      * @param accessModifier modifier of setter. recommend private or public
      * @return PsiMethod with name getMember
      */
-    public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member, @NotNull String accessModifier)
-    {
+    public static PsiMethod createGetMethod(@NotNull Project project, @NotNull PsiField member, @NotNull String accessModifier) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         String type = member.getType().toString().substring(8); // erase PsiType:
         String newName = capitalize(member);
 
         PsiMethod newMethod = factory.createMethodFromText(
-                        accessModifier + " " + type + " get" + newName + "() {\n"
-                            + "return " + member.getName() + ";\n}",
-                            null);
+                accessModifier + " " + type + " get" + newName + "() {\n"
+                        + "return " + member.getName() + ";\n}",
+                null);
 
         return newMethod;
     }
@@ -67,43 +65,42 @@ public class CreatePsi {
      * Create MethodCallExpression for given method and parameter
      * Method can have only one parameter
      *
-     * @param project factory context
-     * @param method method to call
-     * @param par parameter of method, null if there's no parameter
+     * @param project   factory context
+     * @param method    method to call
+     * @param par       parameter of method, null if there's no parameter
      * @param qualifier qualifier of method, null if there's no qualifier
-     * @return  Method Call expression. ex) qualifier.method(par)
+     * @return Method Call expression. ex) qualifier.method(par)
      */
-    public static PsiMethodCallExpression createMethodCall(@NotNull Project project, @NotNull PsiMethod method, PsiElement par, PsiElement qualifier)
-    {
+    public static PsiMethodCallExpression createMethodCall(@NotNull Project project, @NotNull PsiMethod method, PsiElement par, PsiElement qualifier) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
         String param = "";
 
-        if(par!=null){ // parse identifier from PsiElement:
+        if (par != null) { // parse identifier from PsiElement:
             param = par.toString();
             int ind = param.indexOf(':');
-            param = param.substring(ind+1);
+            param = param.substring(ind + 1);
         }
 
         String qual = "";
-        if(qualifier!=null){ // parse identifier of qualifier
+        if (qualifier != null) { // parse identifier of qualifier
             qual = qualifier.getText();
             int ind = qual.indexOf(':');
-            qual = qual.substring(ind+1) + ".";
+            qual = qual.substring(ind + 1) + ".";
         }
 
         PsiExpression newExpression = factory.createExpressionFromText(
-                                    qual + method.getName()+"("+param+")",
-                                    null);
+                qual + method.getName() + "(" + param + ")",
+                null);
 
-        return (PsiMethodCallExpression)newExpression;
+        return (PsiMethodCallExpression) newExpression;
     }
 
     /**
      * Return merged conditionExpression with || symbol
      *
-     * @param project factory context
-     * @param Left the conditional expression it would be left side
-     * @param Right the conditional expression it would be right side
+     * @param project     factory context
+     * @param Left        the conditional expression it would be left side
+     * @param Right       the conditional expression it would be right side
      * @param isFirstTime check boolean parameter that this function was used before for this ifStatement
      * @return newExpression which is "Left || Right"
      */
@@ -134,26 +131,24 @@ public class CreatePsi {
     /**
      * Create PsiField with given parameters
      *
-     * @param project target context
+     * @param project   target context
      * @param modifiers modifier of PsiField, 'private' modifier is added as default
-     * @param type type of field
-     * @param name name of field
-     * @param value initializer of field, null if initializer is not needed
-     *        user must provided value with correct type
+     * @param type      type of field
+     * @param name      name of field
+     * @param value     initializer of field, null if initializer is not needed
+     *                  user must provided value with correct type
      * @return
      */
-    public static  PsiField createField(@NotNull Project project, String[] modifiers, @NotNull PsiType type, @NotNull String name, String value)
-    {
+    public static PsiField createField(@NotNull Project project, String[] modifiers, @NotNull PsiType type, @NotNull String name, String value) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiField newField = factory.createField(name, type);
-        for(String m : modifiers) // add modifiers
+        for (String m : modifiers) // add modifiers
         {
             newField.getModifierList().setModifierProperty(m, true);
         }
 
-        if(value!=null)
-        {
+        if (value != null) {
             PsiExpression initialize = factory.createExpressionFromText(value, null); // add initializer
             newField.setInitializer(initialize);
         }
@@ -162,31 +157,16 @@ public class CreatePsi {
     }
 
     /**
-     * Create PsiElement by text
-     *
-     * @param project context
-     * @param content content of expression to create
-     * @return PsiElement
-     */
-    public static PsiElement createPsiElement(@Nullable Project project, @NotNull String content) {
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiElement ret = factory.createExpressionFromText(content, null);
-
-        return ret;
-    }
-
-    /**
      * Create Assert Statement that check not null in if statement
      *
-     * @param project project
+     * @param project   project
      * @param condition condition of ifStatement
-     * @param thenSet set of expressions in then statement that should be check not null
-     * @param elseSet set of expressions in else statement that should be check not null
+     * @param thenSet   set of expressions in then statement that should be check not null
+     * @param elseSet   set of expressions in else statement that should be check not null
      * @return Assert Statement
      */
-    public static PsiStatement createAssertStatement(@NotNull Project project, PsiExpression condition, Set<PsiReferenceExpression> thenSet, Set<PsiReferenceExpression> elseSet)
-    {    PsiElementFactory factory = PsiElementFactory.getInstance(project);
+    public static PsiStatement createAssertStatement(@NotNull Project project, @NotNull PsiExpression condition, @NotNull Set<PsiReferenceExpression> thenSet, @NotNull Set<PsiReferenceExpression> elseSet) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
         String context = "";
 
         if (thenSet.isEmpty()) {
@@ -196,26 +176,22 @@ public class CreatePsi {
                 if (first) {
                     if (elseSet.size() == 1) context = context + exp.getText() + " != null";
                     else context = context + "(" + exp.getText() + " != null)";
-                }
-                else context = context + " && " + "(" + exp.getText() + " != null)";
+                } else context = context + " && " + "(" + exp.getText() + " != null)";
                 first = false;
             }
             context = context + ")";
-        }
-        else if (elseSet.isEmpty()) {
+        } else if (elseSet.isEmpty()) {
             context = "!(" + condition.getText() + ")" + " || " + "(";
             boolean first = true;
             for (PsiReferenceExpression exp : thenSet) {
                 if (first) {
                     if (thenSet.size() == 1) context = context + exp.getText() + " != null";
                     else context = context + "(" + exp.getText() + " != null)";
-                }
-                else context = context + " && " + "(" + exp.getText() + " != null)";
+                } else context = context + " && " + "(" + exp.getText() + " != null)";
                 first = false;
             }
             context = context + ")";
-        }
-        else {
+        } else {
             context = "(" + "(" + condition.getText() + ")";
             for (PsiReferenceExpression exp : thenSet) {
                 context = context + " && " + "(" + exp.getText() + " != null)";
@@ -234,7 +210,7 @@ public class CreatePsi {
     /**
      * Return same statement which is copied
      *
-     * @param project factory context
+     * @param project   factory context
      * @param statement the original version of the statement
      * @return newStatement which is same with statement
      */
@@ -248,15 +224,30 @@ public class CreatePsi {
     /**
      * Method which creates new Duplicate PsiExpression object for replacement.
      *
-     * @param project Project
+     * @param project       Project
      * @param psiExpression Target PsiExpression to duplicate
      * @return Newly copied PsiExpression Object
      */
-    public static PsiExpression createDuplicateExpression (@NotNull Project project, @NotNull PsiExpression psiExpression) {
+    public static PsiExpression createDuplicateExpression(@NotNull Project project, @NotNull PsiExpression psiExpression) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
         return newElement;
+    }
+
+    /**
+     * Create PsiElement by text
+     *
+     * @param project context
+     * @param content content of expression to create
+     * @return PsiElement
+     */
+    public static PsiElement createPsiElement(@Nullable Project project, @NotNull String content) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiElement ret = factory.createExpressionFromText(content, null);
+
+        return ret;
     }
 
     /**
@@ -265,10 +256,9 @@ public class CreatePsi {
      * @param member PsiField object
      * @return new name with its letter capitalized
      */
-    public static String capitalize(PsiField member)
-    {
+    public static String capitalize(PsiField member) {
         String name = member.getName(); // make first character uppercase
-        String newName = name.substring(0, 1).toUpperCase()+name.substring(1);
+        String newName = name.substring(0, 1).toUpperCase() + name.substring(1);
         return newName;
     }
 }

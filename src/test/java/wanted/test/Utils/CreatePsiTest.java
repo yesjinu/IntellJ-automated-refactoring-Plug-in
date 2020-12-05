@@ -2,9 +2,13 @@ package wanted.test.Utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.sun.istack.NotNull;
 import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.CreatePsi;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -138,7 +142,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
     public void testCreateField1() {
         Project project = getProject();
 
-        String[] modifiers = { PsiModifier.STATIC };
+        String[] modifiers = {PsiModifier.STATIC};
         PsiType type = PsiType.DOUBLE;
         String name = "test1";
         PsiField createElement = CreatePsi.createField(project, modifiers, type, name, null);
@@ -153,13 +157,54 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
     public void testCreateField2() {
         Project project = getProject();
 
-        String[] modifiers = { PsiModifier.STATIC, PsiModifier.PUBLIC };
+        String[] modifiers = {PsiModifier.STATIC, PsiModifier.PUBLIC};
         PsiType type = PsiType.LONG;
         String name = "test1";
         String value = "2147483648L";
         PsiField createElement = CreatePsi.createField(project, modifiers, type, name, value);
 
         String expected = "public static long test1=2147483648L;";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    public void testCreateAssertStatement() { // TODO
+       /* Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression condition = factory.createExpressionFromText("x==1", null);
+        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
+
+        String expected = "public static long test1=2147483648L;";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText()); */
+    }
+
+    public void testCopyStatement() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement statement = factory.createStatementFromText("int x = 1;", null);
+        PsiStatement createElement = CreatePsi.copyStatement(project, statement);
+
+        String expected = "int x = 1;";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    public void testCreateDuplicateExpression() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression expression = factory.createExpressionFromText("x", null);
+        PsiExpression createElement = CreatePsi.createDuplicateExpression(project, expression);
+
+        String expected = "x";
 
         Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
@@ -177,27 +222,15 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    public void testCreateAssertStatement() {
-
-    }
-
-    public void testCopyStatement() {
+    public void testCapitalize() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
-        PsiStatement statement = factory.createStatementFromText("int x = 1;", null);
-        PsiStatement createElement = CreatePsi.copyStatement(project, statement);
+        PsiField member = factory.createField("test", PsiType.INT);
+        String createElement = CreatePsi.capitalize(member);
 
-        String expected = "int x = 1;";
+        String expected = "Test";
 
-        Assertions.assertEquals(expected, createElement.getText());
-    }
-
-    public void testCreateDuplicateExpression() {
-
-    }
-
-    public void testCapitalize() {
-
+        Assertions.assertEquals(expected, createElement);
     }
 }
