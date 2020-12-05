@@ -2,6 +2,7 @@ package wanted.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import groovy.transform.NamedParam;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -48,9 +49,9 @@ public class ReplacePsi {
      * Remove elseStatement and bring elseElseStatement of elseStatement out
      *
      * @param project     target project
-     * @param ifStatement target ifStatement
+     * @param ifStatement target ifStatement with elseBranch
      */
-    public static void mergeCondStatement(Project project, PsiIfStatement ifStatement) {
+    public static void mergeCondStatement(@NotNull Project project, @NotNull PsiIfStatement ifStatement) {
         PsiStatement elseStatement = ifStatement.getElseBranch();
         PsiStatement elseElseStatement = ((PsiIfStatement) elseStatement).getElseBranch();
 
@@ -68,7 +69,7 @@ public class ReplacePsi {
      * @param project     target project
      * @param ifStatement target ifStatement
      */
-    public static void removeCondStatement(Project project, PsiIfStatement ifStatement) {
+    public static void removeCondStatement(@NotNull Project project, @NotNull PsiIfStatement ifStatement) {
         PsiStatement thenStatement = ifStatement.getThenBranch();
 
         if (thenStatement != null) {
@@ -82,11 +83,11 @@ public class ReplacePsi {
     /**
      * merge Condition of ifStatement and elseifStatement with || symbol
      *
-     * @param project     target proejct
+     * @param project     target project
      * @param ifStatement target ifStatement
      * @param isFirstTime check boolean parameter that this function was used before for this ifStatement
      */
-    public static void mergeCondExpr(Project project, PsiIfStatement ifStatement, boolean isFirstTime) {
+    public static void mergeCondExpr(@NotNull Project project, @NotNull PsiIfStatement ifStatement, boolean isFirstTime) {
         PsiExpression ifCondition = ifStatement.getCondition();
         PsiExpression elseifCondition = ((PsiIfStatement) (ifStatement.getElseBranch())).getCondition();
 
@@ -102,7 +103,8 @@ public class ReplacePsi {
      * @param paramRefList List of expressions for calling target PsiMethod
      * @return PsiElement with altered PsiTree
      */
-    public static PsiElement replaceParamToArgs(Project project, PsiElement element, PsiParameterList paramList, PsiExpressionList paramRefList) {
+    public static PsiElement replaceParamToArgs(@NotNull Project project, @NotNull PsiElement element,
+                                                @NotNull PsiParameterList paramList, @NotNull PsiExpressionList paramRefList) {
         assert paramList.getParametersCount() == paramRefList.getExpressionCount();
         PsiParameter[] paramArray = paramList.getParameters();
         PsiExpression[] paramRefArray = paramRefList.getExpressions();
@@ -138,15 +140,15 @@ public class ReplacePsi {
         return element;
     }
 
-
     /**
      * Edit modifier of member
      *
      * @param member       selected member
      * @param removeValues modifier to be removed
      * @param addValues    modifier to be added
+     *                     if some removeValues and addValues have common element, that modifier will be added
      */
-    public static void changeModifier(PsiField member, List<String> removeValues, List<String> addValues) {
+    public static void changeModifier(@NotNull PsiField member, @NotNull List<String> removeValues, @NotNull List<String> addValues) {
         for (String removeValue : removeValues) {
             member.getModifierList().setModifierProperty(removeValue, false);
         }

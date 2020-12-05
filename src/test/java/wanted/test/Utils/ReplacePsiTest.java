@@ -20,9 +20,7 @@ import java.util.Set;
  * @author Jinu Noh
  */
 public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
-
-    /* EnapField test 1: reference without qualifier */
-    public void testEncapField1()
+    public void testEncapField1() // TODO
     {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -48,9 +46,7 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
                     });
         }
 
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            ReplacePsi.encapField(project, getter, setter, expressions); // encapsulate with getter and setter
-        });
+        ReplacePsi.encapField(project, getter, setter, expressions); // encapsulate with getter and setter
 
         String expected1 = "setTargetField(1.0);";
         String expected2 = "x = getTargetField()";
@@ -60,22 +56,108 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected1, base1.getText());
         Assertions.assertEquals(expected2, base2.getText());
         Assertions.assertEquals(expected3, base3.getText());
-
     }
 
-    public void testMergeCondStatement()
+    /* MergeCondStatement test 1: when elseElseStatement is null */
+    public void testMergeCondStatement1()
     {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
+        String ifString = "if((x==1) || (x==2))\n" +
+                        "{ return true; }\n" +
+                        "else if(x==2){ return true; }";
+        PsiIfStatement ifStatement = (PsiIfStatement) factory.createStatementFromText(ifString, null);
+
+        ReplacePsi.mergeCondStatement(project, ifStatement);
+
+        String expected = "if((x==1) || (x==2))\n" +
+                        "{ return true; }";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, ifStatement.getText());
     }
 
-    public void testRemoveCondStatement()
+    /* MergeCondStatement test 2: when elseElseStatement is not null */
+    public void testMergeCondStatement2()
     {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
+        String ifString = "if((x==1) || (x==2))\n" +
+                        "{ return true; }\n" +
+                        "else if(x==2){ return true; }\n"+
+                        "else { return false; }";
+        PsiIfStatement ifStatement = (PsiIfStatement) factory.createStatementFromText(ifString, null);
+
+        ReplacePsi.mergeCondStatement(project, ifStatement);
+
+        String expected = "if((x==1) || (x==2))\n" +
+                        "{ return true; }\n" +
+                        "else { return false; }";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, ifStatement.getText());
     }
 
-    public void testMergeCondExpr()
+    public void testRemoveCondStatement() //TODO
     {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
+        String ifString = "if(x==1)\n" +
+                        "{ return true; }\n" +
+                        "else { return true; }";
+        PsiIfStatement ifStatement = (PsiIfStatement) factory.createStatementFromText(ifString, null);
+
+        ReplacePsi.removeCondStatement(project, ifStatement);
+
+        String expected = "{ return true;\n }";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, ifStatement.getText());
+    }
+
+    /* MergeCondExpr test 1: merge condition first time */
+    public void testMergeCondExpr1()
+    {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        String ifString = "if(x==1)\n" +
+                        "{ return true; }\n" +
+                        "else if(x==2) { return true; }";
+        PsiIfStatement ifStatement = (PsiIfStatement) factory.createStatementFromText(ifString, null);
+
+        ReplacePsi.mergeCondExpr(project, ifStatement, true);
+
+        String expected = "if((x==1) || (x==2))\n" +
+                        "{ return true; }\n" +
+                        "else if(x==2) { return true; }";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, ifStatement.getText());
+    }
+
+    /* MergeCondExpr test 2: condition has been merged once */
+    public void testMergeCondExpr2()
+    {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        String ifString = "if((x==1) || (x==2))\n" +
+                "{ return true; }\n" +
+                "else if(x==3) { return true; }";
+        PsiIfStatement ifStatement = (PsiIfStatement) factory.createStatementFromText(ifString, null);
+
+        ReplacePsi.mergeCondExpr(project, ifStatement, false);
+
+        String expected = "if((x==1) || (x==2) || (x==3))\n" +
+                "{ return true; }\n" +
+                "else if(x==3) { return true; }";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, ifStatement.getText());
     }
 
     public void testReplaceParamToArgs()
@@ -85,7 +167,28 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
 
     public void testChangeModifier()
     {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
+        // for field: final static public int testField
+        PsiField member = factory.createField("testField", PsiType.INT);
+        member.getModifierList().setModifierProperty(PsiModifier.FINAL, true);
+        member.getModifierList().setModifierProperty(PsiModifier.STATIC, true);
+        member.getModifierList().setModifierProperty(PsiModifier.PUBLIC, true);
+
+        Assertions.assertEquals("public static final int testField;", member.getText());
+
+        List<String> removeValues = new ArrayList<>();
+        removeValues.add(PsiModifier.PUBLIC); removeValues.add(PsiModifier.FINAL);
+        List<String> addValues = new ArrayList<>();
+        addValues.add(PsiModifier.ABSTRACT); addValues.add(PsiModifier.PRIVATE);
+
+        ReplacePsi.changeModifier(member, removeValues, addValues);
+
+        String expected = "private static abstract int testField;";
+
+        Assertions.assertTrue(member.isValid());
+        Assertions.assertEquals(expected, member.getText());
     }
 
     public void testPulloutFirstCondExpr()
