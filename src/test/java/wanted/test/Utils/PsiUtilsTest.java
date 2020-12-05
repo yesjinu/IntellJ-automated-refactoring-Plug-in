@@ -44,19 +44,6 @@ public class PsiUtilsTest extends BaseRefactorAction {
         project = navigator.findProject(); //?
         member = navigator.findField(); //?
         focusClass = navigator.findClass();
-
-        testParams[0] = member;
-
-        System.out.println(testMethod);
-        if (testMethod.getName().equals("addMethod")) {
-
-        }
-
-
-        WriteCommandAction.runWriteCommandAction(project, ()->{
-            try{ testMethod.invoke(testClass, testParams); }
-            catch(Exception e2){}
-        });
     }
 
 }

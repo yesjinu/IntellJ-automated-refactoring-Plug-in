@@ -112,7 +112,7 @@ public class SelfEncapField extends BaseRefactorAction {
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
             AddPsi.addMethod(member.getContainingClass(), addList); // add method in addList to targetClass
-            ReplacePsi.encapFied(project, (PsiMethod) addList.get(0), (PsiMethod) addList.get(1), references); // encapsulate with getter and setter
+            ReplacePsi.encapField(project, (PsiMethod) addList.get(0), (PsiMethod) addList.get(1), references); // encapsulate with getter and setter
         });
     }
 }
