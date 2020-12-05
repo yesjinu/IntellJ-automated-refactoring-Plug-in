@@ -2,16 +2,10 @@ package wanted.test.Utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.CreatePsi;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Test class for Utils.CreatePsi
@@ -31,6 +25,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         String expected = "public void setAbc(int newValue) {\n" +
                 "abc = newValue;\n}";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
 
@@ -45,6 +40,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         String expected = "public double getAbc() {\n" +
                 "return abc;\n}";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
 
@@ -58,6 +54,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "testMethod()";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
 
@@ -72,6 +69,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "testMethod(firstParam)";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
 
     }
@@ -88,6 +86,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "caller.testMethod(firstParam)";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
 
     }
@@ -104,6 +103,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "(x==1) || (y==2)";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
 
@@ -119,6 +119,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "(x==1) || (z==1) || (y==2)";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
 
@@ -129,6 +130,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "{}";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
 
@@ -143,6 +145,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "private static double test1;";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
 
@@ -158,9 +161,9 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "public static long test1=2147483648L;";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
-
 
     public void testCreatePsiElement() {
         Project project = getProject();
@@ -170,9 +173,10 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "newElement";
 
+        Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
     }
-/*
+
     public void testCreateAssertStatement() {
 
     }
@@ -195,5 +199,5 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
     public void testCapitalize() {
 
-    } */
+    }
 }
