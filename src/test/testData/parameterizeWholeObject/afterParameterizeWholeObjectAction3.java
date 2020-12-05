@@ -1,13 +1,13 @@
 public class Caller {
     ParamContainer p = new ParamContainer();
-    int result = TestClass1.testMethod1(p);
+    int a = p.getA();
+    int result = TestClass1.testMethod1(a);
     int result2 = TestClass2.testMethod2(p);
 }
 
 
 class TestClass1 {
-    public static int testMethod1(ParamContainer p) {
-        int a = p.getA();
+    public static int testMethod1(int a) {
         if (b) {
             a += 1;
         } else {

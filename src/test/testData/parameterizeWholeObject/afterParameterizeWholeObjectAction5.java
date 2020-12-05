@@ -20,8 +20,8 @@ class TestClass1 {
 
 class TestClass2 {
     public static int testMethod2(ParamContainer p) {
+        boolean b = p.getB();
         char c = p.getC();
-        short d = p.getD();
         if (b) {
             a += 1;
         } else {
@@ -35,10 +35,8 @@ class ParamContainer {
     private int a = 1;
     private boolean b = false;
     private char c = 'c';
-    private short d = 2;
 
     public int getA() {return this.a;}
     public boolean getB() {return this.b;}
     public char getC() {return this.c;}
-    public short getD() {return this.d;}
 }
