@@ -97,7 +97,8 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, ifStatement.getText());
     }
 
-    public void testRemoveCondStatement()
+    /* test 1 thenStatement != null */
+    public void testRemoveCondStatement1()
     {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -124,7 +125,29 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
                         +"}\n"
                         +"}";
 
-        //Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, parent.getText());
+    }
+
+    /* test 2 */
+    public void testRemoveCondStatement2()
+    {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        String parentString = "public boolean dummy() {\n"
+                +"int x = 1;\n"
+                +"if(x==1)\n"
+                +"}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[4];
+
+        ReplacePsi.removeCondStatement(project, ifStatement);
+
+        String expected = "public boolean dummy() {\n"
+                +"int x = 1;\n"
+                +"}";
+
         Assertions.assertEquals(expected, parent.getText());
     }
 
@@ -316,6 +339,8 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
                             +"int x = 1;\n"
                             +"if(x==1){\n"
                             +"x = 2;\n"
+                            +"}\n"
+                            +"else if(x==2){\n"
                             +"}\n"
                             +"else{\n"
                             +"}\n"
