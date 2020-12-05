@@ -4,11 +4,13 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import org.junit.jupiter.api.Assertions;
 import wanted.test.base.LightActionTestCase;
 import wanted.utils.AddPsi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Test class for 'AddPsi' util
@@ -55,7 +57,6 @@ public class AddPsiTest extends LightActionTestCase {
     public void testAddMethod2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
-//        PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
 
         final PsiClass targetClass = factory.createClass("Temp");
 
@@ -72,5 +73,28 @@ public class AddPsiTest extends LightActionTestCase {
 
         assertTrue(targetClass.findMethodsByName("sendReport1", false).length == 1);
         assertTrue(targetClass.findMethodsByName("sendReport2", false).length == 1);
+    }
+
+    public void testAddField() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        final PsiClass targetClass = factory.createClass("Temp");
+
+        List<PsiField> fieldList = new ArrayList<>();
+        PsiField field1 = factory.createFieldFromText("int a = 0;", null);
+        PsiField field2 = factory.createFieldFromText("boolean b = true;", null);
+        fieldList.add(field1);
+        fieldList.add(field2);
+
+        String expected =
+                "public class Temp {int a = 0;boolean b = true; }";
+
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            AddPsi.addField(targetClass, fieldList);
+        });
+
+        Assertions.assertEquals(expected, targetClass.getText());
+
     }
 }
