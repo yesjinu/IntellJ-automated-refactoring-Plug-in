@@ -1,7 +1,6 @@
 package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
-import wanted.refactoring.IntroduceForeignMethodAction;
 import wanted.refactoring.IntroduceLocalExtensionAction;
 import wanted.test.base.LightActionTestCase;
 
@@ -31,6 +30,18 @@ public class IntroduceLocalExtensionActionTest extends LightActionTestCase {
     }
 
     public void testIntroduceLocalExtensionAction2() throws Exception {
+        doTest();
+    }
+
+    public void testIntroduceLocalExtensionAction3() throws Exception {
+        doTest();
+    }
+
+    public void testIntroduceLocalExtensionAction4() throws Exception {
+        doTest();
+    }
+
+    public void testIntroduceLocalExtensionAction5() throws Exception {
         doTest();
     }
 }
