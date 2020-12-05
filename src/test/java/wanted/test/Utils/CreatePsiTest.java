@@ -5,8 +5,12 @@ import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.CreatePsi;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test class for Utils.CreatePsi
@@ -14,6 +18,8 @@ import wanted.utils.CreatePsi;
  * @author seha Park
  */
 public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
+    private Project project;
+    private PsiElementFactory factory;
 
     public void testCreateSetMethod() {
         Project project = getProject();
@@ -87,12 +93,94 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
     }
 
-    public void testCopyStatement() {
+    /* when CreateMergeCondition first invoked */
+    public void testCreateMergeCondition1() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression Left = factory.createExpressionFromText("x==1", null);
+        PsiExpression Right = factory.createExpressionFromText("y==2", null);
+
+        PsiExpression createElement = CreatePsi.createMergeCondition(project, Left, Right, true);
+
+        String expected = "(x==1) || (y==2)";
+
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* when CreateMergeCondition was invoked before */
+    public void testCreateMergeCondition2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression Left = factory.createExpressionFromText("(x==1) || (z==1)", null);
+        PsiExpression Right = factory.createExpressionFromText("y==2", null);
+
+        PsiExpression createElement = CreatePsi.createMergeCondition(project, Left, Right, false);
+
+        String expected = "(x==1) || (z==1) || (y==2)";
+
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    public void testCreateEmtpyBlockStatement() {
+        Project project = getProject();
+
+        PsiStatement createElement = CreatePsi.createEmptyBlockStatement(project);
+
+        String expected = "{}";
+
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* no initializer for field */
+    public void testCreateField() {
+        Project project = getProject();
+
+        String[] modifiers = { PsiModifier.STATIC };
+        PsiType type = PsiType.DOUBLE;
+        String name = "test1";
+        PsiField createElement = CreatePsi.createField(project, modifiers, type, name, null);
+
+        String expected = "private static double test1";
+
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* initializer for field provided */
+    public void testCreateField2() {
+        Project project = getProject();
+
+        String[] modifiers = { PsiModifier.STATIC, PsiModifier.PUBLIC };
+        PsiType type = PsiType.LONG;
+        String name = "test1";
+        String value = "3.0L";
+        PsiField createElement = CreatePsi.createField(project, modifiers, type, name, value);
+
+        String expected = "static private long test1 = 3.0L";
+
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+
+    public void testCreatePsiElement() {
 
     }
 
-    public void testCreateMergeCondition() {
+    public void testCreateAssertStatement() {
 
+    }
+
+    public void testCopyStatement() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement statement = factory.createStatementFromText("int x = 1;", null);
+        PsiStatement createElement = CreatePsi.copyStatement(project, statement);
+
+        String expected = "int x = 1;";
+
+        Assertions.assertEquals(expected, createElement.getText());
     }
 
     public void testCreateDuplicateExpression() {
@@ -100,22 +188,6 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
     }
 
     public void testCapitalize() {
-
-    }
-
-    public void testCreateEmtpyBlockStatement() {
-
-    }
-
-    public void testCreateField() {
-
-    }
-
-    public void testCreatePsiElement() {
-
-    }
-
-    public void testCreateAssertStatement() {
 
     }
 }
