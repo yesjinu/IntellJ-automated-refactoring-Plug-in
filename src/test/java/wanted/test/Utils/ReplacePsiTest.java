@@ -1,17 +1,14 @@
 package wanted.test.Utils;
 
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
-import wanted.utils.AddPsi;
 import wanted.utils.FindPsi;
 import wanted.utils.ReplacePsi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Test class for utils/ReplacePsi
@@ -72,7 +69,7 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         ReplacePsi.mergeCondStatement(project, ifStatement);
 
         String expected = "if((x==1) || (x==2))\n" +
-                        "{ return true; }";
+                        "{ return true; }\n";
 
         Assertions.assertTrue(ifStatement.isValid());
         Assertions.assertEquals(expected, ifStatement.getText());
@@ -100,22 +97,35 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, ifStatement.getText());
     }
 
-    public void testRemoveCondStatement() //TODO
+    public void testRemoveCondStatement()
     {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
-        String ifString = "if(x==1)\n" +
-                        "{ return true; }\n" +
-                        "else { return true; }";
-        PsiIfStatement ifStatement = (PsiIfStatement) factory.createStatementFromText(ifString, null);
+        String parentString = "public boolean dummy() {\n"
+                            +"int x = 1;\n"
+                            +"if(x==1){\n"
+                            +"return true;\n"
+                            +"} else{\n"
+                            +"return true;\n"
+                            +"}\n"
+                            +"}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+        Assertions.assertTrue(parent.isValid());
+
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[4];
 
         ReplacePsi.removeCondStatement(project, ifStatement);
 
-        String expected = "{ return true;\n }";
+        String expected = "public boolean dummy() {\n"
+                        +"int x = 1;\n"
+                        +"{\n"
+                        +"return true;\n"
+                        +"}\n"
+                        +"}";
 
-        Assertions.assertTrue(ifStatement.isValid());
-        Assertions.assertEquals(expected, ifStatement.getText());
+        //Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, parent.getText());
     }
 
     /* MergeCondExpr test 1: merge condition first time */
@@ -162,7 +172,22 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
 
     public void testReplaceParamToArgs()
     {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
+        PsiElement element = factory.createExpressionFromText("x + y", null);
+
+        String[] params = {"x", "y"};
+        PsiType[] types = {PsiType.INT, PsiType.INT};
+        PsiParameterList paramList = factory.createParameterList(params, types);
+
+        PsiExpressionListStatement statement = (PsiExpressionListStatement) factory.createStatementFromText("a, b", null);
+        PsiExpressionList paramRefList = statement.getExpressionList();
+        PsiElement replaceElement = ReplacePsi.replaceParamToArgs(project, element, paramList, paramRefList);
+
+        String expected = "a + b";
+        Assertions.assertTrue(replaceElement.isValid());
+        Assertions.assertEquals(expected, replaceElement.getText());
     }
 
     public void testChangeModifier()
@@ -193,47 +218,125 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
 
     public void testPulloutFirstCondExpr()
     {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
+        String parentString = "public void dummy() {\n"
+                +"int x = 1;\n"
+                +"int a, b;\n"
+                +"if(x==1){\n"
+                +"a = 1;\n"
+                +"b = 1;\n"
+                +"} else if(x==2){\n"
+                +"a = 1;\n"
+                +"b = 2;\n"
+                +"}\n"
+                +"else a = 1;\n"
+                +"}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+        Assertions.assertTrue(parent.isValid());
+
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[6]; // get ifStatement inside method
+        List<PsiStatement> statementList = new ArrayList<>();
+        statementList.add(ifStatement.getThenBranch());
+        statementList.add(((PsiIfStatement)ifStatement.getElseBranch()).getThenBranch());
+        statementList.add(((PsiIfStatement)ifStatement.getElseBranch()).getElseBranch());
+
+        ReplacePsi.pulloutFirstCondExpr(project, ifStatement, statementList);
+
+        Assertions.assertTrue(ifStatement.isValid());
+
+        String expected = "public void dummy() {\n"
+                        +"int x = 1;\n"
+                        +"int a, b;\n"
+                        +"a = 1;if(x==1){\n"
+                        +"b = 1;\n"
+                        +"} else if(x==2){\n"
+                        +"b = 2;\n"
+                        +"}\n"
+                        +"else {}\n"
+                        +"}";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, parent.getText());
     }
 
     public void testPulloutLastCondExpr()
     {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        String parentString = "public void dummy() {\n"
+                +"int x = 1;\n"
+                +"int a, b;\n"
+                +"if(x==1){\n"
+                +"a = 1;\n"
+                +"b = 1;\n"
+                +"} else if(x==2){\n"
+                +"a = 2;\n"
+                +"b = 1;\n"
+                +"}\n"
+                +"else b = 1;\n"
+                +"}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+        Assertions.assertTrue(parent.isValid());
+
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[6]; // get ifStatement inside method
+        List<PsiStatement> statementList = new ArrayList<>();
+        statementList.add(ifStatement.getThenBranch());
+        statementList.add(((PsiIfStatement)ifStatement.getElseBranch()).getThenBranch());
+        statementList.add(((PsiIfStatement)ifStatement.getElseBranch()).getElseBranch());
+
+        ReplacePsi.pulloutLastCondExpr(project, ifStatement, statementList);
+
+        Assertions.assertTrue(ifStatement.isValid());
+
+        String expected = "public void dummy() {\n"
+                +"int x = 1;\n"
+                +"int a, b;\n"
+                +"if(x==1){\n"
+                +"a = 1;\n"
+                +"} else if(x==2){\n"
+                +"a = 2;\n"
+                +"}\n"
+                +"else {}b = 1;\n"
+                +"}";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, parent.getText());
 
     }
 
     public void testRemoveUselessCondition()
     {
-
-    }
-
-    public void testReplacePsi4inString() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
+        String parentString = "public void dummy() {\n"
+                            +"int x = 1;\n"
+                            +"if(x==1){\n"
+                            +"x = 2;\n"
+                            +"}\n"
+                            +"else{\n"
+                            +"}\n"
+                            +"}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+        Assertions.assertTrue(parent.isValid());
 
-        final PsiClass targetClass = factory.createClass("Temp");
-        PsiField field = factory.createFieldFromText("public int value;", null);
-        PsiField newField = factory.createFieldFromText("private int value;", null);
-        targetClass.addAfter(field, targetClass.getLBrace());
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[4]; // get ifStatement inside method
 
-        System.out.println(targetClass.getText());
+        ReplacePsi.removeUselessCondition(project, ifStatement);
 
-        PsiField targetField = null;
-        for (PsiElement e : targetClass.getChildren()) {
-            if (e instanceof PsiField) {
-                targetField = (PsiField) e;
-                break;
-            }
-        }
+        Assertions.assertTrue(ifStatement.isValid());
 
-        List<String> add = new ArrayList<>(); add.add("private");
-        List<String> del = new ArrayList<>(); del.add("public");
+        String expected = "public void dummy() {\n"
+                        +"int x = 1;\n"
+                        +"if(x==1){\n"
+                        +"x = 2;\n"
+                        +"}\n"
+                        +"}";
 
-        PsiField finalTargetField = targetField;
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            ReplacePsi.changeModifier(finalTargetField, del, add);
-        });
-
-        assertEquals(finalTargetField.getText(), newField.getText());
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, parent.getText());
     }
 }

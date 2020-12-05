@@ -97,10 +97,12 @@ public class ReplacePsi {
 
     /**
      * Replace vars in paramList to vars in paramRefList for PsiElement element.
+     * ith var in paramList is replaced to ith var in paraRefList
      *
      * @param element      Target PsiElement to refactor
      * @param paramList    List of PsiMethod parameters
      * @param paramRefList List of expressions for calling target PsiMethod
+     *                     lengths of paramList and paramRefList need to be same
      * @return PsiElement with altered PsiTree
      */
     public static PsiElement replaceParamToArgs(@NotNull Project project, @NotNull PsiElement element,
@@ -165,7 +167,7 @@ public class ReplacePsi {
      * @param ifStatement   target ifStatement
      * @param statementList list of Statement that should remove first statement inside each
      */
-    public static void pulloutFirstCondExpr(Project project, PsiIfStatement ifStatement, List<PsiStatement> statementList) {
+    public static void pulloutFirstCondExpr(@NotNull Project project, @NotNull PsiIfStatement ifStatement, @NotNull List<PsiStatement> statementList) {
 
         PsiStatement standardStatement = statementList.get(0);
         if (standardStatement instanceof PsiBlockStatement) {
@@ -191,7 +193,7 @@ public class ReplacePsi {
      * @param ifStatement   target ifStatement
      * @param statementList list of Statement that should remove last statement inside each
      */
-    public static void pulloutLastCondExpr(Project project, PsiIfStatement ifStatement, List<PsiStatement> statementList) {
+    public static void pulloutLastCondExpr(@NotNull Project project, @NotNull PsiIfStatement ifStatement, @NotNull List<PsiStatement> statementList) {
         PsiStatement standardStatement = statementList.get(0);
         if (standardStatement instanceof PsiBlockStatement) {
             int size = ((PsiBlockStatement) standardStatement).getCodeBlock().getStatementCount();
@@ -215,9 +217,9 @@ public class ReplacePsi {
      * remove conditions that don't have any statements inside
      *
      * @param project     target project
-     * @param ifStatement target ifStatement
+     * @param ifStatement target ifStatement which has else branch
      */
-    public static void removeUselessCondition(Project project, PsiIfStatement ifStatement) {
+    public static void removeUselessCondition(@NotNull Project project, @NotNull PsiIfStatement ifStatement) {
         PsiStatement statement = ifStatement;
         PsiElement parentStatement;
         while (statement instanceof PsiIfStatement) statement = ((PsiIfStatement) statement).getElseBranch();
