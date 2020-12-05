@@ -1,14 +1,27 @@
 package wanted.refactoring;
 
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.diff.*;
+import com.intellij.diff.chains.SimpleDiffRequestChain;
+import com.intellij.diff.contents.DiffContent;
+import com.intellij.diff.requests.SimpleDiffRequest;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.StdFileTypes;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.WindowWrapper;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
+import wanted.ui.DiffWindowWithButton;
+import wanted.utils.NavigatePsi;
+import wanted.utils.TraverseProjectPsi;
+
+import java.util.*;
+import java.util.List;
 
 /**
  * Abstract class to provide refactoring techniques.
@@ -18,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
  * @author Chanyoung Kim
  */
 public abstract class BaseRefactorAction extends AnAction {
+
+    protected int changedCount = 0;
 
     /**
      * Returns the story name as a string format, for message.
@@ -39,7 +54,7 @@ public abstract class BaseRefactorAction extends AnAction {
      *
      * @param e AnActionEvent
      */
-    protected abstract void refactor(AnActionEvent e);
+    public abstract void refactor(AnActionEvent e);
 
     /**
      * Implement this method to provide your action handler.
@@ -49,7 +64,7 @@ public abstract class BaseRefactorAction extends AnAction {
      */
     @Override
     public void actionPerformed(AnActionEvent e) {
-        refactorRequest(e);
+        refactorRequestWithWindow(e);
     }
 
     /**
@@ -100,7 +115,7 @@ public abstract class BaseRefactorAction extends AnAction {
      *
      * @param e AnActionEvent
      */
-    private void refactorRequest(AnActionEvent e)
+    public void refactorRequest(AnActionEvent e)
     {
         if(!refactorValid(e)) {
             Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);
@@ -108,6 +123,55 @@ public abstract class BaseRefactorAction extends AnAction {
         else
         {
             refactor(e);
+        }
+    }
+
+    /**
+     * Helper Method that applies refactoring if it's available.
+     * When refactor is valid, open window to show before-after
+     *
+     * @param e AnActionEvent
+     */
+    private void refactorRequestWithWindow(AnActionEvent e)
+    {
+        if(!refactorValid(e)) {
+            Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);
+        }
+        else {
+            NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+            Project project = navigator.findProject();
+            List<PsiFile> fileList = TraverseProjectPsi.findFile(project);
+
+            Map<PsiFile, String> fileMap = new HashMap<>();
+            for (PsiFile f : fileList) fileMap.put(f, f.getText());
+
+            // Refactor
+            refactor(e);
+
+            // Composing changeMap (PsiFile -> PsiFile for Changed PsiFiles)
+            List<SimpleDiffRequest> requestList = new ArrayList<>();
+            Map<PsiFile, String> changeMap = new HashMap<>();
+            PsiFile[] ff = fileMap.keySet().toArray(new PsiFile[fileMap.size()]);
+            for (PsiFile f : ff) {
+                if (!f.getText().equals(fileMap.get(f))) {
+                    DiffContent contentBefore = DiffContentFactory.getInstance().create(project, fileMap.get(f));
+                    DiffContent contentAfter = DiffContentFactory.getInstance().create(project, f.getText());
+                    requestList.add(new SimpleDiffRequest(f.getName(), contentBefore, contentAfter, "Original", "Refactor"));
+
+                    changeMap.put(f, f.getText());
+                    WriteCommandAction.runWriteCommandAction(project, ()-> {
+                        Document document = PsiDocumentManager.getInstance(project).getDocument(f);
+                        document.setText(fileMap.get(f));
+                    });
+                }
+            }
+
+            // Opening Window
+            SimpleDiffRequestChain requestChain = new SimpleDiffRequestChain(requestList);
+            DiffWindowWithButton window = new DiffWindowWithButton(
+                    project, requestChain, new DiffDialogHints(WindowWrapper.Mode.FRAME),
+                    changeMap, this);
+            window.show();
         }
     }
 }

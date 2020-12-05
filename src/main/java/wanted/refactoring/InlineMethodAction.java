@@ -109,7 +109,7 @@ public class InlineMethodAction extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e) {
+    public void refactor(AnActionEvent e) {
         assert refactorValid (project, method);
 
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());

@@ -87,29 +87,39 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e) {
-        List<PsiStatement> statementList = new ArrayList<>();
-        PsiStatement nowStatement = ifStatement;
-        while (nowStatement instanceof PsiIfStatement) {
-            statementList.add(((PsiIfStatement) nowStatement).getThenBranch());
-            nowStatement = ((PsiIfStatement) nowStatement).getElseBranch();
-        }
-        statementList.add(nowStatement);
+    public void refactor(AnActionEvent e) {
 
-        while (isDupStatementFirst(statementList)) {
+        while (isDupStatementFirst(getStatementList(ifStatement))) {
             WriteCommandAction.runWriteCommandAction(project, ()->{
-                ReplacePsi.pulloutFirstCondExpr(project, ifStatement, statementList);
+                ReplacePsi.pulloutFirstCondExpr(project, ifStatement, getStatementList(ifStatement));
             });
         }
 
-        while (isDupStatementLast(statementList)) {
+        while (isDupStatementLast(getStatementList(ifStatement))) {
             WriteCommandAction.runWriteCommandAction(project, ()->{
-                ReplacePsi.pulloutLastCondExpr(project, ifStatement, statementList);
+                ReplacePsi.pulloutLastCondExpr(project, ifStatement, getStatementList(ifStatement));
             });
         }
         WriteCommandAction.runWriteCommandAction(project, ()->{
             ReplacePsi.removeUselessCondition(project, ifStatement);
         });
+    }
+
+    /**
+     * Get list of statement from if statement
+     *
+     * @param s if Statement
+     * @return return list of statement which are statements after the condition
+     */
+    private static List<PsiStatement> getStatementList(PsiIfStatement s) {
+        List<PsiStatement> statementList = new ArrayList<>();
+        PsiStatement nowStatement = s;
+        while (nowStatement instanceof PsiIfStatement) {
+            statementList.add(((PsiIfStatement) nowStatement).getThenBranch());
+            nowStatement = ((PsiIfStatement) nowStatement).getElseBranch();
+        }
+        statementList.add(nowStatement);
+        return statementList;
     }
 
     /**

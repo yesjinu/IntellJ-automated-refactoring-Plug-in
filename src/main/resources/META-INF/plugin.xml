@@ -36,6 +36,10 @@
                     description="Data Organize: encapsulate field"/>
             <action id="Wanted-Refactoring.CDCF" class="wanted.refactoring.ConsolidateDupCondFrag" text="consolidate duplicate conditional fragments"
                     description="Simplifying Conditional Expressions: consolidate duplicate conditional fragments"/>
+            <action id="Wanted-Refactoring.INA" class="wanted.refactoring.IntroduceAssertion" text="introduce assertion"
+                    description="Simplifying Conditional Expressions: introduce assertion"/>
+            <action id="Wanted-Refactoring.RMN" class="wanted.refactoring.ReplaceMagicNumber" text="replace magic number"
+                    description="Data Organize: replace magic number"/>
         </group>
         <action id="wanted.refactoring.ParameterizeWholeObjectAction" class="wanted.refactoring.ParameterizeWholeObjectAction"
                 text="Parameterize Whole Object" description="Parameterize Whole Object"/>
