@@ -40,6 +40,8 @@
                     description="Simplifying Conditional Expressions: introduce assertion"/>
             <action id="Wanted-Refactoring.RMN" class="wanted.refactoring.ReplaceMagicNumber" text="replace magic number"
                     description="Data Organize: replace magic number"/>
+            <action id="Wanted-Refactoring.PWO" class="wanted.refactoring.ParameterizeWholeObjectAction" text="parameterize whole object"
+                    description="Parameterize whole object"/>
         </group>
         <action id="wanted.refactoring.ParameterizeWholeObjectAction" class="wanted.refactoring.ParameterizeWholeObjectAction"
                 text="Parameterize Whole Object" description="Parameterize Whole Object"/>

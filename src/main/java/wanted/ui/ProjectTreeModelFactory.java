@@ -74,6 +74,12 @@ class ProjectTreeModelFactory {
                         literals.add(e.getText());
                     }
                 });
+
+                // PWO
+                if(ParameterizeWholeObjectAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "PWO", psiClass);
+                }
+
             }
 
             /**
@@ -203,6 +209,9 @@ class ProjectTreeModelFactory {
             // Scope: expression
             case "RMN":
                 return new ReplaceMagicNumber().storyName();
+
+            case "PWO":
+                return new ParameterizeWholeObjectAction().storyName();
 
             default:
                 return null;
