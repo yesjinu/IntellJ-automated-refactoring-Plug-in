@@ -323,7 +323,7 @@ public class CreatePsi {
         if (exp.getType() == null) return null;
 
         PsiStatement newStatement = factory.createStatementFromText(
-                "final " + exp.getType().getPresentableText() + " " + varName + " = " + exp.getText() + ";\n\t", null);
+                "final " + exp.getType().getPresentableText() + " " + varName + " = " + exp.getText() + ";", null);
         return newStatement;
     }
 }

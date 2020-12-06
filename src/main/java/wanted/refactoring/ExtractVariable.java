@@ -67,6 +67,7 @@ public class ExtractVariable extends BaseRefactorAction {
         psiStatement = FindPsi.findStatement(targetClass, offset);
         if (psiStatement == null) return false;
 
+        ExtractVariable.initVarNum();
         return refactorValid(psiStatement);
     }
 
@@ -80,7 +81,6 @@ public class ExtractVariable extends BaseRefactorAction {
      * @return true if method is refactorable
      */
     public static boolean refactorValid(PsiStatement statement) {
-        ExtractVariable.initVarNum();
 
         expRefactorList = new ArrayList<>();
 
@@ -161,7 +161,7 @@ public class ExtractVariable extends BaseRefactorAction {
 
         for (PsiExpression psiExpression : expRefactorList) {
             String extVarName = "extVar" + Integer.toString(++extVarNum);
-            PsiElement anchor = psiStatement.getFirstChild();
+            PsiElement anchor = psiStatement;
 
             // Delete Original Method
             WriteCommandAction.runWriteCommandAction(project, () -> {
@@ -173,17 +173,15 @@ public class ExtractVariable extends BaseRefactorAction {
                                 project, extVarName,  psiExpression
                         );
 
-                if (psiStatement != null) {
-
+                if (psiStatement != null && assignStatement != null) {
                     // Insert AssignExp
-                    psiStatement.addBefore(assignStatement, anchor);
+                    psiStatement.getParent().addBefore(assignStatement, anchor);
 
                     // New Line
-                    psiStatement.addBefore(newLineNode, anchor);
+                    psiStatement.getParent().addBefore(newLineNode, anchor);
 
                     // Exchange Exp into Var
                     psiExpression.replace(varExp);
-
                 }
             });
         }
