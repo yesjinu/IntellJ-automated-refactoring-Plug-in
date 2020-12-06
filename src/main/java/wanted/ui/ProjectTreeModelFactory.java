@@ -190,40 +190,40 @@ class ProjectTreeModelFactory {
      * @param id Refactoring Techinque ID
      * @return Corresponding Refactoring name (story name)
      */
-    private static String getNameByID (String id) {
+    private static BaseRefactorAction getBaseRefactorActionByID (String id) {
         switch (id) {
             // Scope: Class
             case "IFM":
-                return new IntroduceForeignMethodAction().storyName();
+                return new IntroduceForeignMethodAction();
 
             // Scope: Field
             case "SEF":
-                return new SelfEncapField().storyName();
+                return new SelfEncapField();
             case "EF":
-                return new EncapField().storyName();
+                return new EncapField();
 
             // Scope: Method
             case "IM":
-                return new InlineMethodAction().storyName();
+                return new InlineMethodAction();
             case "RPA":
-                return new RemoveUnusedParameterAction().storyName();
+                return new RemoveUnusedParameterAction();
 
             // Scope: Statement
             case "EV":
-                return new ExtractVariable().storyName();
+                return new ExtractVariable();
             case "CCE":
-                return new ConsolidateCondExpr().storyName();
+                return new ConsolidateCondExpr();
             case "CDCF":
-                return new ConsolidateDupCondFrag().storyName();
+                return new ConsolidateDupCondFrag();
             case "INA":
-                return new IntroduceAssertion().storyName();
+                return new IntroduceAssertion();
 
             // Scope: expression
             case "RMN":
-                return new ReplaceMagicNumber().storyName();
+                return new ReplaceMagicNumber();
 
             case "PWO":
-                return new ParameterizeWholeObjectAction().storyName();
+                return new ParameterizeWholeObjectAction();
 
             default:
                 return null;
@@ -268,7 +268,7 @@ class ProjectTreeModelFactory {
             String id) {
 
         DefaultMutableTreeNode rootRefNode =
-                new DefaultMutableTreeNode (getNameByID (id));
+                new DefaultMutableTreeNode (getBaseRefactorActionByID(id));
         rootRef.put(id, rootRefNode);
         root.add(rootRefNode);
     }
