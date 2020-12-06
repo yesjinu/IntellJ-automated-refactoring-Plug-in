@@ -54,14 +54,14 @@ public class FindPsi {
     }
 
     /**
-     * Find PsiReferenceExpression in same directory PsiFiles (not itself)
-     * Search scope: directory of file. i.e, only check files in same package
+     * Find PsiReferenceExpression referring member from files in same directory
+     * exclude the file holding member as field
      *
-     * @param file   the file which own class with member field
-     * @param member PsiField to find reference
-     * @return List<PsiReferenceExpression> if PsiFiles  has PsiReferenceExpression, empty() otherwise
+     * @param file   the file which owns the member
+     * @param member target PsiField member
+     * @return List<PsiReferenceExpression> referring to member, empty() otherwise
      */
-    public static List<PsiReferenceExpression> findMemberReference(PsiFile file, PsiField member) {
+    public static List<PsiReferenceExpression> findMemberReference(@NotNull PsiFile file, @NotNull PsiField member) {
         List<PsiReferenceExpression> ret = new ArrayList<>();
 
         List<PsiFile> files = Arrays.asList(file.getContainingDirectory().getFiles());

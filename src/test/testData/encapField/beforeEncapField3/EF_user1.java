@@ -1,4 +1,4 @@
-public class EF_user2 {
+public class EF_user1 {
     private EF_owner o;
 
     public int method1(){

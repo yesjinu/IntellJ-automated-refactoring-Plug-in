@@ -6,13 +6,11 @@ public class EF_owner {
         count = 0;
     }
 
-    public int getCount()
-    {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(int newValue)
-    {
+    public void setCount(int newValue) {
         count = newValue;
     }
 }

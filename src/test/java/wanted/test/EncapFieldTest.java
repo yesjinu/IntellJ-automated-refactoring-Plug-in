@@ -40,7 +40,7 @@ public class EncapFieldTest extends LightActionTestCase {
 
     /* Test 4: Do not refactor private field */
     public void testEncapField4() throws Exception {
-        String[] beforeFiles = {"EF_owner.java", "EF_user1.java"};
+        String[] beforeFiles = {"EF_owner.java", "EF_other.java"};
         try {
             doTestDirectory(beforeFiles); // This cause error since refactorValid() returns false and Message dialog appears
         } catch (RuntimeException e) {
@@ -50,7 +50,7 @@ public class EncapFieldTest extends LightActionTestCase {
 
     /* Test 5: Do not refactor when caret points to wrong location */
     public void testEncapField5() throws Exception {
-        String[] beforeFiles = {"EF_owner.java", "EF_user1.java"};
+        String[] beforeFiles = {"EF_owner.java", "EF_other.java"};
         try {
             doTestDirectory(beforeFiles); // This cause error since refactorValid() returns false and Message dialog appears
         } catch (RuntimeException e) {
@@ -60,7 +60,7 @@ public class EncapFieldTest extends LightActionTestCase {
 
     /* Test 6: Do not refactor when either setter or getter already exist */
     public void testEncapField6() throws Exception {
-        String[] beforeFiles = {"EF_owner.java", "EF_user1.java"};
+        String[] beforeFiles = {"EF_owner.java", "EF_other.java"};
         try {
             doTestDirectory(beforeFiles); // This cause error since refactorValid() returns false and Message dialog appears
         } catch (RuntimeException e) {
