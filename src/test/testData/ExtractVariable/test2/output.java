@@ -2,7 +2,7 @@ public class Test {
     void renderBanner() {
         int [][] array = new int[50][40];
         for (int i = 0; i < 50; i++){
-            private final boolean extVar1 = array[(40 + 50 + 70) % 3 + i - 32][0] > 32 &&
+            final boolean extVar1 = array[(40 + 50 + 70) % 3 + i - 32][0] > 32 &&
                     array[(40 + 50 + 70) % 3 + i - 32][1] > 29;
             if (extVar1)
                 continue;

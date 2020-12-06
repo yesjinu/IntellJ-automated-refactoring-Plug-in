@@ -8,6 +8,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.impl.PsiElementFactoryImpl;
 import com.intellij.psi.impl.source.codeStyle.CodeStyleManagerImpl;
 import com.intellij.psi.impl.source.tree.PsiWhiteSpaceImpl;
 import org.eclipse.jdt.internal.compiler.ast.ModuleStatement;
@@ -163,18 +164,26 @@ public class ExtractVariable extends BaseRefactorAction {
 
             // Delete Original Method
             WriteCommandAction.runWriteCommandAction(project, () -> {
+                final PsiElement newLineNode =
+                        PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
                 PsiExpression varExp = CreatePsi.createExpression(project, extVarName);
-                PsiField assignField =
-                        CreatePsi.createField(
-                                project, new String[]{"final"}, psiExpression.getType(),
-                                extVarName, psiExpression.getText());
+                PsiStatement assignStatement =
+                        CreatePsi.createExtractVariableAssignStatement(
+                                project, extVarName,  psiExpression
+                        );
 
                 if (psiStatement != null) {
+                    PsiElement anchor = psiStatement.getFirstChild();
+
                     // Insert AssignExp
-                    psiStatement.addBefore(assignField, psiStatement.getFirstChild());
+                    psiStatement.addBefore(assignStatement, psiStatement.getFirstChild());
+
+                    // New Line
+                    psiStatement.addBefore(newLineNode, anchor);
 
                     // Exchange Exp into Var
                     psiExpression.replace(varExp);
+
                 }
             });
         }

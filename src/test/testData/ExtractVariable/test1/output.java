@@ -1,6 +1,6 @@
 public class Test1 {
     void renderBanner() {
-        private final boolean extVar1 = (platform.toUpperCase().indexOf("MAC") > -1) &&
+        final boolean extVar1 = (platform.toUpperCase().indexOf("MAC") > -1) &&
                 (browser.toUpperCase().indexOf("IE") > -1) &&
                 wasInitialized() && resize > 0;
         if (extVar1) {

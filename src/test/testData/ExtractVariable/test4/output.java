@@ -9,7 +9,7 @@ public class Test {
             array[(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 +
                     14 + 15 + 16 + i - 1) % 50][2] = 1;
 
-            private final int[] extVar1 = array[(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 +
+            final int[] extVar1 = array[(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 +
                     14 + 15 + 16 + i - 1) % 50];
             extVar1[2] += 1;
         }
