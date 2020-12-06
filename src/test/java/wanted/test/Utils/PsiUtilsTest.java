@@ -18,10 +18,6 @@ public class PsiUtilsTest extends BaseRefactorAction {
     public PsiField member;
     public PsiClass focusClass;
 
-    public Object testClass;
-    public Method testMethod;
-    public Object[] testParams;
-
     /**
      * Returns the story name as a string format, for message.
      *
