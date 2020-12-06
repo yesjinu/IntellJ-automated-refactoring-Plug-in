@@ -161,6 +161,7 @@ public class ExtractVariable extends BaseRefactorAction {
 
         for (PsiExpression psiExpression : expRefactorList) {
             String extVarName = "extVar" + Integer.toString(++extVarNum);
+            PsiElement anchor = psiStatement.getFirstChild();
 
             // Delete Original Method
             WriteCommandAction.runWriteCommandAction(project, () -> {
@@ -173,10 +174,9 @@ public class ExtractVariable extends BaseRefactorAction {
                         );
 
                 if (psiStatement != null) {
-                    PsiElement anchor = psiStatement.getFirstChild();
 
                     // Insert AssignExp
-                    psiStatement.addBefore(assignStatement, psiStatement.getFirstChild());
+                    psiStatement.addBefore(assignStatement, anchor);
 
                     // New Line
                     psiStatement.addBefore(newLineNode, anchor);
