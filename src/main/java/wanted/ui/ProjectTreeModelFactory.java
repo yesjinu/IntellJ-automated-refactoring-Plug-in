@@ -121,6 +121,16 @@ class ProjectTreeModelFactory {
                 }
             }
 
+            @Override
+            public void visitStatement(PsiStatement statement) {
+
+                // EV
+                if (ExtractVariable.refactorValid(statement)) {
+                    addTreeNodes(root, rootRef, "EV", statement);
+                }
+                super.visitStatement(statement);
+            }
+
             /**
              * function that is executed when visiting a PsiIfStatement node while traversing the tree
              *
@@ -199,6 +209,8 @@ class ProjectTreeModelFactory {
                 return new RemoveUnusedParameterAction().storyName();
 
             // Scope: Statement
+            case "EV":
+                return new ExtractVariable().storyName();
             case "CCE":
                 return new ConsolidateCondExpr().storyName();
             case "CDCF":
