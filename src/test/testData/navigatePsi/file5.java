@@ -1,8 +1,6 @@
 public class dummy {
-    private int a;
+    pri<caret>vate int target;
 
     public boolean method1(){ return true; }
 }
-
-
 
