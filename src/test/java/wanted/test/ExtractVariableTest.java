@@ -1,6 +1,7 @@
 package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
+import wanted.refactoring.ExtractVariable;
 import wanted.refactoring.InlineMethodAction;
 import wanted.test.base.LightActionTestCase;
 
@@ -12,7 +13,7 @@ import wanted.test.base.LightActionTestCase;
 public class ExtractVariableTest extends LightActionTestCase {
 
     protected AnAction getAction() {
-        return new InlineMethodAction();
+        return new ExtractVariable();
     }
 
     @Override
@@ -20,49 +21,27 @@ public class ExtractVariableTest extends LightActionTestCase {
         return super.getBasePath() + "/ExtractVariable";
     }
 
-    public void testInlineMethodAction1() throws Exception {
+    public void testExtractVariable1() throws Exception {
         doTest_io(1);
     }
 
-    public void testInlineMethodAction2() throws Exception {
-        try {
-            doTest_io(2);
-        }
-        catch(RuntimeException e){
-            assertEquals(e.getMessage(), "Nothing to do");
-        }
+    public void testExtractVariable2() throws Exception {
+        doTest_io(2);
     }
 
-    public void testInlineMethodAction3() throws Exception {
+    public void testExtractVariable3() throws Exception {
         doTest_io(3);
     }
 
-    public void testInlineMethodAction4() throws Exception {
+    public void testExtractVariable4() throws Exception {
         doTest_io(4);
     }
 
-    public void testInlineMethodAction5() throws Exception {
+    public void testExtractVariable5() throws Exception {
         doTest_io(5);
     }
 
-    public void testInlineMethodAction6() throws Exception {
+    public void testExtractVariable6() throws Exception {
         doTest_io(6);
-    }
-
-    public void testInlineMethodAction7() throws Exception {
-        doTest_io(7);
-    }
-
-    public void testInlineMethodAction8() throws Exception {
-        doTest_io(8);
-    }
-
-    public void testInlineMethodAction9() throws Exception {
-        try {
-            doTest_io(9);
-        }
-        catch(RuntimeException e){
-            assertEquals(e.getMessage(), "Nothing to do");
-        }
     }
 }

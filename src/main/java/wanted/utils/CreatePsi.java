@@ -303,27 +303,4 @@ public class CreatePsi {
         PsiStatement newStatement = factory.createStatementFromText("assert (" + context + ");", null);
         return newStatement;
     }
-
-    /**
-     * Returns Assignment Statement for Extract Variables
-     *
-     * " final {TYPE} {NAME} = {PsiExpression}; "
-     *
-     * @param project Project
-     * @param varName Variable Name
-     * @param exp PsiExpression to extract
-     * @return Newly created PsiStatement (Assingnment)
-     */
-    public static PsiStatement createExtractVariableAssignStatement(@NotNull Project project,
-                                                                        String varName,
-                                                                        @NotNull PsiExpression exp) {
-
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        if (exp.getType() == null) return null;
-
-        PsiStatement newStatement = factory.createStatementFromText(
-                "final " + exp.getType().getPresentableText() + " " + varName + " = " + exp.getText() + ";", null);
-        return newStatement;
-    }
 }
