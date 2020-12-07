@@ -32,6 +32,30 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
         return "Parameterize Whole Object";
     }
 
+    /**
+     * Returns the description of each story.
+     * You can freely use html-style (<html>content</html>).
+     *
+     * @return description of each stories as a sting format
+     * @see BaseRefactorAction#descripton()
+     */
+    @Override
+    public String descripton() {
+        // TODO: description
+        return "Description.";
+    }
+
+    /**
+     * Returns the name of subdirectory for example code.
+     *
+     * @return subdirectory name
+     * @see BaseRefactorAction#getSubdirectoryName()
+     */
+    @Override
+    protected String getSubdirectoryName() {
+        // TODO: Directory
+        return "Directory";
+    }
 
     /**
      * Method that checks whether candidate method is refactorable

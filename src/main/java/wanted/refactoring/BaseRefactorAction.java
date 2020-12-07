@@ -33,6 +33,7 @@ import java.util.List;
 public abstract class BaseRefactorAction extends AnAction {
 
     protected int changedCount = 0;
+    private String basePath;
 
     /**
      * Returns the story name as a string format, for message.
@@ -40,6 +41,18 @@ public abstract class BaseRefactorAction extends AnAction {
      * @return story name as a string format
      */
     public abstract String storyName();
+
+    /**
+     * Returns the description of each story.
+     * You can freely use html-style (<html>content</html>).
+     *
+     * @return description of each stories as a sting format
+     */
+    public abstract String descripton();
+
+    /* Get SubDirectory Name */
+    protected abstract String getSubdirectoryName();
+
 
     /**
      * Method that checks whether candidate method is refactorable.
@@ -173,5 +186,26 @@ public abstract class BaseRefactorAction extends AnAction {
                     changeMap, this);
             window.show();
         }
+    }
+
+
+    /* Directory of 'example' */
+    protected String getExamplePath() {
+        return "src/main/";
+    }
+
+    /* Fetching Base Path */
+    protected String getBasePath() {
+        return getExamplePath() + "example/" + getSubdirectoryName();
+    }
+
+    /* Fetching Before JAVA File */
+    public String getBeforeJavaPath() {
+        return getBasePath() + "/before.java";
+    }
+
+    /* Fetching After JAVA File */
+    public String getAfterJavaPath() {
+        return getBasePath() + "/after.java";
     }
 }
