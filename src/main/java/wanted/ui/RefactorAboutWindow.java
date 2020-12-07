@@ -4,21 +4,12 @@ package wanted.ui;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wanted.refactoring.BaseRefactorAction;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Scanner;
 
 /**
  * Class that composes Refactor Technique Information Window.
@@ -51,28 +42,44 @@ public class RefactorAboutWindow extends DialogWrapper {
         dialogPanel = new JPanel(new BorderLayout(10, 10));
 
         // Title
+        String fonts[] =
+                GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+
+        for ( int i = 0; i < fonts.length; i++ )
+        {
+            System.out.println(fonts[i]);
+        }
+
         title = new JLabel("Refactoring Technique: " + refactorAction.storyName());
-        title.setFont(new Font("Vivaldi", Font.PLAIN, 30));
+        title.setFont(new Font("Roboto Thin", Font.PLAIN, 18));
         dialogPanel.add(title, BorderLayout.NORTH);
 
-        // Center
+        // Center: Code
         examplePanel = new JPanel(new BorderLayout(10, 10));
 
         EditorFactory ef = EditorFactory.getInstance();
+        ExampleCodeBlock cb = ExampleCodeBlock.getInstance();
 
-        Document docBefore = ef.createDocument(readFromFile(refactorAction.getBeforeJavaPath()));
-        Document docAfter = ef.createDocument(readFromFile(refactorAction.getAfterJavaPath()));
+        Document docBefore = ef.createDocument(cb.getBeforeCode(refactorAction.storyID()));
+        Document docAfter = ef.createDocument(cb.getAfterCode(refactorAction.storyID()));
+        JComponent editBefore = ef.createEditor(docBefore).getComponent();
+        JComponent editAfter = ef.createEditor(docAfter).getComponent();
 
-        examplePanel.add(ef.createEditor(docBefore).getComponent(), BorderLayout.WEST);
-        // TODO: Insert Image?
+        editBefore.setPreferredSize(new Dimension(500, 300));
+        editAfter.setPreferredSize(new Dimension(500, 300));
+        examplePanel.add(editBefore, BorderLayout.WEST);
+        examplePanel.add(editAfter, BorderLayout.EAST);
 
-        examplePanel.add(ef.createEditor(docAfter).getComponent(), BorderLayout.EAST);
+        // Center: Image
+        JLabel arrow = new JLabel(">");
+        arrow.setFont(new Font("Roboto Thin", Font.PLAIN, 100));
+        examplePanel.add(arrow, BorderLayout.CENTER);
 
         dialogPanel.add(examplePanel, BorderLayout.CENTER);
 
         // Bottom: Description
         description = new JLabel(refactorAction.descripton());
-        title.setFont(new Font("Jetbrains mono", Font.PLAIN, 15));
+        description.setFont(new Font("Jetbrains mono", Font.PLAIN, 15));
         dialogPanel.add(description, BorderLayout.SOUTH);
 
         return dialogPanel;
