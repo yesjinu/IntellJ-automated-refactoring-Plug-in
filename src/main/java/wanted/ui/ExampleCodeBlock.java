@@ -1,14 +1,18 @@
 package wanted.ui;
 
-import com.intellij.psi.codeStyle.CodeStyleManager;
-
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Singleton Class with example codes for RefactorAboutWindow.
+ *
+ * @author Mintae Kim
+ * @see RefactorAboutWindow
+ */
 public class ExampleCodeBlock {
     private Map<String, String> before, after;
 
-    // Design Pattern: Singleton
+    /* Design Pattern: Singleton */
     private static ExampleCodeBlock codeBlock = null;
 
     protected ExampleCodeBlock() {

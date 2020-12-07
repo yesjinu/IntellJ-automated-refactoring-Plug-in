@@ -1,5 +1,12 @@
 package wanted.refactoring;
 
+import wanted.ui.RefactorAboutWindow;
+
+/**
+ * Singleton Class with managing features of Multiple BaseRefactorActions.
+ *
+ * @author Mintae Kim
+ */
 public class BaseRefactorManager {
     private static BaseRefactorManager manager = null;
 
