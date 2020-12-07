@@ -25,15 +25,30 @@ public class InlineMethodAction extends BaseRefactorAction {
     private Project project;
     private PsiMethod method;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "IM";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Inline Method";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        return "<html>When a method body is more obvious than the method itself, <br/>" +
+                "Replace calls to the method with the method's content and delete the method itself.</html>";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        return "<html>Make sure that the method isn't redefined in subclasses. <br/>" +
+                "If the method is redefined, You cannot apply this technique.</html>";
     }
 
     /**

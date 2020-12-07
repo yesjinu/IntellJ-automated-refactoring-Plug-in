@@ -20,15 +20,30 @@ public class IntroduceAssertion extends BaseRefactorAction {
 
     private PsiIfStatement ifStatement;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "INA";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Introduce Assertion";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        // TODO: description
+        return "Description.";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        // TODO: precondition
+        return "Precondition.";
     }
 
     /**

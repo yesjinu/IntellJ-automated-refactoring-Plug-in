@@ -10,6 +10,7 @@ import com.intellij.ui.ColoredTreeCellRenderer;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import wanted.refactoring.BaseRefactorAction;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalIconFactory;
@@ -62,9 +63,9 @@ class ProjectStructureTree extends Tree {
                         setIcon(Icon1);
                         append(((Project) v).getName());
                     }
-                    else if (v instanceof String){ // Category: Refactoring
+                    else if (v instanceof BaseRefactorAction){ // Category: Refactoring
                         setIcon(Icon2);
-                        append((String) v);
+                        append(((BaseRefactorAction) v).storyName());
                     }
                     else if (v instanceof PsiField) {
                         setIcon(Icon3);
@@ -126,6 +127,15 @@ class ProjectStructureTree extends Tree {
                             fd.navigate(true);
                         }
                     }
+                }
+
+                if (SwingUtilities.isRightMouseButton(e)){
+                    TreePath treePath = getClosestPathForLocation(e.getX(), e.getY());
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+                    Object element = node.getUserObject();
+
+                    RefactorPopUp menu = new RefactorPopUp(element);
+                    menu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });

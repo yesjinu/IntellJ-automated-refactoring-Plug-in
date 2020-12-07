@@ -33,16 +33,31 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
     private static Map<PsiDeclarationStatement, Integer> paramCounts;
     private static List<PsiDeclarationStatement> possible;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "IFM";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName()
     {
         return "Introduce Foreign Method";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        // TODO: description
+        return "Description.";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        // TODO: precondition
+        return "Precondition.";
     }
 
     /**

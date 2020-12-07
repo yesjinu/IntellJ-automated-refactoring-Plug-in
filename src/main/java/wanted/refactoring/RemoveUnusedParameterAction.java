@@ -23,15 +23,30 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     Set<PsiParameter> parametersOfMethod;
     Set<PsiReferenceExpression> referenceUsedInMethod;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "RPA";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Remove Unused Parameter";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        // TODO: description
+        return "Description.";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        // TODO: precondition
+        return "Precondition.";
     }
 
     /**

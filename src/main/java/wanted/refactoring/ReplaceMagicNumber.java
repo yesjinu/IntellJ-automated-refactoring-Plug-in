@@ -23,9 +23,30 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
     private PsiLiteralExpression literal;
     private List<PsiLiteralExpression> expressions;
 
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "RMN";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Replace Magic Number";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        // TODO: description
+        return "Description.";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        // TODO: precondition
+        return "Precondition.";
     }
 
     @Override
