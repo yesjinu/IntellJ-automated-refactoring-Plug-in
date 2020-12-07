@@ -36,6 +36,13 @@ public abstract class BaseRefactorAction extends AnAction {
     private String basePath;
 
     /**
+     * Returns the story ID.
+     *
+     * @return story ID
+     */
+    public abstract String storyID();
+
+    /**
      * Returns the story name as a string format, for message.
      *
      * @return story name as a string format
@@ -49,10 +56,6 @@ public abstract class BaseRefactorAction extends AnAction {
      * @return description of each stories as a sting format
      */
     public abstract String descripton();
-
-    /* Get SubDirectory Name */
-    protected abstract String getSubdirectoryName();
-
 
     /**
      * Method that checks whether candidate method is refactorable.
@@ -186,26 +189,5 @@ public abstract class BaseRefactorAction extends AnAction {
                     changeMap, this);
             window.show();
         }
-    }
-
-
-    /* Directory of 'example' */
-    protected String getExamplePath() {
-        return "src/main/";
-    }
-
-    /* Fetching Base Path */
-    protected String getBasePath() {
-        return getExamplePath() + "example/" + getSubdirectoryName();
-    }
-
-    /* Fetching Before JAVA File */
-    public String getBeforeJavaPath() {
-        return getBasePath() + "/before.java";
-    }
-
-    /* Fetching After JAVA File */
-    public String getAfterJavaPath() {
-        return getBasePath() + "/after.java";
     }
 }

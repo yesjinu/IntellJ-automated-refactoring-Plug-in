@@ -185,52 +185,6 @@ class ProjectTreeModelFactory {
     }
 
     /**
-     * Method that fetches Refactoring Method name by ID.
-     *
-     * @param id Refactoring Techinque ID
-     * @return Corresponding Refactoring name (story name)
-     */
-    private static BaseRefactorAction getBaseRefactorActionByID (String id) {
-        switch (id) {
-            // Scope: Class
-            case "IFM":
-                return new IntroduceForeignMethodAction();
-
-            // Scope: Field
-            case "SEF":
-                return new SelfEncapField();
-            case "EF":
-                return new EncapField();
-
-            // Scope: Method
-            case "IM":
-                return new InlineMethodAction();
-            case "RPA":
-                return new RemoveUnusedParameterAction();
-
-            // Scope: Statement
-            case "EV":
-                return new ExtractVariable();
-            case "CCE":
-                return new ConsolidateCondExpr();
-            case "CDCF":
-                return new ConsolidateDupCondFrag();
-            case "INA":
-                return new IntroduceAssertion();
-
-            // Scope: expression
-            case "RMN":
-                return new ReplaceMagicNumber();
-
-            case "PWO":
-                return new ParameterizeWholeObjectAction();
-
-            default:
-                return null;
-        }
-    }
-
-    /**
      * Adds new DefaultMutableTreeNode (Category) if missing,
      * and Adds new DefaultMutableTreeNode (PsiElement).
      *
@@ -268,7 +222,8 @@ class ProjectTreeModelFactory {
             String id) {
 
         DefaultMutableTreeNode rootRefNode =
-                new DefaultMutableTreeNode (getBaseRefactorActionByID(id));
+                new DefaultMutableTreeNode (
+                        BaseRefactorManager.getInstance().getRefactorActionByID(id));
         rootRef.put(id, rootRefNode);
         root.add(rootRefNode);
     }
