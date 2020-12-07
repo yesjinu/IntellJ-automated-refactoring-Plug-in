@@ -58,6 +58,14 @@ public abstract class BaseRefactorAction extends AnAction {
     public abstract String descripton();
 
     /**
+     * Returns the precondition of each story.
+     * You can freely use html-style (<html>content</html>).
+     *
+     * @return description of each stories as a sting format
+     */
+    public abstract String precondition();
+
+    /**
      * Method that checks whether candidate method is refactorable.
      *
      * @param e AnActionEvent

@@ -42,6 +42,13 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
         return "Description.";
     }
 
+    /* Returns the precondition of each story. */
+    @Override
+    public String precondition() {
+        // TODO: precondition
+        return "Precondition.";
+    }
+
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);

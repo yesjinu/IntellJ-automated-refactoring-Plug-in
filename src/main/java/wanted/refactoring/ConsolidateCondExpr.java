@@ -39,6 +39,13 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
         return "Description.";
     }
 
+    /* Returns the precondition of each story. */
+    @Override
+    public String precondition() {
+        // TODO: precondition
+        return "Precondition.";
+    }
+
     /**
      * Method that checks whether candidate method is refactorable
      * using 'Consolidate Conditional Expression'.

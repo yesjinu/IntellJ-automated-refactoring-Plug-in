@@ -4,6 +4,7 @@ package wanted.ui;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.JBColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import wanted.refactoring.BaseRefactorAction;
@@ -20,9 +21,15 @@ import java.awt.*;
 public class RefactorAboutWindow extends DialogWrapper {
     private JPanel dialogPanel;
     private JPanel examplePanel;
+    private JPanel paragraphPanel;
+    private JPanel descriptionPanel;
+    private JPanel preconditionPanel;
 
     private JLabel title;
+    private JLabel description_title;
     private JLabel description;
+    private JLabel precondition_title;
+    private JLabel precondition;
 
     private JComponent beforeEditor, afterEditor;
 
@@ -41,17 +48,8 @@ public class RefactorAboutWindow extends DialogWrapper {
     protected @Nullable JComponent createCenterPanel() {
         dialogPanel = new JPanel(new BorderLayout(10, 10));
 
-        // Title
-        String fonts[] =
-                GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-        for ( int i = 0; i < fonts.length; i++ )
-        {
-            System.out.println(fonts[i]);
-        }
-
         title = new JLabel("Refactoring Technique: " + refactorAction.storyName());
-        title.setFont(new Font("Roboto Thin", Font.PLAIN, 18));
+        title.setFont(new Font("Roboto Thin", Font.PLAIN, 24));
         dialogPanel.add(title, BorderLayout.NORTH);
 
         // Center: Code
@@ -65,22 +63,47 @@ public class RefactorAboutWindow extends DialogWrapper {
         JComponent editBefore = ef.createEditor(docBefore).getComponent();
         JComponent editAfter = ef.createEditor(docAfter).getComponent();
 
-        editBefore.setPreferredSize(new Dimension(500, 300));
-        editAfter.setPreferredSize(new Dimension(500, 300));
+        // editBefore.setPreferredSize(new Dimension(500, 300));
+        // editAfter.setPreferredSize(new Dimension(500, 300));
         examplePanel.add(editBefore, BorderLayout.WEST);
         examplePanel.add(editAfter, BorderLayout.EAST);
 
         // Center: Image
         JLabel arrow = new JLabel(">");
         arrow.setFont(new Font("Roboto Thin", Font.PLAIN, 100));
+        arrow.setPreferredSize(new Dimension(80, 100));
         examplePanel.add(arrow, BorderLayout.CENTER);
 
         dialogPanel.add(examplePanel, BorderLayout.CENTER);
 
+        // Bottom
+        paragraphPanel = new JPanel(new BorderLayout(10, 10));
+        descriptionPanel = new JPanel(new BorderLayout(10, 10));
+        preconditionPanel = new JPanel(new BorderLayout(10, 10));
+
         // Bottom: Description
+        description_title = new JLabel("@ensures");
+        description_title.setFont(new Font("Roboto Thin", Font.PLAIN, 18));
+        description_title.setForeground(JBColor.BLUE);
+        descriptionPanel.add(description_title, BorderLayout.NORTH);
+
         description = new JLabel(refactorAction.descripton());
-        description.setFont(new Font("Jetbrains mono", Font.PLAIN, 15));
-        dialogPanel.add(description, BorderLayout.SOUTH);
+        description.setFont(new Font("Roboto Thin", Font.PLAIN, 15));
+        descriptionPanel.add(description, BorderLayout.WEST);
+
+        // Bottom: Precondition
+        precondition_title = new JLabel("@precondition");
+        precondition_title.setFont(new Font("Roboto Thin", Font.PLAIN, 18));
+        precondition_title.setForeground(JBColor.BLUE);
+        preconditionPanel.add(precondition_title, BorderLayout.NORTH);
+
+        precondition = new JLabel(refactorAction.precondition());
+        precondition.setFont(new Font("Roboto Thin", Font.PLAIN, 15));
+        preconditionPanel.add(precondition, BorderLayout.EAST);
+
+        paragraphPanel.add(descriptionPanel, BorderLayout.WEST);
+        paragraphPanel.add(preconditionPanel, BorderLayout.EAST);
+        dialogPanel.add(paragraphPanel, BorderLayout.SOUTH);
 
         return dialogPanel;
     }
