@@ -146,7 +146,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
             });
         }
 
-        PsiElement ret = CreatePsi.createPsiElement(project, constant.getName());
+        PsiExpression ret = CreatePsi.createDuplicateExpression(project, constant.getNameIdentifier());
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
             // replace literal expression into constant

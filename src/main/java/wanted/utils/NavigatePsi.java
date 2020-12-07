@@ -19,12 +19,12 @@ import com.intellij.psi.util.PsiTreeUtil;
  */
 public class NavigatePsi {
     private static NavigatePsi navigator = null;
-    private static Project focusProject;
-    private static PsiFile focusFile;
-    private static PsiClass focusClass;
-    private static PsiMethod focusMethod;
-    private static PsiField focusField;
-    private static PsiLiteralExpression focusLiteral;
+    private static Project focusProject = null;
+    private static PsiFile focusFile = null;
+    private static PsiClass focusClass = null;
+    private static PsiMethod focusMethod = null;
+    private static PsiField focusField = null;
+    private static PsiLiteralExpression focusLiteral = null;
 
     private static Editor editor;
     private static int caret;
@@ -38,12 +38,9 @@ public class NavigatePsi {
         editor = e.getData(CommonDataKeys.EDITOR);
 
         focusProject = e.getData(PlatformDataKeys.PROJECT);
-        focusFile = e.getData(LangDataKeys.PSI_FILE); // ? look for only currently opened file
+        focusFile = e.getData(LangDataKeys.PSI_FILE);
 
-        if (focusFile == null) {
-            focusClass = null;
-            focusMethod = null;
-        } else {
+        if (focusFile != null) {
             try {
                 focusClass = ((PsiClassOwner) focusFile).getClasses()[0];
             } catch (ArrayIndexOutOfBoundsException exception) {
@@ -51,23 +48,21 @@ public class NavigatePsi {
                 focusClass = null;
             }
 
+            caret = editor.getCaretModel().getOffset();
+
             try {
-                caret = editor.getCaretModel().getOffset();
                 focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
-                // focusMethod = FindPsi.getContainingMethod(focusClass, caret);
             } catch (ArrayIndexOutOfBoundsException exception) {
                 focusMethod = null;
             }
 
             try {
-                caret = editor.getCaretModel().getOffset();
                 focusField = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiField.class);
             } catch (ArrayIndexOutOfBoundsException exception) {
                 focusField = null;
             }
 
             try {
-                caret = editor.getCaretModel().getOffset();
                 focusLiteral = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiLiteralExpression.class);
             } catch (ArrayIndexOutOfBoundsException exception) {
                 focusLiteral = null;
@@ -82,7 +77,9 @@ public class NavigatePsi {
      * @return NavigatePsi object
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e) {
-        navigator = new NavigatePsi(e);
+        if (navigator == null || !sameEvent(navigator, e)) {
+            navigator = new NavigatePsi(e);
+        }
         return navigator;
     }
 
@@ -114,5 +111,10 @@ public class NavigatePsi {
     /* return chosen literal expression */
     public PsiLiteralExpression findLiteral() {
         return focusLiteral;
+    }
+
+    /* check if NavigatePsi for current caret has been constructed before */
+    private static boolean sameEvent(NavigatePsi navigator, AnActionEvent e) {
+        return (e.getData(LangDataKeys.PSI_FILE) == navigator.findFile()) && (e.getData(CommonDataKeys.EDITOR).getCaretModel().getOffset() == caret);
     }
 }
