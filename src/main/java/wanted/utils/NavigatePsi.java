@@ -78,7 +78,6 @@ public class NavigatePsi {
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e) {
         if (navigator == null || !sameEvent(navigator, e)) {
-
             navigator = new NavigatePsi(e);
         }
         return navigator;
@@ -114,6 +113,7 @@ public class NavigatePsi {
         return focusLiteral;
     }
 
+    /* check if NavigatePsi for current caret has been constructed before */
     private static boolean sameEvent(NavigatePsi navigator, AnActionEvent e) {
         return (e.getData(LangDataKeys.PSI_FILE) == navigator.findFile()) && (e.getData(CommonDataKeys.EDITOR).getCaretModel().getOffset() == caret);
     }
