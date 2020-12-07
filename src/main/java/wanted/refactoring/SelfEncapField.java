@@ -1,6 +1,5 @@
 package wanted.refactoring;
 
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -73,7 +72,7 @@ public class SelfEncapField extends BaseRefactorAction {
 
         if (member.getModifierList() == null) {
             return false;
-        } // PsiField with no modifier is public
+        }
         else if (!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)) {
             return false;
         } // member is not private

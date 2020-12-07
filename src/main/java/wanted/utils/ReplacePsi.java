@@ -135,7 +135,7 @@ public class ReplacePsi {
         for (PsiElement resolveEntry : resolveList) {
             for (int i = 0; i < paramList.getParametersCount(); i++) {
                 if (resolveEntry.getText().equals(paramArray[i].getName())) {
-                    PsiExpression newExp = CreatePsi.createDuplicateExpression(project, paramRefArray[i]);
+                    PsiExpression newExp = CreatePsi.copyExpression(project, paramRefArray[i]);
                     resolveEntry.replace(newExp);
                     break;
                 }

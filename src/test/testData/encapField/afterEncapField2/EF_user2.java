@@ -1,14 +1,6 @@
 public class EF_user2 {
-    private EF_owner o;
+    private double value;
 
-    public int method1(){
-        EF_owner o2 = new EF_owner(){
-            public void method1()
-            {
-                System.out.println("Subclass");
-            }
-        };
+    public int method1(){ return 1; }
 
-        return o2.getValue();
-    }
 }

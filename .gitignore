@@ -1,7 +1,6 @@
 build/
 .gradle/
 src/.idea
-.vs/
 
 # IntelliJ project files
 *.iml
@@ -25,4 +24,4 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
->>>>>>> 84b00f1945564cdadd79b641f5562a5c09967123
+.vs/

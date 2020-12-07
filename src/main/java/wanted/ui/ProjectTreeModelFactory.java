@@ -74,6 +74,12 @@ class ProjectTreeModelFactory {
                         literals.add(e.getText());
                     }
                 });
+
+                // PWO
+                if(ParameterizeWholeObjectAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "PWO", psiClass);
+                }
+
             }
 
             /**
@@ -113,6 +119,16 @@ class ProjectTreeModelFactory {
                 if (RemoveUnusedParameterAction.refactorValid(project, method)) {
                     addTreeNodes(root, rootRef, "RPA", method);
                 }
+            }
+
+            @Override
+            public void visitStatement(PsiStatement statement) {
+
+                // EV
+                if (ExtractVariable.refactorValid(statement)) {
+                    addTreeNodes(root, rootRef, "EV", statement);
+                }
+                super.visitStatement(statement);
             }
 
             /**
@@ -193,6 +209,8 @@ class ProjectTreeModelFactory {
                 return new RemoveUnusedParameterAction().storyName();
 
             // Scope: Statement
+            case "EV":
+                return new ExtractVariable().storyName();
             case "CCE":
                 return new ConsolidateCondExpr().storyName();
             case "CDCF":
@@ -203,6 +221,9 @@ class ProjectTreeModelFactory {
             // Scope: expression
             case "RMN":
                 return new ReplaceMagicNumber().storyName();
+
+            case "PWO":
+                return new ParameterizeWholeObjectAction().storyName();
 
             default:
                 return null;

@@ -9,6 +9,7 @@ import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,7 +60,7 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
      */
     public static boolean refactorValid(Project project, @NotNull PsiMethod focusMethod) {
         Set<PsiParameter> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
-        Set<PsiReferenceExpression> referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
+        List<PsiReferenceExpression> referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
         Set<PsiParameter> unusedParameter = new HashSet<>();
 
         if (parametersOfMethod.isEmpty()) return false;
@@ -95,7 +96,7 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     @Override
     public void refactor(AnActionEvent e) {
         Set<PsiParameter> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
-        Set<PsiReferenceExpression> referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
+        List<PsiReferenceExpression> referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
         Set<PsiParameter> unusedParameter = new HashSet<>();
 
         for (PsiParameter p : parametersOfMethod) {

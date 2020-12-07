@@ -10,6 +10,7 @@ import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class IntroduceAssertion extends BaseRefactorAction {
@@ -103,7 +104,7 @@ public class IntroduceAssertion extends BaseRefactorAction {
     private static Set<PsiReferenceExpression> getReferenceSet(PsiStatement s) {
         if (s == null) return new HashSet<>();
 
-        Set<PsiReferenceExpression> referenceSet = FindPsi.findReferenceExpression(s);
+        List<PsiReferenceExpression> referenceSet = FindPsi.findReferenceExpression(s);
 
         Set<PsiReferenceExpression> nestedReferenceSet = new HashSet<>();
         for (PsiReferenceExpression exp : referenceSet) {

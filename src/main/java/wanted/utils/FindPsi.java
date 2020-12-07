@@ -1,7 +1,6 @@
 package wanted.utils;
 
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +40,7 @@ public class FindPsi {
                     continue;
                 }
 
-                Set<PsiReferenceExpression> refers = findReferenceExpression(s);
+                List<PsiReferenceExpression> refers = findReferenceExpression(s);
                 for (PsiReferenceExpression r : refers) {
                     if (r.isReferenceTo(member)) {
                         ret.add(r);
@@ -55,14 +54,14 @@ public class FindPsi {
     }
 
     /**
-     * Find PsiReferenceExpression in same directory PsiFiles (not itself)
-     * Search scope: directory of file. i.e, only check files in same package
+     * Find PsiReferenceExpression referring member from files in same directory
+     * exclude the file holding member as field
      *
-     * @param file   the file which own class with member field
-     * @param member PsiField to find reference
-     * @return List<PsiReferenceExpression> if PsiFiles  has PsiReferenceExpression, empty() otherwise
+     * @param file   the file which owns the member
+     * @param member target PsiField member
+     * @return List<PsiReferenceExpression> referring to member, empty() otherwise
      */
-    public static List<PsiReferenceExpression> findMemberReference(PsiFile file, PsiField member) {
+    public static List<PsiReferenceExpression> findMemberReference(@NotNull PsiFile file, @NotNull PsiField member) {
         List<PsiReferenceExpression> ret = new ArrayList<>();
 
         List<PsiFile> files = Arrays.asList(file.getContainingDirectory().getFiles());
@@ -101,13 +100,13 @@ public class FindPsi {
     }
 
     /**
-     * returns set of reference expressions(symbols) in a method
+     * returns list of reference expressions(symbols) in a method
      *
      * @param focusElement : 검사하고 싶은 요소 (PsiElement)
      * @return set of used reference in PsiElement
      */
-    public static Set<PsiReferenceExpression> findReferenceExpression(PsiElement focusElement) {
-        Set<PsiReferenceExpression> result = new HashSet<>();
+    public static List<PsiReferenceExpression> findReferenceExpression(PsiElement focusElement) {
+        List<PsiReferenceExpression> result = new ArrayList<>();
         focusElement.accept((new JavaRecursiveElementVisitor() {
             @Override
             public void visitReferenceExpression(PsiReferenceExpression expression) {
@@ -136,6 +135,57 @@ public class FindPsi {
         return result;
     }
 
+    /**
+     * Return PsiExpression from cursor offset inside of PsiClass
+     *
+     * @param psiClass the scope this function find expression
+     * @param offset the text offset of file containing this class
+     * @return PsiStatement which contains cursor
+     *         If various PsiStatements are correct, choose widest one
+     */
+    public static PsiExpression findExpression(PsiClass psiClass, int offset)
+    {
+        List<PsiExpression> ExpressionList = new ArrayList<>();
+
+        JavaRecursiveElementVisitor v = new JavaRecursiveElementVisitor(){
+            @Override
+            public void visitExpression(PsiExpression expression)
+            {
+                if(expression.getTextRange().contains(offset)) ExpressionList.add(expression);
+            }
+        };
+        psiClass.accept(v);
+
+        if (ExpressionList.isEmpty()) return null;
+        else return ExpressionList.get(0);
+    }
+
+    /**
+     * Return PsiStatement from cursor offset inside of PsiClass
+     *
+     * @param psiClass the scope this function find Statement
+     * @param offset the text offset of file containing this class
+     * @return PsiStatement which contains cursor
+     *         If various PsiStatements are correct, choose narrowest one
+     */
+    public static PsiStatement findStatement(PsiClass psiClass, int offset)
+    {
+        List<PsiStatement> StatementList = new ArrayList<>();
+
+        JavaRecursiveElementVisitor v = new JavaRecursiveElementVisitor(){
+            @Override
+            public void visitStatement(PsiStatement statement)
+            {
+                if(statement.getTextRange().contains(offset)) StatementList.add(statement);
+                super.visitStatement(statement);
+            }
+        };
+        psiClass.accept(v);
+
+        if (StatementList.isEmpty()) return null;
+        else return StatementList.get(StatementList.size() - 1);
+    }
+    
     /**
      * Return PsiIfstatement from cursor offset inside of PsiClass
      *
@@ -199,7 +249,7 @@ public class FindPsi {
                 return null;
         }
 
-        return (PsiClass)targetClass;
+        return (PsiClass) targetClass;
     }
 
     /**
@@ -542,7 +592,9 @@ public class FindPsi {
      * @return modified queries such that duplicate strings are removed
      */
     public static List<String> checkDuplicateName(PsiClass searchClass, List<String> queries) {
-        if(searchClass==null){ return new ArrayList<>(); }
+        if (searchClass == null) {
+            return new ArrayList<>();
+        }
 
         List<String> ret = queries;
 
@@ -554,6 +606,7 @@ public class FindPsi {
 
         return ret;
     }
+
 
     /**
      * Return list with same literal value in current PsiElement
@@ -569,8 +622,7 @@ public class FindPsi {
 
         for (PsiLiteralExpression l : expressions) {
             Object value = l.getValue();
-            if(value!=null && value.equals(literal.getValue()) && l.getType().equals(literal.getType()))
-            {
+            if (value != null && value.equals(literal.getValue()) && l.getType().equals(literal.getType())) {
                 ret.add(l);
             }
         }
