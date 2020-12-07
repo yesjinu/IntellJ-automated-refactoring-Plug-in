@@ -12,7 +12,7 @@ import wanted.utils.NavigatePsi;
 
 import java.lang.reflect.Method;
 
-
+// not used for some times. remove after all test sets developed.
 public class PsiUtilsTest extends BaseRefactorAction {
     public Project project;
     public PsiField member;

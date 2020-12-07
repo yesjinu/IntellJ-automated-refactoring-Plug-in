@@ -2,6 +2,7 @@
 package wanted.test.Utils;
 
 import com.intellij.openapi.actionSystem.AnAction;
+import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.test.base.LightActionTestCase;
 
 /**
@@ -9,10 +10,6 @@ import wanted.test.base.LightActionTestCase;
  *
  * @author Jinu Noh
  */
-public class FindPsiTest extends LightActionTestCase {
+public class FindPsiTest extends AbstractLightCodeInsightTestCase {
 
-    @Override
-    protected AnAction getAction() {
-        return null;
-    }
 }
