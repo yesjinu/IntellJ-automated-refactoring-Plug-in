@@ -49,7 +49,7 @@ public class RefactorAboutWindow extends DialogWrapper {
         dialogPanel = new JPanel(new BorderLayout(10, 10));
 
         title = new JLabel("Refactoring Technique: " + refactorAction.storyName());
-        title.setFont(new Font("Roboto Thin", Font.PLAIN, 24));
+        title.setFont(new Font("Roboto Thin", Font.PLAIN, 27));
         dialogPanel.add(title, BorderLayout.NORTH);
 
         // Center: Code
@@ -60,8 +60,8 @@ public class RefactorAboutWindow extends DialogWrapper {
 
         Document docBefore = ef.createDocument(cb.getBeforeCode(refactorAction.storyID()));
         Document docAfter = ef.createDocument(cb.getAfterCode(refactorAction.storyID()));
-        JComponent editBefore = ef.createEditor(docBefore).getComponent();
-        JComponent editAfter = ef.createEditor(docAfter).getComponent();
+        JComponent editBefore = ef.createViewer(docBefore).getComponent();
+        JComponent editAfter = ef.createViewer(docAfter).getComponent();
 
         // editBefore.setPreferredSize(new Dimension(500, 300));
         // editAfter.setPreferredSize(new Dimension(500, 300));
@@ -76,33 +76,36 @@ public class RefactorAboutWindow extends DialogWrapper {
 
         dialogPanel.add(examplePanel, BorderLayout.CENTER);
 
+
         // Bottom
-        paragraphPanel = new JPanel(new BorderLayout(10, 10));
+        paragraphPanel = new JPanel(new GridLayout(1, 2));
         descriptionPanel = new JPanel(new BorderLayout(10, 10));
         preconditionPanel = new JPanel(new BorderLayout(10, 10));
 
+        preconditionPanel.setBorder(BorderFactory.createEmptyBorder(0, 40, 0, 0));
+
         // Bottom: Description
         description_title = new JLabel("@ensures");
-        description_title.setFont(new Font("Roboto Thin", Font.PLAIN, 18));
+        description_title.setFont(new Font("Felix Titling", Font.PLAIN, 18));
         description_title.setForeground(JBColor.BLUE);
         descriptionPanel.add(description_title, BorderLayout.NORTH);
 
         description = new JLabel(refactorAction.descripton());
-        description.setFont(new Font("Roboto Thin", Font.PLAIN, 15));
+        description.setFont(new Font("Calibri", Font.PLAIN, 16));
         descriptionPanel.add(description, BorderLayout.WEST);
 
         // Bottom: Precondition
         precondition_title = new JLabel("@precondition");
-        precondition_title.setFont(new Font("Roboto Thin", Font.PLAIN, 18));
+        precondition_title.setFont(new Font("Felix Titling", Font.PLAIN, 18));
         precondition_title.setForeground(JBColor.BLUE);
         preconditionPanel.add(precondition_title, BorderLayout.NORTH);
 
         precondition = new JLabel(refactorAction.precondition());
-        precondition.setFont(new Font("Roboto Thin", Font.PLAIN, 15));
-        preconditionPanel.add(precondition, BorderLayout.EAST);
+        precondition.setFont(new Font("Calibri", Font.PLAIN, 16));
+        preconditionPanel.add(precondition, BorderLayout.WEST);
 
-        paragraphPanel.add(descriptionPanel, BorderLayout.WEST);
-        paragraphPanel.add(preconditionPanel, BorderLayout.EAST);
+        paragraphPanel.add(descriptionPanel);
+        paragraphPanel.add(preconditionPanel);
         dialogPanel.add(paragraphPanel, BorderLayout.SOUTH);
 
         return dialogPanel;

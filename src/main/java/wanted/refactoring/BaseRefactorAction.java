@@ -51,7 +51,7 @@ public abstract class BaseRefactorAction extends AnAction {
 
     /**
      * Returns the description of each story.
-     * You can freely use html-style (<html>content</html>).
+     * You must use html-style (<html>content</html>) for multi-line explanation.
      *
      * @return description of each stories as a sting format
      */
@@ -59,7 +59,7 @@ public abstract class BaseRefactorAction extends AnAction {
 
     /**
      * Returns the precondition of each story.
-     * You can freely use html-style (<html>content</html>).
+     * You must use html-style (<html>content</html>) for multi-line explanation.
      *
      * @return description of each stories as a sting format
      */

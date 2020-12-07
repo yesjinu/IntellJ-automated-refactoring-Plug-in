@@ -47,18 +47,21 @@ public class ExtractVariable extends BaseRefactorAction {
         return "Extract Variable";
     }
 
-    /* Returns the description of each story. */
+    /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
-        return "Description.";
+        return "<html>If you have an expression that's hard to understand, <br/>" +
+                "You can apply this technique by placing the result of the expression <br/>" +
+                "or its parts in separate variables that are self-explanatory.</html>";
     }
 
-    /* Returns the precondition of each story. */
+    /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
-        return "Precondition.";
+        return "<html>1. Condition of the if() operator or a part of the ?: operator <br/>" +
+                "2. A long arithmetic expression without intermediate results <br/>" +
+                "3. Long multipart lines <br/><br/>" +
+                "(for threshold: 30 chars)</html>";
     }
 
     /**

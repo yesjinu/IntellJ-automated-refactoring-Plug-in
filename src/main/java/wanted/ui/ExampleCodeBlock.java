@@ -52,7 +52,7 @@ public class ExampleCodeBlock {
                 "    final double extVar1 = order.quantity * order.itemPrice -\n" +
                 "      Math.max(0, order.quantity - 500) * order.itemPrice * 0.05 +\n" +
                 "      Math.min(order.quantity * order.itemPrice * 0.1, 100);\n" +
-                "    return extVar1";
+                "    return extVar1;";
 
         after.put("EV", afterCodeBlock);
     }

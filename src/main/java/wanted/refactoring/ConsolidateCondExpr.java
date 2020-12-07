@@ -32,14 +32,14 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
         return "Consolidate Conditional Expression";
     }
 
-    /* Returns the description of each story. */
+    /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
         // TODO: description
         return "Description.";
     }
 
-    /* Returns the precondition of each story. */
+    /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
         // TODO: precondition

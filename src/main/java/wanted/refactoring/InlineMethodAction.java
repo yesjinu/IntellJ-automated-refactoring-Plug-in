@@ -37,18 +37,18 @@ public class InlineMethodAction extends BaseRefactorAction {
         return "Inline Method";
     }
 
-    /* Returns the description of each story. */
+    /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
-        return "Description.";
+        return "<html>When a method body is more obvious than the method itself, <br/>" +
+                "Replace calls to the method with the method's content and delete the method itself.</html>";
     }
 
-    /* Returns the precondition of each story. */
+    /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
-        return "Precondition.";
+        return "<html>Make sure that the method isn't redefined in subclasses. <br/>" +
+                "If the method is redefined, You cannot apply this technique.</html>";
     }
 
     /**
