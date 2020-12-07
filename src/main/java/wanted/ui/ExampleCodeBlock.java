@@ -35,7 +35,7 @@ public class ExampleCodeBlock {
     private void init() {
         setBefore_EV(); setAfter_EV();
         setBefore_IM(); setAfter_IM();
-        // TODO: TBA
+        // TODO: ADD NEW METHOD HERE
     }
 
     /* EV: Extract Variable */
@@ -84,6 +84,7 @@ public class ExampleCodeBlock {
         after.put("IM", afterCodeBlock);
     }
 
+    // TODO: COPY AND DO YOUR WORK
     /*
     private void setBefore_EV() {
         String beforeCodeBlock =
