@@ -6,8 +6,6 @@ import com.sun.istack.NotNull;
 
 import java.util.Set;
 
-import java.util.List;
-
 /**
  * Class to create Psi Elements.
  *
@@ -98,7 +96,7 @@ public class CreatePsi {
     /**
      * Returns newly created statement based on string.
      *
-     * @param project Project
+     * @param project      Project
      * @param statAsString Statement as String
      * @return Newly created PsiStatement
      */
@@ -149,12 +147,12 @@ public class CreatePsi {
     /**
      * Returns newly created expression based on string.
      *
-     * @param project Project
+     * @param project     Project
      * @param expAsString Exp as String
      * @return Newly created PsiExpression
      */
     public static PsiExpression createExpression(@NotNull Project project,
-                                               String expAsString) {
+                                                 String expAsString) {
 
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -166,11 +164,11 @@ public class CreatePsi {
     /**
      * Method which creates new Duplicate PsiExpression object for replacement.
      *
-     * @param project Project
+     * @param project       Project
      * @param psiExpression Target PsiExpression to duplicate
      * @return Newly copied PsiExpression Object
      */
-    public static PsiExpression copyExpression (@NotNull Project project, @NotNull PsiExpression psiExpression) {
+    public static PsiExpression copyExpression(@NotNull Project project, @NotNull PsiExpression psiExpression) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
@@ -193,7 +191,7 @@ public class CreatePsi {
     /**
      * Return parameter list of given method
      *
-     * @param project   target project
+     * @param project         target project
      * @param paramType
      * @param paramIdentifier
      * @return Newly created parameter list
@@ -327,12 +325,12 @@ public class CreatePsi {
 
     /**
      * Returns Assignment Statement for Extract Variables
-     *
+     * <p>
      * " final {TYPE} {NAME} = {PsiExpression}; "
      *
      * @param project Project
      * @param varName Variable Name
-     * @param exp PsiExpression to extract
+     * @param exp     PsiExpression to extract
      * @return Newly created PsiStatement (Assingnment)
      */
     public static PsiStatement createExtractVariableAssignStatement(@NotNull Project project,
