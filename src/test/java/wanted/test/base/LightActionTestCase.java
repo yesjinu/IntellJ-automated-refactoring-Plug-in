@@ -39,16 +39,41 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
     /**
      * Do Test and check the result by files
      *
-     * before files: testData/basePath/test<num>/input.java
-     * after files: testData/basePath/test<num>/output.java
+     * before file: testData/basePath/test<num>/input.java
+     * after file: testData/basePath/test<num>/output.java
      *
      * @param test_num the number of test cases
      * @throws Exception
      */
-    protected void doTest_io(int test_num) throws Exception {
+    protected void doTestFoldersSingle(int test_num) throws Exception {
         myFixture.configureByFile(getBasePath() + "/test" + String.valueOf(test_num) + "/input.java");
         performActionTest();
         checkResultByFile(getBasePath() + "/test" + String.valueOf(test_num) + "/output.java");
+    }
+
+    /**
+     * Do Test and check the result by files
+     *
+     * before files: testData/basePath/test<num>/before/<filename>
+     * after files: testData/basePath/test<num>/after/<filename>
+     *
+     * @param test_num the number of test cases
+     * @throws Exception
+     */
+    protected void doTestFoldersMulti(String[] files, int test_num) throws Exception {
+        String beforePath = getBasePath() + "/test" + Integer.toString(test_num) + "/before/";
+        String afterPath = getBasePath() + "/test" + Integer.toString(test_num) + "/after/";
+
+        String[] inputFiles = new String[files.length]; // add path
+        for(int i = 0; i<files.length; i++)
+        {
+            inputFiles[i] = beforePath + files[i];
+        }
+
+        myFixture.configureByFiles(inputFiles);
+
+        performActionTest();
+        checkResultByFiles(afterPath, beforePath);
     }
 
     /**
