@@ -258,19 +258,6 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
-    public void testCreateDuplicateExpression() {
-        Project project = getProject();
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiExpression expression = factory.createExpressionFromText("x", null);
-        PsiExpression createElement = CreatePsi.createDuplicateExpression(project, expression);
-
-        String expected = "x";
-
-        Assertions.assertTrue(createElement.isValid());
-        Assertions.assertEquals(expected, createElement.getText());
-    }
-
     public void testCapitalize() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
