@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Mintae Kim
  */
-public class InlineMethodAction extends BaseRefactorAction {
+public class InlineMethod extends BaseRefactorAction {
     private Project project;
     private PsiMethod method;
 
@@ -74,16 +74,22 @@ public class InlineMethodAction extends BaseRefactorAction {
     /**
      * Static method that checks whether candidate method is refactorable using 'Inline Method'.
      *
-     * Every candidate methods should follow these two requisites:
-     * 1. Methods which is not defined in subclasses
-     * 2. Methods with 1 statement.
+     * Every candidate methods should follow these four requisites:
+     * 1. Refactorable method is not a constructor
+     * 2. Refactorable method is not defined in subclasses
+     * 3. Refactorable method has only one statement in its body.
+     * 4. Refactorable has at least one reference.
      *
      * @param project Project
      * @param method PsiMethod
      * @return true if method is refactorable
      */
     public static boolean refactorValid(Project project, @NotNull PsiMethod method) {
-        PsiElement targetClass = FindPsi.getContainingClass(method);
+        // 1. Constructor is not refactorable
+        if (method.isConstructor()) return false;
+
+        // 2. Check whether method is redefined in subclasses
+        PsiClass targetClass = FindPsi.getContainingClass(method);
         if (targetClass == null) return false;
 
         List<PsiClass> subclassList;
@@ -92,7 +98,7 @@ public class InlineMethodAction extends BaseRefactorAction {
         try {
             subclassList =
                     new ArrayList<>(
-                            ClassInheritorsSearch.search((PsiClass) targetClass, GlobalSearchScope.allScope(project), false).findAll());
+                            ClassInheritorsSearch.search(targetClass, GlobalSearchScope.allScope(project), false).findAll());
         } catch (IndexNotReadyException e) {
             return false;
         }
@@ -107,14 +113,12 @@ public class InlineMethodAction extends BaseRefactorAction {
         PsiCodeBlock body = method.getBody();
         if (body == null) return false;
 
-        // Choosing Methods with One Statement
+        // 3. Choosing Methods with One Statement
         if (body.getStatementCount() > 1) return false;
 
-        // Checking if Reference Exists (Except link)
-        // TODO: @link { }
+        // 4. Checking if Reference Exists
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
-        if (references.size() == 0) return false;
-        return true;
+        return references.size() != 0;
     }
 
     /**
@@ -192,7 +196,7 @@ public class InlineMethodAction extends BaseRefactorAction {
      * Helper method that checks whether statement in method needs to be inserted while refactoring.
      *
      * @return true if statement needs insertion.
-     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
+     * @see InlineMethod#refactorValid(Project, PsiMethod)
      */
     private boolean isInsertStatement(PsiStatement statement) {
         if (statement instanceof PsiAssertStatement ||
@@ -239,7 +243,7 @@ public class InlineMethodAction extends BaseRefactorAction {
      * @precond PsiCallExpression & PsiSwitchExpression returns always true
      * @return false if Assign, Prefix, Postfix Expression is used. (TBD in later steps)
      * @return true if expression needs insertion.
-     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
+     * @see InlineMethod#refactorValid(Project, PsiMethod)
      */
     private boolean isInsertExpression(PsiExpression expression) {
         if (expression instanceof PsiConditionalExpression)
