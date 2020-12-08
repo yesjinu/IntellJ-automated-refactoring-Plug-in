@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.uast.UContinueExpression;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
@@ -70,9 +71,56 @@ public class HideDelegateAction extends BaseRefactorAction {
 
 
     public static boolean refactorValid(Project project, @NotNull PsiClass targetClass) {
+        // PsiAssignmentExpression case
+        List<PsiAssignmentExpression> aexpList = FindPsi.findPsiAssignmentExpressions(targetClass);
+        if (!aexpList.isEmpty()) {
+            List<PsiMethodCallExpression> mcexpList;
+            PsiMethodCallExpression mcexp;
 
+            for (PsiAssignmentExpression aexp: aexpList) {
+                // Firt Method Call Expression Check: A.getB().getC()
+                mcexpList = FindPsi.findChildPsiMethodCallExpressions(aexp);
+                if (mcexpList.size() != 1) continue;
 
+                mcexp = mcexpList.get(0);
+                if (!isDoubleMethodCallExp(mcexp)) continue;
+            }
+        }
 
+        // PsiDeclarationStatement
+        List<PsiDeclarationStatement> dsttList = FindPsi.findPsiDeclarationStatements(targetClass);
+        if (!dsttList.isEmpty()) {
+
+        }
+        return false;
+    }
+
+    private static boolean isDoubleMethodCallExp(PsiMethodCallExpression _mcexp) {
+        List<PsiMethodCallExpression> mcexpList;
+        List<PsiReferenceExpression> rexpList;
+        PsiMethodCallExpression mcexp;
+        PsiReferenceExpression rexp;
+
+        // Firt Method Call Expression Check: A.getB().getC()
+        mcexp = _mcexp;
+        rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
+        if (rexpList.size() != 1) return false;
+        if (!FindPsi.findChildPsiExpressionLists(mcexp).get(0).getText().equals("()")) return false;
+
+        // Seconde Method Call Expression Check: A.getB()
+        rexp = rexpList.get(0);
+        mcexpList = FindPsi.findChildPsiMethodCallExpressions(rexp);
+        if (mcexpList.size() != 1) return false;
+
+        mcexp = mcexpList.get(0);
+        rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
+        if (rexpList.size() != 1) return false;
+        if (!FindPsi.findChildPsiExpressionLists(mcexp).get(0).getText().equals("()")) return false;
+
+        // Last Reference Expression: A
+        rexp = rexpList.get(0);
+        rexpList = FindPsi.findChildPsiReferenceExpressions(rexp);
+        if (rexpList.size() != 1) return false;
 
         return true;
     }

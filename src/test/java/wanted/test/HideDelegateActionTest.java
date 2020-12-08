@@ -7,7 +7,7 @@ import wanted.refactoring.IntroduceLocalExtensionAction;
 import wanted.test.base.LightActionTestCase;
 
 /**
- * Test class for 'Introduce Foreign Method Action'
+ * Test class for 'Hide Delegate Action'
  *
  * @author Chanyoung Kim
  */
@@ -23,7 +23,7 @@ public class HideDelegateActionTest extends LightActionTestCase {
     }
 
     /* Test 1: simple case */
-    public void testEncapField1() throws Exception {
+    public void testHideDelegate1() throws Exception {
         String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
         doTestDirectory(beforeFiles);
     }
