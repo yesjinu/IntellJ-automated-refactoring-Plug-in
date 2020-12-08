@@ -42,6 +42,7 @@ public class ExampleCodeBlock {
         setBefore_SEF(); setAfter_SEF();
         setBefore_EF(); setAfter_EF();
         setBefore_RMN(); setAfter_RMN();
+        setBefore_RPA(); setAfter_RPA();
         // TODO: ADD NEW METHOD HERE
     }
 
@@ -183,6 +184,22 @@ public class ExampleCodeBlock {
         after.put("RMN", afterCodeBlock);
     }
 
+    private void setBefore_RPA() {
+        String beforeCodeBlock =
+                "public void addTwo(int a, int b, int c, int d) {\n" +
+                        "  return a + b;\n" +
+                        "}\n";
+
+        before.put("RPA", beforeCodeBlock);
+    }
+    private void setAfter_RPA() {
+        String afterCodeBlock =
+                "public void addTwo(int a, int b) {\n" +
+                        "  return a + b;\n" +
+                        "}\n";
+
+        after.put("RPA", afterCodeBlock);
+    }
     // TODO: COPY AND DO YOUR WORK
     /*
     private void setBefore_EV() {
