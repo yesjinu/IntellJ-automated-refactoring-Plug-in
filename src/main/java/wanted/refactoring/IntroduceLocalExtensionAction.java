@@ -1,11 +1,11 @@
 package wanted.refactoring;
 
+import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.PsiJavaParserFacade;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import wanted.utils.FindPsi;
@@ -14,50 +14,51 @@ import wanted.utils.NavigatePsi;
 import java.util.*;
 
 /**
- * Class to provide refactoring: 'Introduce Foreign Method'
- * Add the method to a client class and pass an object of the utility class to it as an argument.
+ * Class to provide refactoring: 'Introduce Local Extension'
+ * - Create new class that inherits the utility,
+ * - Add the method required by the user in the class,
  *
  * @author Chanyoung Kim
  */
-public class IntroduceForeignMethodAction extends BaseRefactorAction {
+public class IntroduceLocalExtensionAction extends BaseRefactorAction {
     private static Project project;
     private static PsiClass targetClass;
 
-    private static Map<PsiMethod, PsiClass> psiMethodMap;
-    private static Map<PsiDeclarationStatement, PsiMethod> psiDclStateMap;
+    private static Map<PsiMethod, PsiClass> psiMethodMap = new HashMap<>();
+    private static Map<PsiDeclarationStatement, PsiMethod> psiDclStateMap = new HashMap<>();
 
-    private static String variableName;
-    private static String utilityClassType;
-    private static String utilityClassName;
-    private static Map<PsiDeclarationStatement, List<String>> params;
-    private static Map<PsiDeclarationStatement, Integer> paramCounts;
-    private static List<PsiDeclarationStatement> possible;
+    private static Map<PsiDeclarationStatement, String> variableName = new HashMap<>();
+    private static Map<PsiDeclarationStatement, String> utilityClassType = new HashMap<>();
+    private static Map<PsiDeclarationStatement, String> utilityClassName = new HashMap<>();
+    private static Map<PsiDeclarationStatement, List<String>> params = new HashMap<>();
+    private static Map<PsiDeclarationStatement, Integer> paramCounts = new HashMap<>();
+    private static List<PsiDeclarationStatement> possible = new ArrayList<>();
+    private static Map<PsiDeclarationStatement, List<String>> utilityClassParamsType = new HashMap<>();
 
     /* Returns the story ID. */
     @Override
     public String storyID() {
-        return "IFM";
+        return "ILE";
     }
 
     /* Returns the story name as a string format, for message. */
     @Override
-    public String storyName()
-    {
-        return "Introduce Foreign Method";
+    public String storyName() {
+        return "Introduce Local Extension";
     }
 
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
-        return "Description.";
+        return "<html>When a utility class is newly declared as a utility class variable inside the user class, <br/>" +
+                "Add a method that receives a utility class in the user class, transforms it, and returns it.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
-        return "Precondition.";
+        return "<html>Make sure that when declaring a utility class through new expression, <br/>" +
+                "literal variable or an existing utility class variable must be used as a parameter.</html>";
     }
 
     /**
@@ -83,7 +84,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
     /**
      * Static method that checks whether candidate method is refactorable
-     * using 'Introduce Foreign Method'.
+     * using 'Introduce Local Extension'.
      *
      * When does this refactoring activiate,
      * -> a utility object is declared in a function inside a class, using existing utility object as a parameter
@@ -96,21 +97,29 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      *                     -> PsiExpressionList : Check if there is more than 1 parameter
      * 4. PsiExpressionList -> PsiExpression : Check whether each parameter is valid
      *
+     * 해당 클래스 내부에 유틸리티 클래스에 대한 선언뿐만 아니라 초기화에 대한 정보도 있어야 한다.
+     * Constructor 추가를 위해서 클래스 내부에서 모든 PsiNewExpression을 검사해야 한다.
+     * 해당하는 것들을 모두 constructor로써 추가해준다.
+     *
      * @param project Project
      * @param targetClass PsiField Object
      * @return true if method is refactorable
      */
     public static boolean refactorValid(Project project, @NotNull PsiClass targetClass) {
-        variableName = null;
-        utilityClassName = null;
-        utilityClassType = null;
+        variableName.clear();
+        utilityClassName.clear();
+        utilityClassType.clear();
+        psiMethodMap.clear();
+        psiDclStateMap.clear();
+        params.clear();
+        paramCounts.clear();
+        possible.clear();
+        utilityClassParamsType.clear();
 
-        psiMethodMap = new HashMap<>();
         Arrays.stream(targetClass.getMethods()).forEach(method -> psiMethodMap.put(method, targetClass));
         if (psiMethodMap.isEmpty()) return false;
 
         // Find and save PsiDeclarationStatement in all class methods in the project.
-        psiDclStateMap = new HashMap<>();
         for (PsiMethod method : psiMethodMap.keySet()) {
             List<PsiDeclarationStatement> psiDclStateList = FindPsi.findPsiDeclarationStatements(method);
             if (!psiDclStateList.isEmpty())
@@ -118,9 +127,6 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
         }
         if (psiDclStateMap.isEmpty()) return false;
 
-        params = new HashMap<>();
-        paramCounts = new HashMap<>();
-        possible = new ArrayList<>();
 
         // Determine whether refactoring is possible for each PsiDeclarationStatement.
         for (PsiDeclarationStatement stm : psiDclStateMap.keySet()) {
@@ -133,11 +139,11 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
             List<PsiIdentifier> iList = FindPsi.findChildPsiIdentifiers(lv);
             if (iList.size() != 1) continue;
-            variableName = iList.get(0).getText();
+            variableName.put(stm, iList.get(0).getText());
 
             PsiTypeElement te = teList.get(0);
             if (FindPsi.findChildPsiJavaCodeReferenceElements(te).size() != 1) continue;
-            utilityClassType = te.getText();
+            utilityClassType.put(stm, te.getText());
 
             List<PsiNewExpression> neList = FindPsi.findChildPsiNewExpressions(lv);
             if (neList.size() != 1) continue;
@@ -146,7 +152,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
             List<PsiJavaCodeReferenceElement> jcreList = FindPsi.findChildPsiJavaCodeReferenceElements(te);
             if (jcreList.size() != 1) continue;
             PsiJavaCodeReferenceElement jcre = jcreList.get(0);
-            if (!jcre.getText().equals(utilityClassType)) continue;
+            if (!jcre.getText().equals(utilityClassType.get(stm))) continue;
             List<PsiExpressionList> elList = FindPsi.findChildPsiExpressionLists(ne);
             if (elList.size() != 1) continue;
 
@@ -162,17 +168,52 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
                 if(!isVaildParameter(exp, stm, targetClass)) break;
             }
 
+            utilityClassParamsType.put(stm, new ArrayList<>());
+            // 클래스 전체에서 해당 DeclarationStatement에 대해서 선언문이 있는지 확인한다.
+            List<PsiNewExpression> newExpressionList = FindPsi.findPsiNewExpressions(targetClass);
+
+            for (PsiNewExpression nexp : newExpressionList) {
+
+                List<PsiJavaCodeReferenceElement> JCREList = FindPsi.findChildPsiJavaCodeReferenceElements(nexp);
+                if (JCREList.size() != 1) continue;
+
+                PsiJavaCodeReferenceElement JCRE = JCREList.get(0);
+                if (!JCRE.getText().equals(utilityClassType.get(stm))) continue;
+
+                List<PsiExpressionList> ELList = FindPsi.findChildPsiExpressionLists(nexp);
+                if (ELList.size() != 1) continue;
+
+                PsiExpressionList EL = ELList.get(0);
+                List<PsiExpression> EList = FindPsi.findChildPsiExpressions(EL);
+                if (EList.size() != paramCounts.get(stm)) continue;
+                List<PsiLiteralExpression> LEList = FindPsi.findChildPsiLiteralExpressions(EL);
+                if (LEList.size() != paramCounts.get(stm)) continue;
+
+                int count = 1;
+                for (PsiExpression exp : LEList) {
+                    utilityClassParamsType.get(stm).add(exp.getType().getCanonicalText() + " arg" + Integer.toString(count++));
+                }
+
+                break;
+            }
+
             // Determine whether the number of input parameters and the number of valid parameters are the same,
             // Check if an existing utility class is used.
-            if (params.get(stm).size() == paramCounts.get(stm) && utilityClassName != null) {
+            if (params.get(stm).size() == paramCounts.get(stm) && utilityClassName.containsKey(stm)
+                    && !(utilityClassParamsType.get(stm).isEmpty())) {
                 possible.add(stm);
             }
         }
+
+        if (possible.isEmpty()) return false;
+
+
+
         return !possible.isEmpty();
     }
 
     /**
-     * Method that performs refactoring: 'Introduct Foreign Method Action'
+     * Method that performs refactoring: 'Introduct Local Extension'
      *
      * How to implement this refactoring:
      * 1. Change it to a new PsiDeclarationStatement.
@@ -185,6 +226,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
     public void refactor(AnActionEvent e)
     {
         Project project = e.getProject();
+
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
@@ -192,20 +234,59 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
                 PsiMethod mtd = psiDclStateMap.get(stm);
                 PsiClass cls = psiMethodMap.get(mtd);
 
+                String className = "Modified" + utilityClassType.get(stm);
+                String classParams = StringUtils.join(utilityClassParamsType.get(stm), ", ");
+                int count = 1;
+                List<String> temp = new ArrayList<>();
+                for (int i = 0; i < utilityClassParamsType.get(stm).size(); i++) {
+                    temp.add("arg" + Integer.toString(count++));
+                }
+                String superParams = StringUtils.join(temp, ", ");
+                String newParams = StringUtils.join(params.get(stm), ", ");
+                newParams = newParams.replace("arg.", "");
+
+                String insertClass = "class " + className + " extends " + utilityClassType.get(stm) +" {" +
+                        "    public " + className + " (" + classParams + ") {" +
+                        "        super(" + superParams + ");" +
+                        "    }" +
+                        "" +
+                        "    " + className + " " + variableName.get(stm) + "() {" +
+                        "        return new " + className + "(" + newParams + ");" +
+                        "    }" +
+                        "}";
+
+                PsiFile javaFile = PsiFileFactory.getInstance(project).createFileFromText(Language.findLanguageByID("JAVA"), insertClass);
+                PsiClass newTempClass = getFirstClassFromFile(javaFile);
+
+                List<PsiJavaCodeReferenceElement> jcreList = FindPsi.findPsiJavaCodeReferenceElements(cls);
+                for (PsiJavaCodeReferenceElement jcre : jcreList) {
+                    if (jcre.getText().equals(utilityClassType.get(stm))) {
+                        PsiJavaCodeReferenceElement replace = factory.createReferenceFromText(className, null);
+                        jcre.replace(replace);
+                    }
+                }
+
+                cls.addBefore(newTempClass, cls.getFirstChild());
+
                 // Create and replace a new PsiDeclarationStatement corresponding to the refactoring result.
-                String statement = utilityClassType + " " + variableName + " = " + variableName
-                        + "(" + utilityClassName + ");";
+                String statement = className + " " + variableName.get(stm) + " = " + utilityClassName.get(stm)
+                        + "." + variableName.get(stm) + "();";
                 PsiStatement _stm = factory.createStatementFromText(statement, null);
                 stm.replace(_stm);
 
-                // Create and add a new method corresponding to the refactoring result.
-                String strMethod = "private static " + utilityClassType + " " + variableName + "(" + utilityClassType
-                        + " arg) { return new " + utilityClassType + "("
-                        + StringUtils.join(params.get(stm), ", ") + "); }";
-                PsiMethod _mtd = factory.createMethodFromText(strMethod, null);
-                cls.addBefore(_mtd, cls.getLastChild());
+
             }
         });
+    }
+
+    private PsiClass getFirstClassFromFile(PsiFile psiFile) {
+        for (PsiElement psiElement: psiFile.getChildren()) {
+            if (psiElement instanceof PsiClass) {
+                return (PsiClass) psiElement;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -261,7 +342,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
         PsiReferenceExpression BackRe = behindReList.get(0);
         if (isVaildParameter(BackRe, stm, cls)) {
-            utilityClassName = BackRe.getText();
+            utilityClassName.put(stm, BackRe.getText());
             String param = FindPsi.findChildPsiIdentifiers(frontRe).get(0).getText();
             params.get(stm).add("arg." + param + "()");
             return true;
@@ -280,8 +361,6 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      * @return true if the parameter is valid
      */
     private static boolean isVaildParameter(PsiReferenceExpression exp, PsiDeclarationStatement stm, PsiClass cls) {
-        PsiMethod m = psiDclStateMap.get(stm);
-
         List<PsiField> fList = FindPsi.findPsiFields(cls);
         for (PsiField f : fList) {
             if (!f.getName().equals(exp.getText())) continue;
@@ -290,7 +369,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
                 if (innerTeList.size() != 1) return false;
 
                 PsiTypeElement innerTe = innerTeList.get(0);
-                if (innerTe.getText().equals(utilityClassType)) {
+                if (innerTe.getText().equals(utilityClassType.get(stm))) {
                     return true;
                 }
                 else return false;

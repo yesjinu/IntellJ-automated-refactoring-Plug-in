@@ -94,37 +94,6 @@ public class CreatePsi {
     }
 
     /**
-     * Returns newly created statement based on string.
-     *
-     * @param project      Project
-     * @param statAsString Statement as String
-     * @return Newly created PsiStatement
-     */
-    public static PsiStatement createStatement(@NotNull Project project,
-                                               String statAsString) {
-
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiStatement newStatement = factory.createStatementFromText(
-                statAsString, null);
-        return newStatement;
-    }
-
-    /**
-     * Return same statement which is copied
-     *
-     * @param project   factory context
-     * @param statement the original version of the statement
-     * @return newStatement which is same with statement
-     */
-    public static PsiStatement copyStatement(@NotNull Project project, PsiStatement statement) {
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiStatement newStatement = factory.createStatementFromText(statement.getText(), null);
-        return newStatement;
-    }
-
-    /**
      * Return merged conditionExpression with || symbol
      *
      * @param project     target project
@@ -142,37 +111,6 @@ public class CreatePsi {
 
         PsiExpression newExpression = factory.createExpressionFromText(par, null);
         return newExpression;
-    }
-
-    /**
-     * Returns newly created expression based on string.
-     *
-     * @param project     Project
-     * @param expAsString Exp as String
-     * @return Newly created PsiExpression
-     */
-    public static PsiExpression createExpression(@NotNull Project project,
-                                                 String expAsString) {
-
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiExpression newExpression = factory.createExpressionFromText(
-                expAsString, null);
-        return newExpression;
-    }
-
-    /**
-     * Method which creates new Duplicate PsiExpression object for replacement.
-     *
-     * @param project       Project
-     * @param psiExpression Target PsiExpression to duplicate
-     * @return Newly copied PsiExpression Object
-     */
-    public static PsiExpression copyExpression(@NotNull Project project, @NotNull PsiExpression psiExpression) {
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
-        return newElement;
     }
 
     /**
@@ -298,32 +236,6 @@ public class CreatePsi {
     }
 
     /**
-     * Return some expression which is copied
-     *
-     * @param project    target project
-     * @param psiElement original element
-     * @return new expression which is same with the psiElement
-     */
-    public static PsiExpression createDuplicateExpression(@NotNull Project project, @NotNull PsiElement psiElement) {
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiExpression newExpression = factory.createExpressionFromText(psiElement.getText(), null);
-        return newExpression;
-    }
-
-    /**
-     * Capitalize name of given member
-     *
-     * @param member PsiField object
-     * @return capitalized name of member
-     */
-    public static String capitalize(@NotNull PsiField member) {
-        String name = member.getName(); // make first character uppercase
-        String newName = name.substring(0, 1).toUpperCase() + name.substring(1);
-        return newName;
-    }
-
-    /**
      * Returns Assignment Statement for Extract Variables
      * <p>
      * " final {TYPE} {NAME} = {PsiExpression}; "
@@ -344,6 +256,79 @@ public class CreatePsi {
         PsiStatement newStatement = factory.createStatementFromText(
                 "final " + exp.getType().getPresentableText() + " " + varName + " = " + exp.getText() + ";", null);
         return newStatement;
+    }
+
+    /**
+     * Returns newly created expression based on string.
+     *
+     * @param project     Project
+     * @param expAsString Exp as String
+     * @return Newly created PsiExpression
+     */
+    public static PsiExpression createExpression(@NotNull Project project,
+                                                 String expAsString) {
+
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression newExpression = factory.createExpressionFromText(
+                expAsString, null);
+        return newExpression;
+    }
+
+     /** Method which creates new Duplicate PsiExpression object for replacement.
+     *
+     * @param project       Project
+     * @param psiExpression Target PsiExpression to duplicate
+     * @return Newly copied PsiExpression Object
+     */
+    public static PsiExpression copyExpression(@NotNull Project project, @NotNull PsiExpression psiExpression) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
+        return newElement;
+    }
+
+    /**
+     * Returns newly created statement based on string.
+     *
+     * @param project      Project
+     * @param statAsString Statement as String
+     * @return Newly created PsiStatement
+     */
+    public static PsiStatement createStatement(@NotNull Project project,
+                                               String statAsString) {
+
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText(
+                statAsString, null);
+        return newStatement;
+    }
+
+    /**
+     * Return same statement which is copied
+     *
+     * @param project   factory context
+     * @param statement the original version of the statement
+     * @return newStatement which is same with statement
+     */
+    public static PsiStatement copyStatement(@NotNull Project project, PsiStatement statement) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText(statement.getText(), null);
+        return newStatement;
+    }
+
+    /**
+     * Capitalize name of given member
+     *
+     * @param member PsiField object
+     * @return capitalized name of member
+     */
+    public static String capitalize(@NotNull PsiField member) {
+        String name = member.getName(); // make first character uppercase
+        String newName = name.substring(0, 1).toUpperCase() + name.substring(1);
+        return newName;
     }
 }
 

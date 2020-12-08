@@ -33,6 +33,14 @@ import java.util.List;
 public abstract class BaseRefactorAction extends AnAction {
 
     protected int changedCount = 0;
+    private String basePath;
+
+    /**
+     * Returns the story ID.
+     *
+     * @return story ID
+     */
+    public abstract String storyID();
 
     /**
      * Returns the story name as a string format, for message.
@@ -40,6 +48,22 @@ public abstract class BaseRefactorAction extends AnAction {
      * @return story name as a string format
      */
     public abstract String storyName();
+
+    /**
+     * Returns the description of each story.
+     * You must use html-style (<html>content</html>) for multi-line explanation.
+     *
+     * @return description of each stories as a sting format
+     */
+    public abstract String descripton();
+
+    /**
+     * Returns the precondition of each story.
+     * You must use html-style (<html>content</html>) for multi-line explanation.
+     *
+     * @return description of each stories as a sting format
+     */
+    public abstract String precondition();
 
     /**
      * Method that checks whether candidate method is refactorable.

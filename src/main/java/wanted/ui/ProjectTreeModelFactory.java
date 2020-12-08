@@ -65,6 +65,11 @@ class ProjectTreeModelFactory {
                     addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
 
+                // ILE
+                if(IntroduceLocalExtensionAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "ILE", psiClass);
+                }
+
                 // RMN
                 if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; }
                 Set<String> literals = new HashSet<>();
@@ -195,6 +200,8 @@ class ProjectTreeModelFactory {
             // Scope: Class
             case "IFM":
                 return new IntroduceForeignMethodAction().storyName();
+            case "ILE":
+                return new IntroduceLocalExtensionAction().storyName();
 
             // Scope: Field
             case "SEF":
@@ -209,8 +216,6 @@ class ProjectTreeModelFactory {
                 return new RemoveUnusedParameterAction().storyName();
 
             // Scope: Statement
-            case "EV":
-                return new ExtractVariable().storyName();
             case "CCE":
                 return new ConsolidateCondExpr().storyName();
             case "CDCF":
@@ -221,9 +226,6 @@ class ProjectTreeModelFactory {
             // Scope: expression
             case "RMN":
                 return new ReplaceMagicNumber().storyName();
-
-            case "PWO":
-                return new ParameterizeWholeObjectAction().storyName();
 
             default:
                 return null;
@@ -268,7 +270,8 @@ class ProjectTreeModelFactory {
             String id) {
 
         DefaultMutableTreeNode rootRefNode =
-                new DefaultMutableTreeNode (getNameByID (id));
+                new DefaultMutableTreeNode (
+                        BaseRefactorManager.getInstance().getRefactorActionByID(id));
         rootRef.put(id, rootRefNode);
         root.add(rootRefNode);
     }

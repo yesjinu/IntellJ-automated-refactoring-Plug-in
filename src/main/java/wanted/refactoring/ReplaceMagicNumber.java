@@ -23,9 +23,30 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
     private PsiLiteralExpression literal;
     private List<PsiLiteralExpression> expressions;
 
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "RMN";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Replace Magic Number";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        return "<html>When literal expression are repeatedly used inside class, <br/>" +
+                "replace literal expression to constant.</html>";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        return "<html> For String or Char type literal expression, it shouldn't be empty or whitespace. <br/>" +
+                "For Int type expression, it shouldn't be 0, 1, 2. </html>";
     }
 
     @Override
@@ -146,7 +167,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
             });
         }
 
-        PsiExpression ret = CreatePsi.createDuplicateExpression(project, constant.getNameIdentifier());
+        PsiExpression ret = CreatePsi.createExpression(project,"CONSTANT"+num);
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
             // replace literal expression into constant

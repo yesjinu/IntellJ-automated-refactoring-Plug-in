@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.apache.commons.lang.ObjectUtils;
 
 /**
  * Class to navigate Psi structure, use for RefactorValid().
@@ -48,7 +49,12 @@ public class NavigatePsi {
                 focusClass = null;
             }
 
-            caret = editor.getCaretModel().getOffset();
+            try{
+                caret = editor.getCaretModel().getOffset();
+            } catch(NullPointerException exception)
+            {
+                return; // no caret
+            }
 
             try {
                 focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
@@ -77,9 +83,10 @@ public class NavigatePsi {
      * @return NavigatePsi object
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e) {
-        if (navigator == null || !sameEvent(navigator, e)) {
+        /*if (navigator == null || !sameEvent(navigator, e)) {
             navigator = new NavigatePsi(e);
-        }
+        }*/
+        navigator = new NavigatePsi(e);
         return navigator;
     }
 
@@ -113,8 +120,14 @@ public class NavigatePsi {
         return focusLiteral;
     }
 
-    /* check if NavigatePsi for current caret has been constructed before */
+    /* check if NavigatePsi for current ActionEvent has been constructed before */
     private static boolean sameEvent(NavigatePsi navigator, AnActionEvent e) {
-        return (e.getData(LangDataKeys.PSI_FILE) == navigator.findFile()) && (e.getData(CommonDataKeys.EDITOR).getCaretModel().getOffset() == caret);
+        if ((e.getData(LangDataKeys.PSI_FILE) != navigator.findFile()) || (e.getData(CommonDataKeys.EDITOR) != navigator.editor)) {
+            return false;
+        }
+
+        if(navigator.editor!=null){
+           return (e.getData(CommonDataKeys.EDITOR).getCaretModel().getOffset() == navigator.caret);
+        } else { return true; }
     }
 }

@@ -22,16 +22,31 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
     List<PsiMethodCallExpression> methodCallsInClass;
     List<PsiIdentifier> varFromGetter;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name "Parameterize Whole Object"
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "PWO";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Parameterize Whole Object";
     }
 
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        // TODO: description
+        return "Description.";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        // TODO: precondition
+        return "Precondition.";
+    }
 
     /**
      * Method that checks whether candidate method is refactorable

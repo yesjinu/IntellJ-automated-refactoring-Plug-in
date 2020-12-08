@@ -187,6 +187,24 @@ public class FindPsi {
     }
     
     /**
+     * Return the List containing PsiJavaCodeReferenceElement Object in current PSI Element
+     *
+     * @param element the PSI Element.
+     * @return List<PsiJavaCodeReferenceElement> if element has PsiJavaCodeReferenceElement, empty() otherwise
+     */
+    public static List<PsiJavaCodeReferenceElement> findPsiJavaCodeReferenceElements(PsiElement element) {
+        List<PsiJavaCodeReferenceElement> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitReferenceElement(PsiJavaCodeReferenceElement elem) {
+                super.visitReferenceElement(elem);
+                result.add(elem);
+            }
+        });
+        return result;
+    }
+
+    /**
      * Return PsiIfstatement from cursor offset inside of PsiClass
      *
      * @param psiClass the scope this function find ifstatement

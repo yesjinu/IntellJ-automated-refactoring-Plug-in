@@ -18,10 +18,9 @@ import java.util.Objects;
  * @author Jinu Noh
  */
 public class AddPsiTest extends LightActionTestCase {
-    PsiUtilsTest testRunner;
 
     protected AnAction getAction() {
-        return testRunner;
+        return null;
     }
 
     @Override

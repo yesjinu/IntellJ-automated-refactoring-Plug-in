@@ -20,18 +20,30 @@ import java.util.Set;
 public class RemoveUnusedParameterAction extends BaseRefactorAction {
     public Project project;
     private PsiMethod focusMethod;
-    Set<PsiParameter> parametersOfMethod;
-    Set<PsiReferenceExpression> referenceUsedInMethod;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "RPA";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Remove Unused Parameter";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        return "<html>When there are parameters that are not used in the method<br/>" +
+                "refactor codes by removing unused parameters in the parameter list.</html>";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        return "<html>There exist parameters that are not used in the method</html>";
     }
 
     /**
@@ -58,7 +70,8 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
      * @param focusMethod PsiMethod
      * @return true if method is refactorable
      */
-    public static boolean refactorValid(Project project, @NotNull PsiMethod focusMethod) {
+    public static boolean refactorValid(Project project, PsiMethod focusMethod) {
+        if (focusMethod == null) return false;
         Set<PsiParameter> parametersOfMethod = FindPsi.findParametersOfMethod(focusMethod);
         List<PsiReferenceExpression> referenceUsedInMethod = FindPsi.findReferenceExpression(focusMethod);
         Set<PsiParameter> unusedParameter = new HashSet<>();

@@ -20,15 +20,31 @@ public class EncapField extends BaseRefactorAction {
     private PsiFile file;
     private List<PsiReferenceExpression> references;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "EF";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Encapsulation Field";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        return "<html>When some class directly access a public field of other class, <br/>" +
+                "make public field private and create getter and setter method inside owner class, <br/>" +
+                "and use them for accessing the field from other class.</html>";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        return "<html>Selected field is public. <br/>" +
+                "There is neither getter nor setter.</html>";
     }
 
     /**
