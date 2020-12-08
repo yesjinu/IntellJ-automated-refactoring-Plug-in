@@ -35,16 +35,16 @@ public class EncapField extends BaseRefactorAction {
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        return "<html>When some class directly access a public field from other class, <br/>" +
-                "Make public field private and create getter and setter method inside field owner, <br/>" +
+        return "<html>When some class directly access a public field of other class, <br/>" +
+                "make public field private and create getter and setter method inside owner class, <br/>" +
                 "and use them for accessing the field from other class.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
-        return "Precondition.";
+        return "<html>Selected field is public. <br/>" +
+                "There is neither getter nor setter.</html>";
     }
 
     /**

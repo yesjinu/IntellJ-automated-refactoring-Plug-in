@@ -40,6 +40,8 @@ public class ExampleCodeBlock {
         setBefore_EV(); setAfter_EV();
         setBefore_IM(); setAfter_IM();
         setBefore_SEF(); setAfter_SEF();
+        setBefore_EF(); setAfter_EF();
+        setBefore_RMN(); setAfter_RMN();
         // TODO: ADD NEW METHOD HERE
     }
 
@@ -99,6 +101,7 @@ public class ExampleCodeBlock {
 
         before.put("SEF", beforeCodeBlock);
     }
+
     private void setAfter_SEF() {
         String afterCodeBlock =
                 "class basic {\n" +
@@ -114,6 +117,71 @@ public class ExampleCodeBlock {
         after.put("SEF", afterCodeBlock);
     }
 
+    private void setBefore_EF() {
+        String beforeCodeBlock =
+                "class owner {\n" +
+                        "  public int count;\n" +
+                        "  public owner(){ count = 0; }\n"+
+                        "}\n" +
+                        "\n" +
+                        "class other{\n" +
+                        "  public void method1() {\n" +
+                        "    owner o = new owner();\n" +
+                        "    System.out.println(o.count); \n" +
+                        "  }\n" +
+                        "  public void method2() {\n" +
+                        "    owner o = new owner();\n" +
+                        "    o.count = 2; \n" +
+                        "    System.out.println(o.count);\n" +
+                        "  }\n" +
+                        "}\n";
+
+        before.put("EF", beforeCodeBlock);
+    }
+
+    private void setAfter_EF() {
+        String afterCodeBlock =
+                "class owner {\n" +
+                        "  private int count;\n" +
+                        "  public owner(){ count = 0; }\n"+
+                        "  public int getCount() { return count; }\n" +
+                        "  public void setCount(int x) { count = x; }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class other{\n" +
+                        "  public void method1() {\n" +
+                        "    owner o = new owner();\n" +
+                        "    System.out.println(o.getCount()); // print 0\n" +
+                        "  }\n" +
+                        "  public void method2() {\n" +
+                        "    owner o = new owner();\n" +
+                        "    o.setCount(2)\n" +
+                        "    System.out.println(o.getCount()); // print 2\n" +
+                        "  }\n" +
+                        "}\n";
+
+        after.put("EF", afterCodeBlock);
+    }
+
+    private void setBefore_RMN() {
+        String beforeCodeBlock =
+                "double area(double radius) {\n" +
+                        "  return radius * radius * 3.141592;\n" +
+                        "}\n";
+
+        before.put("RMN", beforeCodeBlock);
+    }
+
+    private void setAfter_RMN() {
+        String afterCodeBlock =
+                "static final double PI_CONSTANT = 3.141592;\n" +
+                        "\n" +
+                        "double area(double radius) {\n" +
+                        "  return radius * radius * PI_CONSTANT;\n" +
+                        "}\n";
+
+        after.put("RMN", afterCodeBlock);
+    }
 
     // TODO: COPY AND DO YOUR WORK
     /*
