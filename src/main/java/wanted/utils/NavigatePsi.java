@@ -8,6 +8,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.apache.commons.lang.ObjectUtils;
 
 /**
  * Class to navigate Psi structure, use for RefactorValid().
@@ -48,7 +49,12 @@ public class NavigatePsi {
                 focusClass = null;
             }
 
-            caret = editor.getCaretModel().getOffset();
+            try{
+                caret = editor.getCaretModel().getOffset();
+            } catch(NullPointerException exception)
+            {
+                return; // no caret
+            }
 
             try {
                 focusMethod = PsiTreeUtil.getParentOfType(focusFile.findElementAt(caret), PsiMethod.class);
