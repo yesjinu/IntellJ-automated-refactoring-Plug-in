@@ -3,10 +3,7 @@ package wanted.test.Utils;
 
 import com.intellij.ide.DataManager;
 import com.intellij.ide.navigationToolbar.NavBarActions;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
@@ -166,6 +163,39 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         PsiClass targetClass = factory.createClass("Temp");
 
         assertTrue(FindPsi.findPsiMethodCallExpressions(targetClass).isEmpty());
+    }
+
+    /* test FindPsi::findIfStatement - case 1 : there is if statement */
+    public void testFindIfStatement () throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file5.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass targetClass = navigator.findClass();
+        int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
+
+        String expected = "if (i == 1) {\n" +
+                "            j = 1;\n" +
+                "            k = 1;\n" +
+                "        }\n" +
+                "        else if (i == 2) {\n" +
+                "            j = 1;\n" +
+                "            k = 2;\n" +
+                "        }\n" +
+                "        else {\n" +
+                "            j = 1;\n" +
+                "            k = 3;\n" +
+                "        }";
+
+        assertEquals(FindPsi.findIfStatement(targetClass, offset).getText(), expected);
+    }
+
+    /* test FindPsi::findIfStatement - case 2 : no if statement. return null */
+    public void testFindIfStatement2 () throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file1.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass targetClass = navigator.findClass();
+        int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
+
+        assertNull(FindPsi.findIfStatement(targetClass, offset));
     }
 
 
