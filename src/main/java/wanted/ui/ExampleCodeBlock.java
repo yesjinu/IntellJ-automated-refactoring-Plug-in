@@ -43,6 +43,7 @@ public class ExampleCodeBlock {
         setBefore_EF(); setAfter_EF();
         setBefore_RMN(); setAfter_RMN();
         setBefore_RPA(); setAfter_RPA();
+        setBefore_PWO(); setAfter_PWO();
         // TODO: ADD NEW METHOD HERE
     }
 
@@ -92,6 +93,7 @@ public class ExampleCodeBlock {
         after.put("IM", afterCodeBlock);
     }
 
+    /* SEF: Self Encap Field */
     private void setBefore_SEF() {
         String beforeCodeBlock =
                 "class basic {\n" +
@@ -102,7 +104,6 @@ public class ExampleCodeBlock {
 
         before.put("SEF", beforeCodeBlock);
     }
-
     private void setAfter_SEF() {
         String afterCodeBlock =
                 "class basic {\n" +
@@ -118,6 +119,7 @@ public class ExampleCodeBlock {
         after.put("SEF", afterCodeBlock);
     }
 
+    /* EF: Encap Field*/
     private void setBefore_EF() {
         String beforeCodeBlock =
                 "class owner {\n" +
@@ -139,7 +141,6 @@ public class ExampleCodeBlock {
 
         before.put("EF", beforeCodeBlock);
     }
-
     private void setAfter_EF() {
         String afterCodeBlock =
                 "class owner {\n" +
@@ -164,6 +165,7 @@ public class ExampleCodeBlock {
         after.put("EF", afterCodeBlock);
     }
 
+    /* RMN: Replace Magic Number */
     private void setBefore_RMN() {
         String beforeCodeBlock =
                 "double area(double radius) {\n" +
@@ -172,7 +174,6 @@ public class ExampleCodeBlock {
 
         before.put("RMN", beforeCodeBlock);
     }
-
     private void setAfter_RMN() {
         String afterCodeBlock =
                 "static final double PI_CONSTANT = 3.141592;\n" +
@@ -184,6 +185,7 @@ public class ExampleCodeBlock {
         after.put("RMN", afterCodeBlock);
     }
 
+    /* RPA: Remove unused Parameter Action */
     private void setBefore_RPA() {
         String beforeCodeBlock =
                 "public void addTwo(int a, int b, int c, int d) {\n" +
@@ -199,6 +201,22 @@ public class ExampleCodeBlock {
                         "}\n";
 
         after.put("RPA", afterCodeBlock);
+    }
+
+    /* PWO: Parameterize Whole Object*/
+    private void setBefore_PWO() {
+        String beforeCodeBlock =
+                "int low = priceList.getLow();\n" +
+                "int high = priceList.getHigh();\n" +
+                "boolean withinBudget = budget.withinRange(low, high);";
+
+        before.put("PWO", beforeCodeBlock);
+    }
+    private void setAfter_PWO() {
+        String afterCodeBlock =
+                "boolean withinBudget = budget.withinRange(priceList)";
+
+        after.put("PWO", afterCodeBlock);
     }
     // TODO: COPY AND DO YOUR WORK
     /*

@@ -37,15 +37,15 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
-        return "Description.";
+        return "<html>When there are more than two parameters originated from same object<br/>" +
+                "in a method, replace them in parameter list with source object.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
-        return "Precondition.";
+        return "<html>There exist more than two parameters that are originated from same object</html>";
+
     }
 
     /**
