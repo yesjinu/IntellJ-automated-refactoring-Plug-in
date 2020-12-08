@@ -65,6 +65,10 @@ class ProjectTreeModelFactory {
                     addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
 
+                if(IntroduceLocalExtensionAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "ILE", psiClass);
+                }
+
                 // RMN
                 if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; }
                 Set<String> literals = new HashSet<>();
@@ -182,6 +186,49 @@ class ProjectTreeModelFactory {
         TraverseProjectPsi.getRootPackages(project).forEach(aPackage -> aPackage.accept(visitor));
         TraverseProjectPsi.getRootClasses(project).forEach(aClass -> aClass.accept(visitor));
         return new DefaultTreeModel(root);
+    }
+
+    /**
+     * Method that fetches Refactoring Method name by ID.
+     *
+     * @param id Refactoring Techinque ID
+     * @return Corresponding Refactoring name (story name)
+     */
+    private static String getNameByID (String id) {
+        switch (id) {
+            // Scope: Class
+            case "IFM":
+                return new IntroduceForeignMethodAction().storyName();
+            case "ILE":
+                return new IntroduceLocalExtensionAction().storyName();
+
+            // Scope: Field
+            case "SEF":
+                return new SelfEncapField().storyName();
+            case "EF":
+                return new EncapField().storyName();
+
+            // Scope: Method
+            case "IM":
+                return new InlineMethodAction().storyName();
+            case "RPA":
+                return new RemoveUnusedParameterAction().storyName();
+
+            // Scope: Statement
+            case "CCE":
+                return new ConsolidateCondExpr().storyName();
+            case "CDCF":
+                return new ConsolidateDupCondFrag().storyName();
+            case "INA":
+                return new IntroduceAssertion().storyName();
+
+            // Scope: expression
+            case "RMN":
+                return new ReplaceMagicNumber().storyName();
+
+            default:
+                return null;
+        }
     }
 
     /**

@@ -24,6 +24,8 @@
             <add-to-group group-id="MainMenu" anchor="last"/>
             <action id="Wanted-Refactoring.IFM" class="wanted.refactoring.IntroduceForeignMethodAction"
                     text="Introduce Foreign Method" description="Moving Features between Objects: Introduce Foreign Method"/>
+            <action id="Wanted-Refactoring.ILE" class="wanted.refactoring.IntroduceLocalExtensionAction"
+                    text="Introduce Local Extension" description="Moving Features between Objects: Introduce Local Extension"/>
             <action id="Wanted-Refactoring.RPA" class="wanted.refactoring.RemoveUnusedParameterAction"
                     text="Remove Unused Parameter" description="Simplifying Method Calls: Remove Unused Parameter"/>
             <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="Self Encapsulate Field"
