@@ -38,15 +38,18 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
-        return "Description.";
+        return "<html>When literal expression are repeatedly used inside class, <br/>" +
+                "Create symbol constant variable and replace literal expression to constant. <br/>" +
+                "Created constant will be named as constant#N." +
+                "If constant with same value already exists, literal expression wil be replaced by that constant.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
-        return "Precondition.";
+        return "<html> For String or Char type literal expression, it shouldn't be empty or whitespace. <br/>" +
+                "For Int type expression, it shouldn't be 0, 1, 2. <br/>" +
+                "If short/char/byte/long literal expression can be expressed as Int, it'll be treat as Int type </html>";
     }
 
     @Override

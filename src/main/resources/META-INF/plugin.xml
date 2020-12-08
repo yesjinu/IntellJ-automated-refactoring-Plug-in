@@ -45,7 +45,5 @@
             <action id="Wanted-Refactoring.PWO" class="wanted.refactoring.ParameterizeWholeObjectAction" text="parameterize whole object"
                     description="Parameterize whole object"/>
         </group>
-        <action id="wanted.refactoring.ParameterizeWholeObjectAction" class="wanted.refactoring.ParameterizeWholeObjectAction"
-                text="Parameterize Whole Object" description="Parameterize Whole Object"/>
     </actions>
 </idea-plugin>

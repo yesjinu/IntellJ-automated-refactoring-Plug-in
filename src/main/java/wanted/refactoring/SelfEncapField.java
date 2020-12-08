@@ -35,14 +35,14 @@ public class SelfEncapField extends BaseRefactorAction {
     @Override
     public String descripton() {
         return "<html>When class directly access a private field inside a class, <br/>" +
-                "create getter and setter method, and use them for accessing the field.</html>";
+                "Create getter and setter method, and use them for accessing the field.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        return "<html>Private field is inside a class <br/>" +
-                "there is neither getter nor setter.</html>";
+        return "<html>Private field is inside the class <br/>" +
+                "There is neither getter nor setter.</html>";
     }
 
     /**

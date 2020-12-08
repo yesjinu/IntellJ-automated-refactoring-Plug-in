@@ -35,8 +35,9 @@ public class EncapField extends BaseRefactorAction {
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
-        return "Description.";
+        return "<html>When some class directly access a public field from other class, <br/>" +
+                "Make public field private and create getter and setter method inside field owner, <br/>" +
+                "and use them for accessing the field from other class.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
