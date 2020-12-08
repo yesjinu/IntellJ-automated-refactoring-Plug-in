@@ -8,10 +8,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiField;
-import com.intellij.psi.PsiReferenceExpression;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.concurrency.Promise;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
@@ -19,6 +16,7 @@ import wanted.test.base.LightActionTestCase;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,7 +26,9 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Jinu Noh
  */
+
 public class FindPsiTest extends AbstractLightCodeInsightTestCase {
+    /* test FindPsi::findMemberReference  */
     public void testFindMemberReference1() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file1.java");
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
@@ -44,9 +44,70 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(FindPsi.findMemberReference(targetClass, targetField).get(0).getText(), expected.getText());
     }
 
-    public void testFindMemberReference2() {
+    //TODO: directory 에서 getFiles 안 되는 오류 해결하기
+    public void testFindMemberReference2() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file1.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+
+        PsiFile file = navigator.findFile();
+        Project project = navigator.findProject();
+        PsiClass targetClass = navigator.findClass();
+        PsiField targetField = navigator.findField();
+
+        System.out.println("file : " + file);
+        System.out.println("project : " + project);
+        System.out.println("targetClass : " + targetClass);
+        System.out.println("targetField : " + targetField);
+
+        // directory path까지는 잘 찾아짐. 그런데 왜 디렉토리에서 getFiles하면 안 받아질까?
+        System.out.println("file.getContainingDirectory() : " + file.getContainingDirectory());
+        System.out.println("file.getContainingDirectory().getFiles() : " + Arrays.toString(file.getContainingDirectory().getFiles()));
+
+        System.out.println(FindPsi.findMemberReference(file, targetField));
 
     }
+
+    /* test FindPsi::findParametersOfMethod - case 1 : more than 2 parameters */
+    public void testFindParametersOfMethod() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file3.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiMethod targetMethod = navigator.findMethod();
+
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiParameter param_a = factory.createParameterFromText("int a", targetMethod);
+
+        assertTrue(FindPsi.findParametersOfMethod(targetMethod).toString().contains(param_a.toString()));
+    }
+
+    /* test FindPsi::findParametersOfMethod - case 2 : only 1 parameters */
+    public void testFindParametersOfMethod2() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file2.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiMethod targetMethod = navigator.findMethod();
+
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiParameter param_a = factory.createParameterFromText("int a", targetMethod);
+        PsiParameter param_b = factory.createParameterFromText("boolean b", targetMethod);
+        PsiParameter param_c = factory.createParameterFromText("char c", targetMethod);
+
+        assertTrue(FindPsi.findParametersOfMethod(targetMethod).toString().contains(param_a.toString()));
+        assertTrue(FindPsi.findParametersOfMethod(targetMethod).toString().contains(param_b.toString()));
+        assertTrue(FindPsi.findParametersOfMethod(targetMethod).toString().contains(param_c.toString()));
+    }
+
+    /* test FindPsi::findParametersOfMethod - case 3 : no parameters */
+    public void testFindParametersOfMethod3() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file4.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiMethod targetMethod = navigator.findMethod();
+
+        assertTrue(FindPsi.findParametersOfMethod(targetMethod).isEmpty());
+    }
+
 
     /**
      * Method to create dummy AnActionEvent with given file
