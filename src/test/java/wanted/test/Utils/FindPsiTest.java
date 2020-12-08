@@ -208,6 +208,39 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(FindPsi.getContainingClass(targetMethod), expectedClass);
     }
 
+    /* test FindPsi::findPsiFields - 3 fields in one class */
+    public void testFindPsiFields() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+
+        PsiField dummyField1 = CreatePsi.createField(project, new String[]{"private"}, PsiType.INT, "nameA", "10");
+        PsiField dummyField2 = CreatePsi.createField(project, new String[]{"public"}, PsiType.BOOLEAN, "nameB", "true");
+        PsiField dummyField3 = CreatePsi.createField(project, new String[]{"protected"}, PsiType.CHAR, "nameC", "c");
+
+        List<PsiField> expected = new ArrayList<>();
+        expected.add(dummyField1);
+        expected.add(dummyField2);
+        expected.add(dummyField3);
+
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            targetClass.addBefore(dummyField1, targetClass.getRBrace());
+            targetClass.addBefore(dummyField2, targetClass.getRBrace());
+            targetClass.addBefore(dummyField3, targetClass.getRBrace());
+        });
+
+        assertEquals(expected.toString(), FindPsi.findPsiFields(targetClass).toString());
+    }
+
+    /* test FindPsi::findPsiFields - no fields in class */
+    public void testFindPsiFields2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+
+        assertTrue(FindPsi.findPsiFields(targetClass).isEmpty());
+    }
+
 
 
 
