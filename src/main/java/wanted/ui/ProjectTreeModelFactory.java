@@ -65,6 +65,10 @@ class ProjectTreeModelFactory {
                     addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
 
+                if(IntroduceLocalExtensionAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "ILE", psiClass);
+                }
+
                 // RMN
                 if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; }
                 Set<String> literals = new HashSet<>();
@@ -179,6 +183,8 @@ class ProjectTreeModelFactory {
             // Scope: Class
             case "IFM":
                 return new IntroduceForeignMethodAction().storyName();
+            case "ILE":
+                return new IntroduceLocalExtensionAction().storyName();
 
             // Scope: Field
             case "SEF":
