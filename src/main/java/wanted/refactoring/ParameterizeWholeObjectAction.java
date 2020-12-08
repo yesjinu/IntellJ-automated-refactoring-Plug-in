@@ -71,7 +71,8 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
      * @param focusClass PsiClass
      * @return true if method is refactorable
      */
-    public static boolean refactorValid(Project project, @NotNull PsiClass focusClass) {
+    public static boolean refactorValid(Project project, PsiClass focusClass) {
+        if (focusClass == null) return false;
         HashMap<String, Integer> paramCounter;
 
         // 클래스 내 모든 메소드 콜을 검사
