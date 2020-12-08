@@ -198,6 +198,19 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertNull(FindPsi.findIfStatement(targetClass, offset));
     }
 
+    /* test FindPsi::getContainingClass - a class includes a method */
+    public void testGetContainingClass() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file7.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass expectedClass = navigator.findClass();
+        PsiMethod targetMethod = navigator.findMethod();
+
+        assertEquals(FindPsi.getContainingClass(targetMethod), expectedClass);
+    }
+
+
+
+
 
     /**
      * Method to create dummy AnActionEvent with given file
