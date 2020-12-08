@@ -21,6 +21,7 @@ import java.util.*;
  */
 public class HideDelegateAction extends BaseRefactorAction {
     private static Project project;
+    private static PsiFile file;
     private static PsiClass targetClass;
 
     /* Returns the story ID. */
@@ -56,6 +57,11 @@ public class HideDelegateAction extends BaseRefactorAction {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
+        if (project == null) return false;
+
+        file = navigator.findFile();
+        if (file == null) return false;
+
         targetClass = navigator.findClass();
         if (targetClass == null) return false;
 
@@ -64,6 +70,10 @@ public class HideDelegateAction extends BaseRefactorAction {
 
 
     public static boolean refactorValid(Project project, @NotNull PsiClass targetClass) {
+
+
+
+
         return true;
     }
 

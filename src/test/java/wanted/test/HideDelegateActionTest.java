@@ -1,6 +1,7 @@
 package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
+import wanted.refactoring.EncapField;
 import wanted.refactoring.HideDelegateAction;
 import wanted.refactoring.IntroduceLocalExtensionAction;
 import wanted.test.base.LightActionTestCase;
@@ -21,12 +22,9 @@ public class HideDelegateActionTest extends LightActionTestCase {
         return super.getBasePath() + "/hideDelegate";
     }
 
-    public void testHideDelegateAction1() throws Exception {
-        try {
-            doTest();
-        }
-        catch(RuntimeException e) {
-            assertEquals(e.getMessage(), "Nothing to do");
-        }
+    /* Test 1: simple case */
+    public void testEncapField1() throws Exception {
+        String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
+        doTestDirectory(beforeFiles);
     }
 }
