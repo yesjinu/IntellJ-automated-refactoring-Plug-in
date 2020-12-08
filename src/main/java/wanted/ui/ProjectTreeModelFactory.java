@@ -65,6 +65,7 @@ class ProjectTreeModelFactory {
                     addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
 
+                // ILE
                 if(IntroduceLocalExtensionAction.refactorValid(project, psiClass)) {
                     addTreeNodes(root, rootRef, "ILE", psiClass);
                 }
