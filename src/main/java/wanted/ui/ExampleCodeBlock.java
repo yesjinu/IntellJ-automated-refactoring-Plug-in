@@ -39,6 +39,7 @@ public class ExampleCodeBlock {
     private void init() {
         setBefore_EV(); setAfter_EV();
         setBefore_IM(); setAfter_IM();
+        setBefore_SEF(); setAfter_SEF();
         // TODO: ADD NEW METHOD HERE
     }
 
@@ -87,6 +88,32 @@ public class ExampleCodeBlock {
 
         after.put("IM", afterCodeBlock);
     }
+
+    private void setBefore_SEF() {
+        String beforeCodeBlock =
+                "class basic {\n" +
+                        "  private int count;\n" +
+                        "  public void method1() { System.out.println(count); }\n" +
+                        "  public void method2(int x) { count = x; }\n" +
+                        "}\n";
+
+        before.put("SEF", beforeCodeBlock);
+    }
+    private void setAfter_SEF() {
+        String afterCodeBlock =
+                "class basic {\n" +
+                        "  private int count;\n" +
+                        "  public void method1() { System.out.println(getCount()); }\n" +
+                        "  public void method2(int x) { setCount(x); }\n" +
+                        "\n" +
+                        "  /* new methods */\n" +
+                        "  protected int getCount() { return count; }\n" +
+                        "  protected void setCount(int x) { count = x; }\n" +
+                        "}\n";
+
+        after.put("SEF", afterCodeBlock);
+    }
+
 
     // TODO: COPY AND DO YOUR WORK
     /*
