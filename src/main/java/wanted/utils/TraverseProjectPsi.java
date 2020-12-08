@@ -18,37 +18,6 @@ import java.util.*;
 public class TraverseProjectPsi {
 
     /**
-     * Returns List of every methods in project
-     *
-     * @return classList List of all methods
-     */
-    public static List<PsiClass> getMethodsFromProject (Project focusProject) {
-        final List<PsiClass> classList = new ArrayList<>();
-
-        final JavaElementVisitor visitor = new JavaElementVisitor() {
-            final private List<PsiClass> classList_ptr = classList;
-
-            @Override
-            public void visitPackage(PsiPackage pack) {
-                for (PsiPackage subPack : pack.getSubPackages()) subPack.accept(this);
-                for (PsiClass subClass : pack.getClasses()) subClass.accept(this);
-
-                super.visitPackage(pack);
-            }
-
-            @Override
-            public void visitClass(PsiClass aClass) {
-                classList_ptr.add(aClass);
-
-                super.visitClass(aClass);
-            }
-        };
-
-        getRootPackages(focusProject).forEach(aPackage -> aPackage.accept(visitor));
-        return classList;
-    }
-
-    /**
      * Returns the root package(s) in the source directory of a project. The default package will not be considered, as
      * it includes all Java classes. Note that classes in the default package (i.e., having no package statement) will
      * be ignored for this assignment. To be completed, this case must be separately handled.
