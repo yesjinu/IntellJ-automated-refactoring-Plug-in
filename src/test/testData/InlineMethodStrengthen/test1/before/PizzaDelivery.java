@@ -1,4 +1,4 @@
-package InlineMethodStrengthen;
+package InlineMethod;
 
 class PizzaDelivery {
     final int numberofLateDeliveries;

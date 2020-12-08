@@ -1,91 +1,46 @@
 package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
-import wanted.refactoring.InlineMethod;
+import wanted.refactoring.InlineMethodStrengthen;
 import wanted.test.base.LightActionTestCase;
 
 /**
- * Test class for 'Inline Method'
+ * Test class for 'Inline Method Strengthen'
  *
  * @author seha Park
+ * @author Mintae Kim
  */
-public class InlineMethodStrengthenTest extends LightActionTestCase {
+public class InlineMethodStrengthenTest extends InlineMethodTest {
 
+    @Override
     protected AnAction getAction() {
-        return new InlineMethod();
+        return new InlineMethodStrengthen();
     }
 
     @Override
     protected String getBasePath() {
-        return super.getBasePath() + "/InlineMethodStrengthen";
+        return super.getBasePath() + "Strengthen";
     }
+
+    /** Test Inherited from InlineMethodTest */
+    /* [Test 2] RefactorValid: Subclass Test */
+    /* [Test 9] RefactorValid: Constructor Test */
+    /* [Test 16] RefactorValid: Loop: More than Inner 2 Statements */
+    /* [Test 17] RefactorValid: Conditional Loop: More than Inner 2 Statements */
+
 
     /* [Test 1] Refactor: Basic Case */
-    public void testInlineMethodStrengthen1() throws Exception {
-        String[] files = {"PizzaDelivery.java"};
-        doTestFoldersMulti(files, 1);
-    }
-
-    /* [Test 2] RefactorValid: Subclass Test */
-    public void testInlineMethodStrengthen2() throws Exception {
-        String[] files = {"PizzaDelivery.java", "HawaiianPizzaDelivery.java"};
-        try {
-            doTestFoldersMulti(files, 2);
-        }
-        catch(RuntimeException e){
-            assertEquals(e.getMessage(), "Nothing to do");
-        }
-    }
-
-    /* [Test 3] */
-    public void testInlineMethodStrengthen3() throws Exception {
-        String[] files = {"PizzaDelivery.java"};
-        doTestFoldersMulti(files, 3);
-    }
-
-    public void testInlineMethodStrengthen4() throws Exception {
-        String[] files = {"PizzaDelivery.java"};
-        doTestFoldersMulti(files, 4);
-    }
-
-    public void testInlineMethodStrengthen5() throws Exception {
-        String[] files = {"PizzaDelivery.java"};
-        doTestFoldersMulti(files, 5);
-    }
-
-    public void testInlineMethodStrengthen6() throws Exception {
-        String[] files = {"PizzaDelivery.java"};
-        doTestFoldersMulti(files, 6);
-    }
-
-    public void testInlineMethodStrengthen7() throws Exception {
-        String[] files = {"PizzaDelivery.java"};
-        doTestFoldersMulti(files, 7);
-    }
-
-    public void testInlineMethodStrengthen8() throws Exception {
-        String[] files = {"PizzaDelivery.java"};
-        doTestFoldersMulti(files, 8);
-    }
-
-    public void testInlineMethodStrengthen9() throws Exception {
-        String[] files = {"Test9.java"};
-        try {
-            doTestFoldersMulti(files, 9);
-        }
-        catch(RuntimeException e){
-            assertEquals(e.getMessage(), "Nothing to do");
-        }
-    }
-
-    /* [Test 10] RefactorValid: Constructor Test */
-    public void testInlineMethodStrengthen10() throws Exception {
-        String[] files = {"EF_owner.java"};
-        try {
-            doTestFoldersMulti(files, 10);
-        }
-        catch(RuntimeException e){
-            assertEquals(e.getMessage(), "Nothing to do");
-        }
-    }
+    /* [Test 3] Refactor: Boolean */
+    /* [Test 4] Refactor: Boolean w/ 3 parameters */
+    /* [Test 5] Refactor: Void w/ 1 parameter */
+    /* [Test 6] Refactor: Void + If Statement */
+    /* [Test 7] Refactor: Void + For Statement & Function Call  */
+    /* [Test 8] Refactor: Void + For Statement & Assignment Statement */
+    /* [Test 18] Refactor: Void + Conditional Loop & Assignment Statement */
+    /* [Test 10] Refactor: Void + Qualifier */
+    /* [Test 11] Refactor: Void + Qualifier Array */
+    /* [Test 12] Refactor: Void + Qualifier Class */
+    /* [Test 13] Refactor: Non Used Method */
+    /* [Test 14] Refactor: Void Qualifier Method */
+    /* [Test 15] Refactor: Void + Class Member */
 }

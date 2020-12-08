@@ -1,4 +1,4 @@
-package InlineMethodStrengthen;
+package InlineMethod;
 
 class PizzaDelivery {
     final int numberofLateDeliveries;
@@ -12,7 +12,7 @@ class PizzaDelivery {
     }
 
     void moreThanFiveLateDeli<caret>veries(int int_rand) {
-        for (int i = 0; i < 5; i++) int p = 4;
+        for (int i = 0; i < 5; i++) int_rand = 4;
     }
 
     void doSomething(int int_random)

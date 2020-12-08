@@ -47,6 +47,26 @@ public class InlineMethodStrengthen extends InlineMethod {
     }
 
     /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Inline Method Strengthen'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
+    @Override
+    public boolean refactorValid(AnActionEvent e) {
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+
+        project = navigator.findProject();
+
+        method = navigator.findMethod();
+        if (method == null) return false;
+
+        return InlineMethod.refactorValid(project, method);
+    }
+
+    /**
      * Method that performs refactoring: 'Inline Method (Strengthen)'
      *
      * @param e AnActionEvent
@@ -54,7 +74,7 @@ public class InlineMethodStrengthen extends InlineMethod {
      */
     @Override
     public void refactor(AnActionEvent e) {
-        assert refactorValid (project, method);
+        assert InlineMethod.refactorValid (project, method);
 
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
 

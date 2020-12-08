@@ -1,4 +1,4 @@
-package InlineMethodStrengthen;
+package InlineMethod;
 
 public class HawaiianPizzaDelivery extends PizzaDelivery {
     public HawaiianPizzaDelivery(int numberofLateDeliveries) {

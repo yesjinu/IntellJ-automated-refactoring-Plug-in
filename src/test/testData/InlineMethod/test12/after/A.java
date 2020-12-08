@@ -16,9 +16,6 @@ public class A {
     public void doSomething2(int[] param) {
         param[0] = 325;
     }
-    public void doSomething3(C param) {
-        param = new C(4);
-    }
 
     public void noReference(int param) {
         param = 15;

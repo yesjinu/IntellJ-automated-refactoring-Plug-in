@@ -1,4 +1,4 @@
-package InlineMethodStrengthen;
+package InlineMethod;
 
 class PizzaDelivery {
     final int numberofLateDeliveries;
@@ -8,6 +8,8 @@ class PizzaDelivery {
     }
 
     int getRating() {
+        int tempVar1 = 32;
+        for (int i = 0; i < 5; i++) tempVar1 = 4;
     }
 
     void doSomething(int int_random)
