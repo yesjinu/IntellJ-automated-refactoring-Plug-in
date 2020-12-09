@@ -2,13 +2,11 @@ package wanted.test.Utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.sun.istack.NotNull;
 import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.CreatePsi;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Test class for Utils.CreatePsi
@@ -219,10 +217,11 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
-        String expected = "assert (!(x==1) || ((a != null) && (b != null)));";
+        String expected1 = "assert (!(x==1) || ((a != null) && (b != null)));";
+        String expected2 = "assert (!(x==1) || ((b != null) && (a != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertEquals(expected, createElement.getText());
+        Assertions.assertTrue(expected1.equals(createElement.getText())||expected2.equals(createElement.getText()));
     }
 
     /* CreateAssertStatement test 2: thenSet is empty */
@@ -241,10 +240,11 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Set<PsiReferenceExpression> thenSet = new HashSet<>();
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
-        String expected = "assert ((x==1) || ((a != null) && (b != null)));";
+        String expected1 = "assert ((x==1) || ((a != null) && (b != null)));";
+        String expected2 = "assert ((x==1) || ((b != null) && (a != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertEquals(expected, createElement.getText());
+        Assertions.assertTrue(expected1.equals(createElement.getText())||expected2.equals(createElement.getText()));
     }
 
     /* CreateAssertStatement test 3: both elseSet and thenSet are not empty */
@@ -268,10 +268,14 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
-        String expected = "assert (((x==1) && (a != null) && (b != null)) || (!(x==1) && (c != null) && (d != null)));";
+        String expected1 = "assert (((x==1) && (a != null) && (b != null)) || (!(x==1) && (c != null) && (d != null)));";
+        String expected2 = "assert (((x==1) && (b != null) && (a != null)) || (!(x==1) && (c != null) && (d != null)));";
+        String expected3 = "assert (((x==1) && (a != null) && (b != null)) || (!(x==1) && (d != null) && (c != null)));";
+        String expected4 = "assert (((x==1) && (b != null) && (a != null)) || (!(x==1) && (d != null) && (c != null)));";
+        List<String> expectedResults = new ArrayList<>(Arrays.asList(expected1, expected2, expected3, expected4));
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertEquals(expected, createElement.getText());
+        Assertions.assertTrue(expectedResults.contains(createElement.getText()));
     }
 
     /* CreateExtractVariable test 1: when exp.type is know */
