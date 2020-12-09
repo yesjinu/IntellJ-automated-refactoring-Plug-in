@@ -2,7 +2,7 @@ public class A {
     public void func() {
         B b = new B();
 
-        doSomething(b.bb1);
+        doSomething1(b.bb1);
         doSomething2(b.bb2);
         b.bb3 = new C(4);
         b.doSomethingB(b.bb1);

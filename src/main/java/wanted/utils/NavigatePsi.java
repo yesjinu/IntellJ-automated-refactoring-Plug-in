@@ -77,6 +77,7 @@ public class NavigatePsi {
      * @return NavigatePsi object
      */
     public static NavigatePsi NavigatorFactory(AnActionEvent e) {
+        navigator = new NavigatePsi(e);
         if (navigator == null || !sameEvent(navigator, e)) {
             navigator = new NavigatePsi(e);
         }

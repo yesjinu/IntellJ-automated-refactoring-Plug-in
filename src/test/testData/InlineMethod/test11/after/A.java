@@ -2,7 +2,7 @@ public class A {
     public void func() {
         B b = new B();
 
-        doSomething(b.bb1);
+        doSomething1(b.bb1);
         b.bb2[0] = 325;
         doSomething3(b.bb3);
         b.doSomethingB(b.bb1);
@@ -13,7 +13,7 @@ public class A {
     public void doSomething1(int param) {
         param = 30;
     }
-    
+
     public void doSomething3(C param) {
         param = new C(4);
     }

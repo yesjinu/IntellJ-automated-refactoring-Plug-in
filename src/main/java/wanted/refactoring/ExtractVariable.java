@@ -99,6 +99,8 @@ public class ExtractVariable extends BaseRefactorAction {
      * @return true if method is refactorable
      */
     public static boolean refactorValid(PsiStatement statement) {
+        // 0. Check whether statement is null
+        if (statement == null) return false;
 
         expRefactorList = new ArrayList<>();
 
