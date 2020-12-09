@@ -29,6 +29,8 @@ public class BaseRefactorManager {
             // Scope: Class
             case "IFM":
                 return new IntroduceForeignMethodAction();
+            case "ILE":
+                return new IntroduceLocalExtensionAction();
 
             // Scope: Field
             case "SEF":

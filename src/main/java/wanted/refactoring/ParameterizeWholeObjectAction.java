@@ -37,15 +37,15 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
-        return "Description.";
+        return "<html>When there are more than two parameters originated from same object<br/>" +
+                "in a method, replace them in parameter list with source object.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
-        return "Precondition.";
+        return "<html>There exist more than two parameters that are originated from same object</html>";
+
     }
 
     /**
@@ -71,7 +71,8 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
      * @param focusClass PsiClass
      * @return true if method is refactorable
      */
-    public static boolean refactorValid(Project project, @NotNull PsiClass focusClass) {
+    public static boolean refactorValid(Project project, PsiClass focusClass) {
+        if (focusClass == null) return false;
         HashMap<String, Integer> paramCounter;
 
         // 클래스 내 모든 메소드 콜을 검사
