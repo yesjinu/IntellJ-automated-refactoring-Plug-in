@@ -241,8 +241,48 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertTrue(FindPsi.findPsiFields(targetClass).isEmpty());
     }
 
+    /* test FindPsi::findPsiDeclarationStatements - more than two psi declaration statements in class */
+    public void testFindPsiDeclarationStatements() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file8.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass focusClass = navigator.findClass();
 
+        List<String> expected = new ArrayList<>();
+        expected.add("Date today = new Date(2020, 12, 9);");
+        expected.add("Date tomorrow = new Date(2020, 12, 10);");
 
+        List<PsiDeclarationStatement> actual = FindPsi.findPsiDeclarationStatements(focusClass);
+        assertEquals(actual.size(), expected.size());
+        for (PsiDeclarationStatement p : actual) {
+            assertTrue(expected.contains(p.getText()));
+        }
+    }
+
+    /* test FindPsi::findPsiDeclarationStatements - no declaration statement in class */
+    public void testFindPsiDeclarationStatements2() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file7.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass focusClass = navigator.findClass();
+
+        List<PsiDeclarationStatement> actual = FindPsi.findPsiDeclarationStatements(focusClass);
+        assertTrue(actual.isEmpty());
+    }
+
+//    public void testFindChildPsiExpressions()
+//    public void testFindPsiLocalVariables()
+//    public void testFindChildPsiLocalVariables()
+//    public void testFindChildPsiTypeElements()
+//    public void testFindPsiNewExpressions()
+//    public void testFindChildPsiNewExpressions()
+//    public void testFindChildPsiJavaCodeReferenceElements()
+//    public void testFindChildPsiExpressionLists()
+//    public void testFindChildPsiReferenceExpressions()
+//    public void testFindPsiLiteralExpressions()
+//    public void testFindChildPsiLiteralExpressions()
+//    public void testFindChildPsiIdentifiers()
+//    public void testFindChildPsiJavaTokens()
+//    public void testFheckDuplicateName()
+//    public void testFindLiteralUsage()
 
 
     /**
