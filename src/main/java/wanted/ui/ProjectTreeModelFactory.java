@@ -65,6 +65,11 @@ class ProjectTreeModelFactory {
                     addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
 
+                // ILE
+                if(IntroduceLocalExtensionAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "ILE", psiClass);
+                }
+
                 // RMN
                 if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; }
                 Set<String> literals = new HashSet<>();
@@ -74,6 +79,12 @@ class ProjectTreeModelFactory {
                         literals.add(e.getText());
                     }
                 });
+
+                // PWO
+                if(ParameterizeWholeObjectAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "PWO", psiClass);
+                }
+
             }
 
             /**
@@ -113,6 +124,16 @@ class ProjectTreeModelFactory {
                 if (RemoveUnusedParameterAction.refactorValid(project, method)) {
                     addTreeNodes(root, rootRef, "RPA", method);
                 }
+            }
+
+            @Override
+            public void visitStatement(PsiStatement statement) {
+
+                // EV
+                if (ExtractVariable.refactorValid(statement)) {
+                    addTreeNodes(root, rootRef, "EV", statement);
+                }
+                super.visitStatement(statement);
             }
 
             /**
@@ -179,6 +200,8 @@ class ProjectTreeModelFactory {
             // Scope: Class
             case "IFM":
                 return new IntroduceForeignMethodAction().storyName();
+            case "ILE":
+                return new IntroduceLocalExtensionAction().storyName();
 
             // Scope: Field
             case "SEF":
@@ -247,7 +270,8 @@ class ProjectTreeModelFactory {
             String id) {
 
         DefaultMutableTreeNode rootRefNode =
-                new DefaultMutableTreeNode (getNameByID (id));
+                new DefaultMutableTreeNode (
+                        BaseRefactorManager.getInstance().getRefactorActionByID(id));
         rootRef.put(id, rootRefNode);
         root.add(rootRefNode);
     }

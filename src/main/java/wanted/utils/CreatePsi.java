@@ -6,12 +6,15 @@ import com.sun.istack.NotNull;
 
 import java.util.Set;
 
+import java.util.List;
+
 /**
  * Class to create Psi Elements.
  *
  * @author seha Park
  * @author Mintae Kim
  * @author seungjae yoo
+ * @author Jinu Noh
  */
 public class CreatePsi {
     /**
@@ -85,12 +88,13 @@ public class CreatePsi {
             qual = qual.substring(ind + 1) + ".";
         }
 
-        PsiExpression newExpression = factory.createExpressionFromText(
+        PsiExpression expression = factory.createExpressionFromText(
                 qual + method.getName() + "(" + param + ")",
                 null);
 
-        return (PsiMethodCallExpression) newExpression;
+        return (PsiMethodCallExpression) expression;
     }
+
 
     /**
      * Return merged conditionExpression with || symbol
@@ -115,7 +119,7 @@ public class CreatePsi {
     /**
      * Return empty block statement
      *
-     * @param project target project
+     * @param project Project
      * @return Newly created Empty PsiBlockStatement
      */
     public static PsiStatement createEmptyBlockStatement(@NotNull Project project) {
@@ -126,9 +130,38 @@ public class CreatePsi {
     }
 
     /**
-     * Create PsiField with given parameters
+     * Return parameter list of given method
      *
-     * @param project   target project
+     * @param project         target project
+     * @param paramType
+     * @param paramIdentifier
+     * @return Newly created parameter list
+     */
+    public static PsiParameterList createMethodParameterList(@NotNull Project project, PsiType paramType, PsiIdentifier paramIdentifier) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        String[] paramNameList = {paramIdentifier.getText()};
+        PsiType[] paramTypeList = {paramType};
+
+        return factory.createParameterList(paramNameList, paramTypeList);
+    }
+
+    /**
+     * Return declaration statement
+     *
+     * @param
+     * @param
+     * @return Newly created parameter list
+     */
+    public static PsiDeclarationStatement createGetDeclarationStatement(Project project, PsiTypeElement typeElem, String varName, PsiMethodCallExpression methodCallExp) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        String str = typeElem.getText() + " " + varName + " = " + methodCallExp.getText() + ";\n";
+
+        return (PsiDeclarationStatement) factory.createStatementFromText(str, null);
+    }
+
+    /* Create PsiField with given parameters
+     *
+     * @param project   target context
      * @param modifiers modifier of PsiField, 'private' modifier is added as default
      * @param type      type of field
      * @param name      name of field
@@ -206,31 +239,88 @@ public class CreatePsi {
     }
 
     /**
-     * Return same statement which is copied
+     * Returns Assignment Statement for Extract Variables
+     * <p>
+     * " final {TYPE} {NAME} = {PsiExpression}; "
      *
-     * @param project   target project
-     * @param statement original statement
-     * @return newStatement which is same with the statement
+     * @param project Project
+     * @param varName Variable Name
+     * @param exp     PsiExpression to extract
+     * @return Newly created PsiStatement (Assingnment)
      */
-    public static PsiStatement copyStatement(@NotNull Project project, @NotNull PsiStatement statement) {
+    public static PsiStatement createExtractVariableAssignStatement(@NotNull Project project,
+                                                                    String varName,
+                                                                    @NotNull PsiExpression exp) {
+
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
-        PsiStatement newStatement = factory.createStatementFromText(statement.getText(), null);
+        if (exp.getType() == null) return null;
+
+        PsiStatement newStatement = factory.createStatementFromText(
+                "final " + exp.getType().getPresentableText() + " " + varName + " = " + exp.getText() + ";", null);
         return newStatement;
     }
 
     /**
-     * Return some expression which is copied
+     * Returns newly created expression based on string.
      *
-     * @param project    target project
-     * @param psiElement original element
-     * @return new expression which is same with the psiElement
+     * @param project     Project
+     * @param expAsString Exp as String
+     * @return Newly created PsiExpression
      */
-    public static PsiExpression createDuplicateExpression(@NotNull Project project, @NotNull PsiElement psiElement) {
+    public static PsiExpression createExpression(@NotNull Project project,
+                                                 String expAsString) {
+
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
-        PsiExpression newExpression = factory.createExpressionFromText(psiElement.getText(), null);
+        PsiExpression newExpression = factory.createExpressionFromText(
+                expAsString, null);
         return newExpression;
+    }
+
+    /**
+     * Method which creates new Duplicate PsiExpression object for replacement.
+     *
+     * @param project       Project
+     * @param psiExpression Target PsiExpression to duplicate
+     * @return Newly copied PsiExpression Object
+     */
+    public static PsiExpression copyExpression(@NotNull Project project, @NotNull PsiExpression psiExpression) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression newElement = factory.createExpressionFromText(psiExpression.getText(), null);
+        return newElement;
+    }
+
+    /**
+     * Returns newly created statement based on string.
+     *
+     * @param project      Project
+     * @param statAsString Statement as String
+     * @return Newly created PsiStatement
+     */
+    public static PsiStatement createStatement(@NotNull Project project,
+                                               String statAsString) {
+
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText(
+                statAsString, null);
+        return newStatement;
+    }
+
+    /**
+     * Return same statement which is copied
+     *
+     * @param project   factory context
+     * @param statement the original version of the statement
+     * @return newStatement which is same with statement
+     */
+    public static PsiStatement copyStatement(@NotNull Project project, PsiStatement statement) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement newStatement = factory.createStatementFromText(statement.getText(), null);
+        return newStatement;
     }
 
     /**
@@ -245,3 +335,4 @@ public class CreatePsi {
         return newName;
     }
 }
+

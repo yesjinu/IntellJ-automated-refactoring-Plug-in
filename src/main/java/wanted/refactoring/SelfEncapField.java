@@ -1,6 +1,5 @@
 package wanted.refactoring;
 
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -20,15 +19,30 @@ public class SelfEncapField extends BaseRefactorAction {
     private PsiField member;
     private List<PsiReferenceExpression> references;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "SEF";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Self Encapsulation Field";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        return "<html>When class directly access a private field inside a class, <br/>" +
+                "create getter and setter method, and use them for accessing the field.</html>";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        return "<html>Selected field is private. <br/>" +
+                "There is neither getter nor setter.</html>";
     }
 
     /**
@@ -73,7 +87,7 @@ public class SelfEncapField extends BaseRefactorAction {
 
         if (member.getModifierList() == null) {
             return false;
-        } // PsiField with no modifier is public
+        }
         else if (!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)) {
             return false;
         } // member is not private

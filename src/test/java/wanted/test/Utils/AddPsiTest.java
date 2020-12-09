@@ -1,10 +1,12 @@
 package wanted.test.Utils;
 
+import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
+import wanted.test.base.LightActionTestCase;
 import wanted.utils.AddPsi;
 
 import java.util.ArrayList;
@@ -16,9 +18,20 @@ import java.util.Objects;
  *
  * @author Jinu Noh
  */
-public class AddPsiTest extends AbstractLightCodeInsightTestCase {
 
-    // test AddPsi::addMethod - case 1 : Add one method to a class
+public class AddPsiTest extends LightActionTestCase {
+
+    protected AnAction getAction() {
+        return null;
+    }
+
+    @Override
+    protected String getBasePath() {
+        return super.getBasePath() + "/PsiUtilsTest/AddPsiTest";
+    }
+
+    // test AddPsi::addMethod
+    // case 1 : Add one method to a class
     public void testAddMethod() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);

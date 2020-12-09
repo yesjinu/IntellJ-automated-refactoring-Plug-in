@@ -56,6 +56,8 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
      * @param files names of files in BasePath()+before<testName>/
      * @throws Exception
      * caution: there should be no package statement for each file
+     *          first element of files[] will be opened with editor.
+     *          i.e, the target file(file to inspect, file with caret ... ) must be the first element of files[]
      */
     protected void doTestDirectory(String[] files) throws Exception {
         String beforePath = getBasePath() + "/before" + getTestName(false) + "/";

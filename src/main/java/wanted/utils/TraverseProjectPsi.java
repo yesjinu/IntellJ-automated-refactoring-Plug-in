@@ -3,7 +3,6 @@ package wanted.utils;
 import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
-
 import com.intellij.psi.*;
 
 import java.util.*;
@@ -64,13 +63,13 @@ public class TraverseProjectPsi {
                     rootClasses.addAll(Arrays.asList(((PsiJavaFile) file).getClasses()));
                 }
             }
+
             @Override
             public void visitDirectory(PsiDirectory dir) {
                 final PsiPackage psiPackage = JavaDirectoryService.getInstance().getPackage(dir);
                 if (psiPackage != null && !PackageUtil.isPackageDefault(psiPackage)) {
 
-                }
-                else {
+                } else {
                     Arrays.stream(dir.getSubdirectories()).forEach(sd -> sd.accept(this));
                     Arrays.stream(dir.getFiles()).forEach(f -> f.accept(this));
                 }
@@ -95,6 +94,7 @@ public class TraverseProjectPsi {
             public void visitFile(PsiFile file) {
                 if (file != null) fileList.add(file);
             }
+
             @Override
             public void visitDirectory(PsiDirectory dir) {
                 Arrays.stream(dir.getSubdirectories()).forEach(sd -> sd.accept(this));
