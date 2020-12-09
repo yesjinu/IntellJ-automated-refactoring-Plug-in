@@ -10,6 +10,7 @@ import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
 import org.jetbrains.annotations.NotNull;
+import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
@@ -22,8 +23,8 @@ import java.util.*;
  * @author Mintae Kim
  */
 public class InlineMethod extends BaseRefactorAction {
-    private Project project;
-    private PsiMethod method;
+    protected Project project;
+    protected PsiMethod method;
 
     /* Returns the story ID. */
     @Override
@@ -131,33 +132,25 @@ public class InlineMethod extends BaseRefactorAction {
         if (!references.isEmpty()) {
 
             // Fetching element to replace
-            PsiStatement removeMethodStatement = method.getBody().getStatements()[0];
-            PsiElement replaceElement = fetchReplaceElement(removeMethodStatement);
+            PsiStatement methodStatementOrigin = method.getBody().getStatements()[0];
+            PsiStatement methodStatement = CreatePsi.copyStatement(project, methodStatementOrigin);
+
+            PsiElement replaceElement = fetchReplaceElement(methodStatement);
             assert replaceElement != null;
 
             // Fetching Method Parameter: Replace
             PsiParameterList paramList = method.getParameterList();
             for (PsiReference reference : references) {
                 PsiElement refElement = reference.getElement().getParent();
-
                 assert refElement instanceof PsiMethodCallExpression;
-                PsiExpressionList paramRefList = ((PsiMethodCallExpression) refElement).getArgumentList();
 
-                // Replace Statement
-                WriteCommandAction.runWriteCommandAction(project, () -> {
-                    // Checking Method Calls ending with semicolons
-                    if (refElement.getNextSibling() != null) {
-                        if (refElement.getNextSibling().getText().equals(";"))
-                            refElement.getNextSibling().delete();
-                    }
+                // Step 3. Replace Parameters (Be Aware of DummyHolder)
+                replaceElement =
+                        replaceParameters(
+                                (PsiMethodCallExpression)refElement, null, replaceElement, paramList);
 
-                    PsiElement expAppliedElement = refElement.replace(replaceElement);
-
-                    // replace vars in replaceElement with Map paramList -> paramRefList
-                    expAppliedElement.replace(
-                            ReplacePsi.replaceParamToArgs(project, expAppliedElement, paramList, paramRefList)
-                    );
-                });
+                // Step 4. Insert Statement
+                insertStatements((PsiMethodCallExpression)refElement, null, replaceElement);
             }
         }
 
@@ -232,10 +225,47 @@ public class InlineMethod extends BaseRefactorAction {
         return check[0];
     }
 
-    private PsiElement fetchReplaceElement(PsiStatement statement) {
+    protected PsiElement fetchReplaceElement(PsiStatement statement) {
         if (statement instanceof PsiReturnStatement) // Return Values
             return ((PsiReturnStatement) statement).getReturnValue();
         else
             return statement;
+    }
+
+    protected PsiElement replaceParameters(PsiMethodCallExpression reference,
+                                                 List<PsiStatement> declarations, PsiElement replaceElement,
+                                                 PsiParameterList paramList) {
+
+        PsiExpressionList paramRefList = reference.getArgumentList();
+
+        // replace vars in replaceElement with Map paramList -> paramRefList
+        PsiElement afterReplaceElement = replaceElement.replace(
+                ReplacePsi.replaceParamToArgs(project, replaceElement, paramList, paramRefList));
+
+        if (declarations != null) {
+            // TODO: Modify Parameters for declarations
+        }
+
+        return afterReplaceElement;
+    }
+
+    protected void insertStatements(PsiMethodCallExpression reference,
+                                    List<PsiStatement> declarations, PsiElement replaceElement) {
+
+        // Replace Statement
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            // Checking Method Calls ending with semicolons
+            if (reference.getNextSibling() != null) {
+                if (reference.getNextSibling().getText().equals(";"))
+                    reference.getNextSibling().delete();
+            }
+
+            reference.replace(replaceElement);
+        });
+
+        if (declarations != null) {
+            // TODO: Search Statement w/ getParent()
+            // TODO: Insert Declarations
+        }
     }
 }

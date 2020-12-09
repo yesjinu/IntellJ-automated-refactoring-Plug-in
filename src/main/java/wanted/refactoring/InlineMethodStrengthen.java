@@ -10,6 +10,7 @@ import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
 import org.jetbrains.annotations.NotNull;
+import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
@@ -23,8 +24,6 @@ import java.util.List;
  * @author Mintae Kim
  */
 public class InlineMethodStrengthen extends InlineMethod {
-    private Project project;
-    private PsiMethod method;
 
     /* Returns the story ID. */
     @Override
@@ -47,26 +46,6 @@ public class InlineMethodStrengthen extends InlineMethod {
     }
 
     /**
-     * Method that checks whether candidate method is refactorable
-     * using 'Inline Method Strengthen'.
-     *
-     * @param e AnActionevent
-     * @return true if method is refactorable
-     * @see BaseRefactorAction#refactorValid(AnActionEvent)
-     */
-    @Override
-    public boolean refactorValid(AnActionEvent e) {
-        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
-
-        project = navigator.findProject();
-
-        method = navigator.findMethod();
-        if (method == null) return false;
-
-        return InlineMethod.refactorValid(project, method);
-    }
-
-    /**
      * Method that performs refactoring: 'Inline Method (Strengthen)'
      *
      * @param e AnActionEvent
@@ -78,56 +57,34 @@ public class InlineMethodStrengthen extends InlineMethod {
 
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
 
-        // Fetching element to replace
-        PsiStatement removeMethodStatement = method.getBody().getStatements()[0];
-        PsiElement replaceElement;
-        boolean insert;
+        if (!references.isEmpty()) {
 
-        if (PsiType.VOID.equals(method.getReturnType())) {
-            replaceElement = removeMethodStatement;
-            insert = isInsertStatement(removeMethodStatement);
-        }
-        else {
-            replaceElement = ((PsiReturnStatement) removeMethodStatement).getReturnValue();
-            insert = true;
-        }
+            // Fetching element to replace
+            PsiStatement methodStatementOrigin = method.getBody().getStatements()[0];
+            PsiStatement methodStatement = CreatePsi.copyStatement(project, methodStatementOrigin);
 
-        assert replaceElement != null;
+            PsiElement replaceElement = fetchReplaceElement(methodStatement);
+            assert replaceElement != null;
 
-        if (insert) {
             // Fetching Method Parameter: Replace
             PsiParameterList paramList = method.getParameterList();
             for (PsiReference reference : references) {
                 PsiElement refElement = reference.getElement().getParent();
-
                 assert refElement instanceof PsiMethodCallExpression;
-                PsiExpressionList paramRefList = ((PsiMethodCallExpression)refElement).getArgumentList();
 
-                // Replace Statement
-                WriteCommandAction.runWriteCommandAction(project, () -> {
-                    // Checking Method Calls ending with semicolons
-                    if (refElement.getNextSibling() != null) {
-                        if (refElement.getNextSibling().getText().equals(";"))
-                            refElement.getNextSibling().delete();
-                    }
+                List<PsiStatement> declarations = new ArrayList<>();
 
-                    PsiElement expAppliedElement = refElement.replace(replaceElement);
+                // Step 1. Introduce Temporary Variable
 
-                    // replace vars in replaceElement with Map paramList -> paramRefList
-                    expAppliedElement.replace(
-                            ReplacePsi.replaceParamToArgs(project, expAppliedElement, paramList, paramRefList)
-                    );
-                });
-            }
-        }
-        else {
-            // Remove
-            for (PsiReference reference : references) {
-                PsiElement refElement = reference.getElement().getParent();
-                WriteCommandAction.runWriteCommandAction(project, () -> {
-                    // Replace statement
-                    refElement.delete();
-                });
+                // Step 2. Introduce Inner Variable
+
+                // Step 3. Replace Parameters (Be Aware of DummyHolder)
+                replaceElement =
+                        replaceParameters(
+                                (PsiMethodCallExpression)refElement, null, replaceElement, paramList);
+
+                // Step 4. Insert Statement
+                insertStatements((PsiMethodCallExpression)refElement, null, replaceElement);
             }
         }
         // Delete Original Method
@@ -136,84 +93,14 @@ public class InlineMethodStrengthen extends InlineMethod {
         });
     }
 
-
-    /**
-     * Helper method that checks whether statement in method needs to be inserted while refactoring.
-     *
-     * @return true if statement needs insertion.
-     * @see InlineMethodStrengthen#refactorValid(Project, PsiMethod)
-     */
-    private boolean isInsertStatement(PsiStatement statement) {
-        if (statement instanceof PsiAssertStatement ||
-                statement instanceof PsiThrowStatement ||
-                statement instanceof PsiYieldStatement ||
-                statement instanceof PsiSynchronizedStatement)
-            return true;
-        else if (statement instanceof PsiIfStatement)
-            return isInsertStatement(((PsiIfStatement) statement).getThenBranch()) &&
-                    isInsertStatement(((PsiIfStatement) statement).getElseBranch());
-        else if (statement instanceof PsiLabeledStatement)
-            return isInsertStatement(((PsiLabeledStatement) statement).getStatement());
-        else if (statement instanceof PsiLoopStatement)
-            return isInsertStatement(((PsiLoopStatement) statement).getBody());
-        else if (statement instanceof PsiSwitchStatement){
-            if (((PsiSwitchStatement) statement).getBody() == null) return false;
-            for (PsiStatement innerStatement : ((PsiSwitchStatement) statement).getBody().getStatements()) {
-                if (!(isInsertStatement(innerStatement) ||
-                        innerStatement instanceof PsiBreakStatement ||
-                        innerStatement instanceof PsiContinueStatement))
-                    return false;
-            }
-            return true;
-        }
-        else if (statement instanceof PsiBlockStatement){
-            for (PsiStatement innerStatement : ((PsiBlockStatement) statement).getCodeBlock().getStatements()) {
-                if (!(isInsertStatement(innerStatement) ||
-                        innerStatement instanceof PsiBreakStatement ||
-                        innerStatement instanceof PsiContinueStatement))
-                    return false;
-            }
-            return true;
-        }
-        else if (statement instanceof PsiExpressionStatement){
-            return isInsertExpression(((PsiExpressionStatement) statement).getExpression());
-        }
-        return false;
+    private boolean introduceTemporaryVariableCondition(PsiStatement statement) {
+        // TODO: Condition
+        return true;
     }
-
-    /**
-     * Helper method that checks whether expression in statement needs to be inserted while wanted.refactoring.
-     *
-     * @precond No Non-insertable parameters in PsiCallExpression
-     * @precond PsiCallExpression & PsiSwitchExpression returns always true
-     * @return false if Assign, Prefix, Postfix Expression is used. (TBD in later steps)
-     * @return true if expression needs insertion.
-     * @see InlineMethodStrengthen#refactorValid(Project, PsiMethod)
-     */
-    private boolean isInsertExpression(PsiExpression expression) {
-        if (expression instanceof PsiConditionalExpression)
-            return isInsertExpression(((PsiConditionalExpression) expression).getCondition()) &&
-                    isInsertExpression(((PsiConditionalExpression) expression).getThenExpression()) &&
-                    isInsertExpression(((PsiConditionalExpression) expression).getElseExpression());
-        else if (expression instanceof PsiAssignmentExpression)
-            return false;
-        else if (expression instanceof PsiBinaryExpression)
-            return isInsertExpression(((PsiBinaryExpression) expression).getLOperand()) &&
-                    isInsertExpression(((PsiBinaryExpression) expression).getROperand());
-        else if (expression instanceof PsiParenthesizedExpression)
-            return isInsertExpression(((PsiParenthesizedExpression) expression).getExpression());
-        else if (expression instanceof PsiPolyadicExpression) {
-            for (PsiExpression exp : ((PsiPolyadicExpression) expression).getOperands()) {
-                if (!isInsertExpression(exp)) return false;
-            }
-            return true;
-        }
-        else if (expression instanceof PsiPostfixExpression)
-            return false;
-        else if (expression instanceof PsiPrefixExpression)
-            return false;
-        else if (expression instanceof PsiUnaryExpression)
-            return isInsertExpression(((PsiUnaryExpression) expression).getOperand());
-        else return true;
+    private void introduceTemporaryVariable(PsiStatement statement) {
+        // TODO: Introduce new Statements
+    }
+    private void introducteInnerVariable() {
+        // TODO: introduce new Statements
     }
 }
