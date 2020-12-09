@@ -9,5 +9,4 @@ public class B {
         bb3 = new C(5);
     }
 
-
 }

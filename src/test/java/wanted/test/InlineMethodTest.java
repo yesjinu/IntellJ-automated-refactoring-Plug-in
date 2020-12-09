@@ -141,13 +141,13 @@ public class InlineMethodTest extends LightActionTestCase {
 
     /* [Test 14] Refactor: Void Qualifier Method */
     public void testInlineMethod14() throws Exception {
-        String[] files = {"A.java", "B.java", "C.java"};
+        String[] files = {"B.java", "A.java", "C.java"};
         doTestFoldersMulti(files, 14);
     }
 
     /* [Test 15] Refactor: Void + Class Member */
     public void testInlineMethod15() throws Exception {
-        String[] files = {"A.java", "B.java", "C.java"};
+        String[] files = {"B.java", "A.java", "C.java"};
         doTestFoldersMulti(files, 15);
     }
 }

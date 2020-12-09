@@ -9,7 +9,6 @@ public class B {
         bb3 = new C(5);
     }
 
-
     public void doSomethingBArray(int[] param) {
         param[0] = 325;
     }

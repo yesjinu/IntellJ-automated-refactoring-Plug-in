@@ -52,7 +52,8 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
     }
 
     /**
-     * Do Test and check the result by files
+     * Do Test and check the result by files.
+     * MAKE SURE that file which contains caret must be the first element of files array.
      *
      * before files: testData/basePath/test<num>/before/<filename>
      * after files: testData/basePath/test<num>/after/<filename>
@@ -65,7 +66,7 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
         String afterPath = getBasePath() + "/test" + Integer.toString(test_num) + "/after/";
 
         String[] inputFiles = new String[files.length]; // add path
-        for(int i = 0; i<files.length; i++)
+        for(int i = 0; i < files.length; i++)
         {
             inputFiles[i] = beforePath + files[i];
         }
