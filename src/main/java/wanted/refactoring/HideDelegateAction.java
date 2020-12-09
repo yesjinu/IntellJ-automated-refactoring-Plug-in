@@ -87,7 +87,7 @@ public class HideDelegateAction extends BaseRefactorAction {
             }
         }
 
-        // PsiDeclarationStatement
+        // PsiDeclarationStatement case
         List<PsiDeclarationStatement> dsttList = FindPsi.findPsiDeclarationStatements(targetClass);
         if (!dsttList.isEmpty()) {
 
