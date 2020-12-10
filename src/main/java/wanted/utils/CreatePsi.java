@@ -6,8 +6,6 @@ import com.sun.istack.NotNull;
 
 import java.util.Set;
 
-import java.util.List;
-
 /**
  * Class to create Psi Elements.
  *
@@ -95,7 +93,6 @@ public class CreatePsi {
         return (PsiMethodCallExpression) expression;
     }
 
-
     /**
      * Return merged conditionExpression with || symbol
      *
@@ -130,14 +127,15 @@ public class CreatePsi {
     }
 
     /**
-     * Return parameter list of given method
+     * Return parameter list holding one parameter information
      *
      * @param project         target project
-     * @param paramType
-     * @param paramIdentifier
+     * @param paramType       type of parameter
+     * @param paramIdentifier identifier of parameter
      * @return Newly created parameter list
      */
-    public static PsiParameterList createMethodParameterList(@NotNull Project project, PsiType paramType, PsiIdentifier paramIdentifier) {
+    public static PsiParameterList createMethodParameterList(@NotNull Project project, @NotNull PsiType paramType,
+                                                             @NotNull PsiIdentifier paramIdentifier) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
         String[] paramNameList = {paramIdentifier.getText()};
         PsiType[] paramTypeList = {paramType};
@@ -146,13 +144,17 @@ public class CreatePsi {
     }
 
     /**
-     * Return declaration statement
+     * Return variable declaration statement,
+     * which initializes its value with given method call
      *
-     * @param
-     * @param
-     * @return Newly created parameter list
+     * @param project   target project
+     * @param typeElem  element of variable
+     * @param varName   name of variable
+     * @param methodCallExp method call to initialize the variable
+     * @return  Newly created declaration statement
      */
-    public static PsiDeclarationStatement createGetDeclarationStatement(Project project, PsiTypeElement typeElem, String varName, PsiMethodCallExpression methodCallExp) {
+    public static PsiDeclarationStatement createGetDeclarationStatement(@NotNull Project project, @NotNull PsiTypeElement typeElem,
+                                                                        @NotNull String varName, @NotNull PsiMethodCallExpression methodCallExp) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
         String str = typeElem.getText() + " " + varName + " = " + methodCallExp.getText() + ";\n";
 
@@ -239,17 +241,17 @@ public class CreatePsi {
     }
 
     /**
-     * Returns Assignment Statement for Extract Variables
+     * Returns Assignment Statement for final variable with given expression
      * <p>
-     * " final {TYPE} {NAME} = {PsiExpression}; "
+     * " final {type of exp} {varName} = {exp}; "
      *
-     * @param project Project
+     * @param project target project
      * @param varName Variable Name
      * @param exp     PsiExpression to extract
-     * @return Newly created PsiStatement (Assingnment)
+     * @return Newly created PsiAssignmentStatement
      */
     public static PsiStatement createExtractVariableAssignStatement(@NotNull Project project,
-                                                                    String varName,
+                                                                    @NotNull String varName,
                                                                     @NotNull PsiExpression exp) {
 
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -269,7 +271,7 @@ public class CreatePsi {
      * @return Newly created PsiExpression
      */
     public static PsiExpression createExpression(@NotNull Project project,
-                                                 String expAsString) {
+                                                 @NotNull String expAsString) {
 
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 

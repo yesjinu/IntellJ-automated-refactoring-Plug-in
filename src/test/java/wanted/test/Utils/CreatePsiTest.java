@@ -2,14 +2,11 @@ package wanted.test.Utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.source.codeStyle.CodeStyleManagerImpl;
 import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.CreatePsi;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Test class for Utils.CreatePsi
@@ -140,6 +137,36 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
+    public void testCreateMethodParameterList() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiType paramType = PsiType.BOOLEAN;
+        PsiIdentifier paramIdentifier = factory.createIdentifier("value");
+        PsiParameterList createElement = CreatePsi.createMethodParameterList(project, paramType, paramIdentifier);
+
+        String expected = "(boolean value)";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    public void testCreateGetDeclarationStatement() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiField parent = factory.createField("value", PsiType.INT); // PsiField
+        PsiTypeElement typeElem = parent.getTypeElement();
+        String varName = "value";
+        PsiMethodCallExpression methodCallExp = (PsiMethodCallExpression) factory.createExpressionFromText("method1(x, y)", null);
+        PsiDeclarationStatement createElement = CreatePsi.createGetDeclarationStatement(project, typeElem, varName, methodCallExp);
+
+        String expected = "int value = method1(x, y);";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
     /* CreateField test 1: when there's no initializer */
     public void testCreateField1() {
         Project project = getProject();
@@ -190,10 +217,11 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
-        String expected = "assert (!(x==1) || ((a != null) && (b != null)));";
+        String expected1 = "assert (!(x==1) || ((a != null) && (b != null)));";
+        String expected2 = "assert (!(x==1) || ((b != null) && (a != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertEquals(expected, createElement.getText());
+        Assertions.assertTrue(expected1.equals(createElement.getText())||expected2.equals(createElement.getText()));
     }
 
     /* CreateAssertStatement test 2: thenSet is empty */
@@ -212,10 +240,11 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Set<PsiReferenceExpression> thenSet = new HashSet<>();
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
-        String expected = "assert ((x==1) || ((a != null) && (b != null)));";
+        String expected1 = "assert ((x==1) || ((a != null) && (b != null)));";
+        String expected2 = "assert ((x==1) || ((b != null) && (a != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertEquals(expected, createElement.getText());
+        Assertions.assertTrue(expected1.equals(createElement.getText())||expected2.equals(createElement.getText()));
     }
 
     /* CreateAssertStatement test 3: both elseSet and thenSet are not empty */
@@ -239,10 +268,115 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
-        String expected = "assert (((x==1) && (a != null) && (b != null)) || (!(x==1) && (c != null) && (d != null)));";
+        String expected1 = "assert (((x==1) && (a != null) && (b != null)) || (!(x==1) && (c != null) && (d != null)));";
+        String expected2 = "assert (((x==1) && (b != null) && (a != null)) || (!(x==1) && (c != null) && (d != null)));";
+        String expected3 = "assert (((x==1) && (a != null) && (b != null)) || (!(x==1) && (d != null) && (c != null)));";
+        String expected4 = "assert (((x==1) && (b != null) && (a != null)) || (!(x==1) && (d != null) && (c != null)));";
+        List<String> expectedResults = new ArrayList<>(Arrays.asList(expected1, expected2, expected3, expected4));
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertTrue(expectedResults.contains(createElement.getText()));
+    }
+
+    /* CreateAssertStatement test 4: size of thenSet is 1, elseSet is 0 */
+    public void testCreateAssertStatement4() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression condition = factory.createExpressionFromText("x==1", null);
+
+        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
+        thenSet.add(expression1);
+
+        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+
+        PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
+
+        String expected = "assert (!(x==1) || (a != null));";
+
 
         Assertions.assertTrue(createElement.isValid());
         Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* CreateAssertStatement test 5: size of elseSet is 1, thenSet is 0 */
+    public void testCreateAssertStatement5() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression condition = factory.createExpressionFromText("x==1", null);
+
+        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
+        elseSet.add(expression1);
+
+        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+
+        PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
+
+        String expected = "assert ((x==1) || (a != null));";
+
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* CreateExtractVariable test 1: when exp.type is know */
+    public void testCreateExtractVariableAssignStatement1() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        String varName = "value";
+        PsiExpression exp = factory.createExpressionFromText("8", null);
+        PsiStatement createElement = CreatePsi.createExtractVariableAssignStatement(project, varName, exp);
+
+        String expected = "final int value = 8;";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* CreateExtractVariable test 2: when exp.type is not known */
+    public void testCreateExtractVariableAssignStatement2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        String varName = "value";
+        PsiExpression exp = factory.createExpressionFromText("x", null);
+        PsiStatement createElement = CreatePsi.createExtractVariableAssignStatement(project, varName, exp);
+
+        /* createExtractVariableAssignmentStatement fail to create statement(returns null)*/
+        Assertions.assertNull(createElement);
+    }
+
+    public void testCreateExpression() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression expression = factory.createExpressionFromText("x = 1", null);
+        Assertions.assertTrue(expression.isValid());
+
+        String expAsString = expression.getText();
+        PsiExpression createElement = CreatePsi.createExpression(project, expAsString);
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expression.getText(), createElement.getText());
+        Assertions.assertEquals(expression.getType(), createElement.getType());
+    }
+
+    public void testCopyExpression() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression expression = factory.createExpressionFromText("x = 1", null);
+        Assertions.assertTrue(expression.isValid());
+
+        PsiExpression createElement = CreatePsi.copyExpression(project, expression);
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expression.getText(), createElement.getText());
+        Assertions.assertEquals(expression.getType(), createElement.getType());
     }
 
     public void testCopyStatement() {
