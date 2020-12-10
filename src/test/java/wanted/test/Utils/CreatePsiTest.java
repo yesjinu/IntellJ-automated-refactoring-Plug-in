@@ -278,6 +278,50 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertTrue(expectedResults.contains(createElement.getText()));
     }
 
+    /* CreateAssertStatement test 4: size of thenSet is 1, elseSet is 0 */
+    public void testCreateAssertStatement4() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression condition = factory.createExpressionFromText("x==1", null);
+
+        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
+        thenSet.add(expression1);
+
+        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+
+        PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
+
+        String expected = "assert (!(x==1) || (a != null));";
+
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    /* CreateAssertStatement test 5: size of elseSet is 1, thenSet is 0 */
+    public void testCreateAssertStatement5() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression condition = factory.createExpressionFromText("x==1", null);
+
+        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
+        elseSet.add(expression1);
+
+        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+
+        PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
+
+        String expected = "assert ((x==1) || (a != null));";
+
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
     /* CreateExtractVariable test 1: when exp.type is know */
     public void testCreateExtractVariableAssignStatement1() {
         Project project = getProject();
