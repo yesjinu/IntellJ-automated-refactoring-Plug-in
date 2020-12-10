@@ -75,6 +75,14 @@ public class NavigatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(navigator.findClass().getName(), "dummy2");
     }
 
+    /* findClass test 4 - file that can't be cast to class owner */
+    public void testFindClass4() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file7.xml");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+
+        Assertions.assertEquals(navigator.findClass(), null);
+    }
+
     /* findMethod test 1 - select method */
     public void testFindMethod1() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file4.java");
