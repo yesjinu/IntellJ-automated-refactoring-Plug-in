@@ -85,16 +85,13 @@ public class EncapField extends BaseRefactorAction {
      * @param project Project
      * @param member  PsiField
      * @return true if method is refactorable
-     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
      */
     public static boolean refactorValid(Project project, PsiField member) {
         if (member == null || member.getContainingClass() == null) {
             return false;
         } // nothing is chosen or invalid member
 
-        if (member.getModifierList() == null) {
-            return false;
-        } else if (!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)) {
+        if (!member.getModifierList().hasModifierProperty(PsiModifier.PUBLIC)) {
             return false;
         } // member is not public
 
