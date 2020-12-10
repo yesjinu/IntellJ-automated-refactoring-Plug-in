@@ -104,7 +104,7 @@ public class ReplacePsi {
      * @param element      target PsiElement to replace variables
      * @param paramList    List of target PsiMethod parameters
      * @param paramRefList List of expressions that invokes target PsiMethod
-     *                     lengths of paramList and paramRefList need to be same
+     *                     # of parameter in paramList and # of expression in expression list are same
      * @return PsiElement with altered PsiTree
      */
     public static PsiElement replaceParamToArgs(@NotNull Project project, @NotNull PsiElement element,

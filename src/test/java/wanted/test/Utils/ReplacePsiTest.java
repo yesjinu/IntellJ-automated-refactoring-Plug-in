@@ -198,7 +198,8 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, ifStatement.getText());
     }
 
-    public void testReplaceParamToArgs() {
+    /* ReplaceParamToArgs test 1: normal input */
+    public void testReplaceParamToArgs1() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -208,9 +209,11 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         String[] params = {"x", "y"};
         PsiType[] types = {PsiType.INT, PsiType.INT};
         PsiParameterList paramList = factory.createParameterList(params, types);
+        Assertions.assertTrue(paramList.isValid());
 
         PsiExpressionListStatement statement = (PsiExpressionListStatement) factory.createStatementFromText("a, b", null);
         PsiExpressionList paramRefList = statement.getExpressionList();
+        Assertions.assertTrue(paramRefList.isValid());
 
         // apply replace parameter to arguments
         PsiElement replaceElement = ReplacePsi.replaceParamToArgs(project, element, paramList, paramRefList);
@@ -219,6 +222,59 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
 
         Assertions.assertTrue(replaceElement.isValid());
         Assertions.assertEquals(expected, replaceElement.getText());
+    }
+
+    /* ReplaceParamToArgs test 2: when expression contains element which is not included in paramList*/
+    public void testReplaceParamToArgs2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        /* expression to replace variables */
+        PsiElement element = factory.createExpressionFromText("y + x + z", null);
+
+        String[] params = {"x", "y"};
+        PsiType[] types = {PsiType.INT, PsiType.INT};
+        PsiParameterList paramList = factory.createParameterList(params, types);
+        Assertions.assertTrue(paramList.isValid());
+
+        PsiExpressionListStatement statement = (PsiExpressionListStatement) factory.createStatementFromText("a, b", null);
+        PsiExpressionList paramRefList = statement.getExpressionList();
+        Assertions.assertTrue(paramRefList.isValid());
+
+        // apply replace parameter to arguments
+        PsiElement replaceElement = ReplacePsi.replaceParamToArgs(project, element, paramList, paramRefList);
+
+        String expected = "b + a + z";
+
+        Assertions.assertTrue(replaceElement.isValid());
+        Assertions.assertEquals(expected, replaceElement.getText());
+    }
+
+    /* ReplaceParamToArgs test 3: when length of paramList and paramRefList are different*/
+    public void testReplaceParamToArgs3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        /* expression to replace variables */
+        PsiElement element = factory.createExpressionFromText("x + y", null);
+
+        String[] params = {"x", "y", "z"};
+        PsiType[] types = {PsiType.INT, PsiType.INT, PsiType.INT};
+        PsiParameterList paramList = factory.createParameterList(params, types);
+        Assertions.assertTrue(paramList.isValid());
+
+        PsiExpressionListStatement statement = (PsiExpressionListStatement) factory.createStatementFromText("a, b", null);
+        PsiExpressionList paramRefList = statement.getExpressionList();
+        Assertions.assertTrue(paramRefList.isValid());
+
+        try
+        {
+            // apply replace parameter to arguments
+            ReplacePsi.replaceParamToArgs(project, element, paramList, paramRefList);
+            Assertions.fail("unreachable statement");
+        }catch(AssertionError e) {
+            /* replaceParamToArgs raise assertion when paramList.size()!=paramRefList.size() */
+        }
     }
 
     public void testChangeModifier() {
@@ -248,7 +304,8 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, member.getText());
     }
 
-    public void testPulloutFirstCondExpr() {
+    /* PulloutFirstCondExpr test 1: when each ifStatement has block statement */
+    public void testPulloutFirstCondExpr1() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -293,7 +350,47 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, parent.getText());
     }
 
-    public void testPulloutLastCondExpr() {
+    /* PulloutFirstCondExpr test 2: when first If statement doesn't have block statement */
+    public void testPulloutFirstCondExpr2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        /* parent method that holds if statements to pull out */
+        String parentString = "public void dummy() {\n"
+                + "int x = 1;\n"
+                + "int a;\n"
+                + "if(x==1)\n"
+                + "a = 1;\n"
+                + "else\n"
+                + "a = 1;\n"
+                + "}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+        Assertions.assertTrue(parent.isValid());
+
+        /* ifStatement to modify */
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[6];
+
+        List<PsiStatement> statementList = new ArrayList<>();
+        statementList.add(ifStatement.getThenBranch());
+        statementList.add(ifStatement.getElseBranch());
+
+        ReplacePsi.pulloutFirstCondExpr(project, ifStatement, statementList); // pull out first conditional expression
+
+        String expected = "public void dummy() {\n"
+                + "int x = 1;\n"
+                + "int a;\n"
+                + "a = 1;if(x==1)\n"
+                + "{}\n"
+                + "else\n"
+                + "{}\n"
+                + "}";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, parent.getText());
+    }
+
+    /* PulloutLastCondExpr test 1: when all if Statement have block statement */
+    public void testPulloutLastCondExpr1() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -338,6 +435,48 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, parent.getText());
     }
 
+    /* PulloutLastCondExpr test 2: when some if Statement doesn't have block statement */
+    public void testPulloutLastCondExpr2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        /* parent method that holds if statements to pull out */
+        String parentString = "public void dummy() {\n"
+                + "int x = 1;\n"
+                + "int a, b;\n"
+                + "if(x==1)\n"
+                + "a = 1;\n"
+                + "else{\n"
+                + "b = 1;\n"
+                + "a = 1;}\n"
+                + "}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+        Assertions.assertTrue(parent.isValid());
+
+        /* ifStatement to modify */
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[6]; // get ifStatement inside method
+
+        List<PsiStatement> statementList = new ArrayList<>();
+        statementList.add(ifStatement.getThenBranch());
+        statementList.add(ifStatement.getElseBranch());
+
+        ReplacePsi.pulloutLastCondExpr(project, ifStatement, statementList); // pull out last conditional expression
+
+        String expected = "public void dummy() {\n"
+                + "int x = 1;\n"
+                + "int a, b;\n"
+                + "if(x==1)\n"
+                + "{}\n"
+                + "else{\n"
+                + "b = 1;\n"
+                + "}a = 1;\n"
+                + "}";
+
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(expected, parent.getText());
+    }
+
+    /* RemoveUselessCondition test 1: normal case */
     public void testRemoveUselessCondition() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -370,5 +509,60 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
 
         Assertions.assertTrue(ifStatement.isValid());
         Assertions.assertEquals(expected, parent.getText());
+    }
+
+    /* RemoveUselessCondition test 2: when input ifstatement is not empty */
+    public void testRemoveUselessCondition2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        /* parent method that holds if statements to pull out */
+        String parentString = "public void dummy() {\n"
+                + "int x = 1;\n"
+                + "if(x==1){\n"
+                + "x = 2;\n"
+                + "}\n"
+                + "else\n"
+                + "x = 2;"
+                + "}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+        Assertions.assertTrue(parent.isValid());
+
+        /* ifStatement to modify */
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[4]; // get ifStatement inside method
+
+        ReplacePsi.removeUselessCondition(project, ifStatement); // remove useless conditional branch
+
+        /* removeUselessCondition does nothing when last statement is not PsiBlockStatement */
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(parentString, parent.getText());
+    }
+
+    /* RemoveUselessCondition test 3: when input ifstatement is not empty */
+    public void testRemoveUselessCondition3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        /* parent method that holds if statements to pull out */
+        String parentString = "public void dummy() {\n"
+                + "int x = 1;\n"
+                + "if(x==1){\n"
+                + "x = 2;\n"
+                + "}\n"
+                + "else{\n"
+                + "x = 2;"
+                + "}\n"
+                + "}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+        Assertions.assertTrue(parent.isValid());
+
+        /* ifStatement to modify */
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[4]; // get ifStatement inside method
+
+        ReplacePsi.removeUselessCondition(project, ifStatement); // remove useless conditional branch
+
+        /* removeUselessCondition does nothing when last statement PsiBlockStatement with some inner statements */
+        Assertions.assertTrue(ifStatement.isValid());
+        Assertions.assertEquals(parentString, parent.getText());
     }
 }
