@@ -76,4 +76,13 @@ public class SelfEncapsulateFieldTest extends LightActionTestCase {
     public void testSelfEncapField9() throws Exception {
         doTest();
     }
+
+    /* Test 10: do not refactor if there's no modifier */
+    public void testSelfEncapField10() throws Exception {
+        try {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        } catch (RuntimeException e) {
+            // nothing
+        }
+    }
 }
