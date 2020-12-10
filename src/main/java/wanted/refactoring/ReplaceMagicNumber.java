@@ -59,15 +59,6 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
         }
 
         literal = navigator.findLiteral();
-        if (literal == null) {
-            return false;
-        }
-
-        /* get class containing literal expression */
-        targetClass = FindPsi.getContainingClass(literal);
-        if (targetClass == null) {
-            return false;
-        }
 
         return refactorValid(project, literal);
     }
@@ -92,6 +83,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
         if ((literal == null) || (literal.getType() == null || (literal.getValue() == null))) {
             return false;
         }
+        if(FindPsi.getContainingClass(literal)==null){ return false; }
 
         IElementType literalType = ((PsiLiteralExpressionImpl) literal).getLiteralElementType();
 

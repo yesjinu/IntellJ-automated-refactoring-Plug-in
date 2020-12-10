@@ -67,7 +67,7 @@ public class ReplaceMagicNumberTest extends LightActionTestCase {
         }
     }
 
-    /* Test 9: do not refactor when string is empty or white space */
+    /* Test 9: do not refactor when string is white space */
     public void testReplaceMagicNumber9() throws Exception {
         try {
             doTest(); // This cause error since refactorValid() returns false and Message dialog appears
@@ -78,6 +78,20 @@ public class ReplaceMagicNumberTest extends LightActionTestCase {
 
     /* Test 10: replace with pre-defined constant(string case) */
     public void testReplaceMagicNumber10() throws Exception {
+        doTest();
+    }
+
+    /* Test 11: do not refactor when char is blank */
+    public void testReplaceMagicNumber11() throws Exception {
+        try {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        } catch (RuntimeException e) {
+            // nothing
+        }
+    }
+
+    /* Test 12: short, byte, long, char literal expressions which are representable by int are treated as int" */
+    public void testReplaceMagicNumber12() throws Exception {
         doTest();
     }
 }
