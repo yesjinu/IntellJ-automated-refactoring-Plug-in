@@ -116,6 +116,8 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
     @Override
     public void refactor(AnActionEvent e) {
         // find expression with same value (it can be numeric value or string)
+        targetClass = FindPsi.getContainingClass(literal);
+
         expressions = FindPsi.findLiteralUsage(targetClass, literal);
 
         // build symbolic constant with name constant#N
@@ -130,7 +132,6 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
             {
                 if (f.hasModifierProperty(PsiModifier.STATIC) && f.hasModifierProperty(PsiModifier.FINAL)) // if static final field already exists
                 {
-                    constant = f;
                     needNewSymbol = false;
                     expressions.remove(FindPsi.findChildPsiLiteralExpressions(f).get(0));
                     break;

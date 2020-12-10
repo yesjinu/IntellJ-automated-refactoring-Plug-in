@@ -1,15 +1,15 @@
 public class basic {
-    static final int COSNTATN1 = 3;
+    static final int CONSTANT1 = 3;
 
     void method1()
     {
-        int x = COSNTATN1;
-        System.out.println(COSNTATN1);
+        int x = CONSTANT1;
+        System.out.println(CONSTANT1);
 
-        short y = COSNTATN1;
-        byte z = COSNTATN1;
-        long w = COSNTATN1;
-        char k = COSNTATN1;
+        short y = CONSTANT1;
+        byte z = CONSTANT1;
+        long w = CONSTANT1;
+        char k = CONSTANT1;
         char k2 = '3';
     }
 }

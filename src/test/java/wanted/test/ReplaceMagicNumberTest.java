@@ -81,13 +81,9 @@ public class ReplaceMagicNumberTest extends LightActionTestCase {
         doTest();
     }
 
-    /* Test 11: do not refactor when char is blank */
+    /* Test 11: refactor when char is not blank */
     public void testReplaceMagicNumber11() throws Exception {
-        try {
-            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
-        } catch (RuntimeException e) {
-            // nothing
-        }
+        doTest();
     }
 
     /* Test 12: short, byte, long, char literal expressions which are representable by int are treated as int" */
