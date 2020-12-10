@@ -59,15 +59,6 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
         }
 
         literal = navigator.findLiteral();
-        if (literal == null) {
-            return false;
-        }
-
-        /* get class containing literal expression */
-        targetClass = FindPsi.getContainingClass(literal);
-        if (targetClass == null) {
-            return false;
-        }
 
         return refactorValid(project, literal);
     }
@@ -92,6 +83,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
         if ((literal == null) || (literal.getType() == null || (literal.getValue() == null))) {
             return false;
         }
+        if(FindPsi.getContainingClass(literal)==null){ return false; }
 
         IElementType literalType = ((PsiLiteralExpressionImpl) literal).getLiteralElementType();
 
@@ -124,6 +116,8 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
     @Override
     public void refactor(AnActionEvent e) {
         // find expression with same value (it can be numeric value or string)
+        targetClass = FindPsi.getContainingClass(literal);
+
         expressions = FindPsi.findLiteralUsage(targetClass, literal);
 
         // build symbolic constant with name constant#N
@@ -138,7 +132,6 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
             {
                 if (f.hasModifierProperty(PsiModifier.STATIC) && f.hasModifierProperty(PsiModifier.FINAL)) // if static final field already exists
                 {
-                    constant = f;
                     needNewSymbol = false;
                     expressions.remove(FindPsi.findChildPsiLiteralExpressions(f).get(0));
                     break;
