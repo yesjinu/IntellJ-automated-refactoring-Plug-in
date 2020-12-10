@@ -85,12 +85,9 @@ public class SelfEncapField extends BaseRefactorAction {
             return false;
         } // nothing is chosen or invalid member
 
-        if (member.getModifierList() == null) {
+        if (!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)) {
             return false;
-        }
-        else if (!member.getModifierList().hasModifierProperty(PsiModifier.PRIVATE)) {
-            return false;
-        } // member is not private
+        } // do not refactor if member is not private
 
         // check if there's getter or setter
         String newName = CreatePsi.capitalize(member);
