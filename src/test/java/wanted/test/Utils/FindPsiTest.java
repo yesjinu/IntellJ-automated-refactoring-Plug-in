@@ -304,9 +304,92 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertTrue(FindPsi.findChildPsiExpressions(targetClass).isEmpty());
     }
 
-//    public void testFindPsiLocalVariables()
-//    public void testFindChildPsiLocalVariables()
-//    public void testFindChildPsiTypeElements()
+
+    /* test FindPsi::findChildPsiLocalVariables */
+    public void testFindChildPsiLocalVariables() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file9.java");
+        int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+
+        PsiClass focusClass = navigator.findClass();
+        PsiStatement focusStatements = FindPsi.findStatement(focusClass, offset);
+
+        String expected = "PsiLocalVariable:c";
+
+        assertEquals(FindPsi.findChildPsiLocalVariables(focusStatements).get(0).toString(), expected);
+    }
+
+    public void testFindChildPsiTypeElements() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file10.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass focusClass = navigator.findClass();
+        PsiMethod[] focusMethods = focusClass.getMethods();
+
+    }
+
+
+    public void testCheckDuplicateName() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+
+        PsiMethod dummyMethod1 = factory.createMethod("dummyMethod1", PsiType.INT);
+        PsiMethod dummyMethod2 = factory.createMethod("dummyMethod2", PsiType.INT);
+        PsiMethod dummyMethod3 = factory.createMethod("dummyMethod3", PsiType.INT);
+
+        targetClass.addBefore(dummyMethod1, targetClass.getRBrace());
+        targetClass.addBefore(dummyMethod2, targetClass.getRBrace());
+        targetClass.addBefore(dummyMethod3, targetClass.getRBrace());
+
+        List<String> queries = new ArrayList<>();
+        String[] elems = {"dummyMethod1", "dummyMethod2", "dummyMethod3"};
+        queries.addAll(Arrays.asList(elems));
+
+        assertTrue(FindPsi.checkDuplicateName(targetClass, queries).isEmpty());
+    }
+
+    public void testCheckDuplicateName2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+
+        PsiMethod dummyMethod1 = factory.createMethod("dummyMethod1", PsiType.INT);
+        PsiMethod dummyMethod2 = factory.createMethod("dummyMethod2", PsiType.INT);
+        PsiMethod dummyMethod3 = factory.createMethod("dummyMethod3", PsiType.INT);
+
+        targetClass.addBefore(dummyMethod1, targetClass.getRBrace());
+        targetClass.addBefore(dummyMethod2, targetClass.getRBrace());
+        targetClass.addBefore(dummyMethod3, targetClass.getRBrace());
+
+        List<String> queries = new ArrayList<>();
+        String[] elems = {"dummyMethod1", "dummyMethod2", "dummyMethod4"};
+        queries.addAll(Arrays.asList(elems));
+
+        String[] expected = {"dummyMethod3"};
+
+        assertEquals(FindPsi.checkDuplicateName(targetClass, queries), expected);
+    }
+
+    public void testCheckDuplicateName3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+
+        PsiMethod dummyMethod1 = factory.createMethod("dummyMethod1", PsiType.INT);
+        PsiMethod dummyMethod2 = factory.createMethod("dummyMethod2", PsiType.INT);
+        PsiMethod dummyMethod3 = factory.createMethod("dummyMethod3", PsiType.INT);
+
+        targetClass.addBefore(dummyMethod1, targetClass.getRBrace());
+        targetClass.addBefore(dummyMethod2, targetClass.getRBrace());
+        targetClass.addBefore(dummyMethod3, targetClass.getRBrace());
+
+        List<String> queries = new ArrayList<>();
+        String[] elems = {"dummyMethod4", "dummyMethod5", "dummyMethod6"};
+        queries.addAll(Arrays.asList(elems));
+
+        assertEquals(FindPsi.checkDuplicateName(targetClass, queries), queries);
+    }
+
 //    public void testFindPsiNewExpressions()
 //    public void testFindChildPsiNewExpressions()
 //    public void testFindChildPsiJavaCodeReferenceElements()
@@ -316,7 +399,6 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
 //    public void testFindChildPsiLiteralExpressions()
 //    public void testFindChildPsiIdentifiers()
 //    public void testFindChildPsiJavaTokens()
-//    public void testFheckDuplicateName()
 //    public void testFindLiteralUsage()
 
 
