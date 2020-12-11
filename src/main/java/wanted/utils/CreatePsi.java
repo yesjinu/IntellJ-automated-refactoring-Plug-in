@@ -16,12 +16,13 @@ import java.util.Set;
  */
 public class CreatePsi {
     /**
-     * Return empty block statement
+     * Return PsiIdentifier constructed from text
      *
-     * @param project Project
-     * @return Newly created Empty PsiBlockStatement
+     * @param project target project
+     * @param text    text of identifier
+     * @return
      */
-    public static PsiIdentifier createIdentifier(@NotNull Project project, String text) {
+    public static PsiIdentifier createIdentifier(@NotNull Project project, @NotNull String text) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         return factory.createIdentifier(text);
@@ -30,12 +31,12 @@ public class CreatePsi {
     /**
      * Returns newly created statement based on string.
      *
-     * @param project Project
+     * @param project      Project
      * @param statAsString Statement as String
      * @return Newly created PsiStatement
      */
     public static PsiStatement createStatement(@NotNull Project project,
-                                               String statAsString) {
+                                               @NotNull String statAsString) {
 
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -176,11 +177,11 @@ public class CreatePsi {
      * Return variable declaration statement,
      * which initializes its value with given method call
      *
-     * @param project   target project
-     * @param typeElem  element of variable
-     * @param varName   name of variable
+     * @param project       target project
+     * @param typeElem      element of variable
+     * @param varName       name of variable
      * @param methodCallExp method call to initialize the variable
-     * @return  Newly created declaration statement
+     * @return Newly created declaration statement
      */
     public static PsiDeclarationStatement createGetDeclarationStatement(@NotNull Project project, @NotNull PsiTypeElement typeElem,
                                                                         @NotNull String varName, @NotNull PsiMethodCallExpression methodCallExp) {

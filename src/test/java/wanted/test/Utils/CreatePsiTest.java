@@ -2,6 +2,7 @@ package wanted.test.Utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.sun.istack.NotNull;
 import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.CreatePsi;
@@ -14,6 +15,31 @@ import java.util.*;
  * @author seha Park
  */
 public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
+
+    public void testCreateIdentifier() {
+        Project project = getProject();
+
+        String text = "test";
+        PsiElement createElement = CreatePsi.createIdentifier(project, text);
+
+        String expected = "test";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    public void testCreateStatement() {
+        Project project = getProject();
+
+        String text = "int x = 1;";
+        PsiElement createElement = CreatePsi.createStatement(project, text);
+
+        String expected = "int x = 1;";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
 
     public void testCreateSetMethod() {
         Project project = getProject();
@@ -221,7 +247,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         String expected2 = "assert (!(x==1) || ((b != null) && (a != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertTrue(expected1.equals(createElement.getText())||expected2.equals(createElement.getText()));
+        Assertions.assertTrue(expected1.equals(createElement.getText()) || expected2.equals(createElement.getText()));
     }
 
     /* CreateAssertStatement test 2: thenSet is empty */
@@ -244,7 +270,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         String expected2 = "assert ((x==1) || ((b != null) && (a != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertTrue(expected1.equals(createElement.getText())||expected2.equals(createElement.getText()));
+        Assertions.assertTrue(expected1.equals(createElement.getText()) || expected2.equals(createElement.getText()));
     }
 
     /* CreateAssertStatement test 3: both elseSet and thenSet are not empty */
