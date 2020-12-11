@@ -136,31 +136,6 @@ public class FindPsi {
     }
 
     /**
-     * Return PsiExpression from cursor offset inside of PsiClass
-     *
-     * @param psiClass the scope this function find expression
-     * @param offset the text offset of file containing this class
-     * @return PsiStatement which contains cursor
-     *         If various PsiStatements are correct, choose widest one
-     */
-    public static PsiExpression findExpression(PsiClass psiClass, int offset)
-    {
-        List<PsiExpression> ExpressionList = new ArrayList<>();
-
-        JavaRecursiveElementVisitor v = new JavaRecursiveElementVisitor(){
-            @Override
-            public void visitExpression(PsiExpression expression)
-            {
-                if(expression.getTextRange().contains(offset)) ExpressionList.add(expression);
-            }
-        };
-        psiClass.accept(v);
-
-        if (ExpressionList.isEmpty()) return null;
-        else return ExpressionList.get(0);
-    }
-
-    /**
      * Return PsiStatement from cursor offset inside of PsiClass
      *
      * @param psiClass the scope this function find Statement
@@ -228,21 +203,6 @@ public class FindPsi {
         else return ifStatementList.get(ifStatementList.size() - 1);
     }
 
-    /**
-     * Searching for every subclasses
-     *
-     * @param superclass Superclass
-     * @param classList  List of all classes in project
-     * @return List of all subclasses extends superclass
-     */
-    public static List<PsiClass> findEverySubClass(PsiClass superclass, List<PsiClass> classList) {
-        List<PsiClass> subclassList = new ArrayList<>();
-        for (PsiClass psiClass : classList)
-            if (Arrays.asList(psiClass.getSupers()).contains(superclass))
-                subclassList.add(psiClass);
-        return subclassList;
-    }
-
     public static PsiClass getContainingClass(PsiMethod method) {
         PsiElement targetClass = method;
         while (!(targetClass instanceof PsiClass)) {
@@ -271,24 +231,6 @@ public class FindPsi {
     }
 
     /**
-     * Return the List containing PsiClass Object in current PsiElement
-     *
-     * @param element the PsiElement.
-     * @return List<PsiClass> if element has PsiClass, empty() otherwise
-     */
-    public static List<PsiClass> findPsiClasses(PsiElement element) {
-        List<PsiClass> result = new ArrayList<>();
-        element.accept(new JavaRecursiveElementVisitor() {
-            @Override
-            public void visitClass(PsiClass c) {
-                super.visitClass(c);
-                result.add(c);
-            }
-        });
-        return result;
-    }
-
-    /**
      * Return the List containing PsiField Object in current PsiElement
      *
      * @param element the PsiElement.
@@ -301,24 +243,6 @@ public class FindPsi {
             public void visitField(PsiField elem) {
                 super.visitField(elem);
                 result.add(elem);
-            }
-        });
-        return result;
-    }
-
-    /**
-     * Return the List containing PsiMethod Object in current PsiElement
-     *
-     * @param element the PsiElement.
-     * @return List<PsiMethod> if element has PsiMethod, empty() otherwise
-     */
-    public static List<PsiMethod> findPsiMethods(PsiElement element) {
-        List<PsiMethod> result = new ArrayList<>();
-        element.accept(new JavaRecursiveElementVisitor() {
-            @Override
-            public void visitMethod(PsiMethod m) {
-                super.visitMethod(m);
-                result.add(m);
             }
         });
         return result;
@@ -343,24 +267,6 @@ public class FindPsi {
     }
 
     /**
-     * Return the List containing PsiExpression Object in current PsiElement
-     *
-     * @param element the PsiElement.
-     * @return List<PsiExpression> if element has PsiExpression, empty() otherwise
-     */
-    public static List<PsiExpression> findPsiExpressions(PsiElement element) {
-        List<PsiExpression> result = new ArrayList<>();
-        element.accept(new JavaRecursiveElementVisitor() {
-            @Override
-            public void visitExpression(PsiExpression element) {
-                super.visitExpression(element);
-                result.add(element);
-            }
-        });
-        return result;
-    }
-
-    /**
      * Return the List containing PsiExpression Object in current PsiElement children
      *
      * @param element the PsiElement.
@@ -374,24 +280,6 @@ public class FindPsi {
         return result;
     }
 
-//    /**
-//     * Return the List containing PsiLocalVariable Object in current PsiElement
-//     *
-//     * @param element the PsiElement.
-//     * @return List<PsiLocalVariable> if element has PsiLocalVariable, empty() otherwise
-//     */
-//    public static List<PsiLocalVariable> findPsiLocalVariables(PsiElement element) {
-//        List<PsiLocalVariable> result = new ArrayList<>();
-//        element.accept(new JavaRecursiveElementVisitor() {
-//            @Override
-//            public void visitLocalVariable(PsiLocalVariable element) {
-//                super.visitLocalVariable(element);
-//                result.add(element);
-//            }
-//        });
-//        return result;
-//    }
-
     /**
      * Return the List containing PsiLocalVariable Object in current PsiElement children
      *
@@ -404,24 +292,6 @@ public class FindPsi {
         for (PsiElement elem : element.getChildren()) {
             if (elem instanceof PsiLocalVariable) result.add((PsiLocalVariable) elem);
         }
-        return result;
-    }
-
-    /**
-     * Return the List containing PsiTypeElement Object in current PsiElement
-     *
-     * @param element the PsiElement.
-     * @return List<PsiTypeElement> if element has PsiTypeElement, empty() otherwise
-     */
-    public static List<PsiTypeElement> findPsiTypeElements(PsiElement element) {
-        List<PsiTypeElement> result = new ArrayList<>();
-        element.accept(new JavaRecursiveElementVisitor() {
-            @Override
-            public void visitTypeElement(PsiTypeElement element) {
-                super.visitTypeElement(element);
-                result.add(element);
-            }
-        });
         return result;
     }
 
@@ -487,20 +357,6 @@ public class FindPsi {
     }
 
     /**
-     * Return the List containing PsiKeyword Object in current PsiElement children
-     *
-     * @param element the PsiElement.
-     * @return List<PsiKeyword> if element has PsiKeyword, empty() otherwise
-     */
-    public static List<PsiKeyword> findChildPsiKeywords(PsiElement element) {
-        List<PsiKeyword> result = new ArrayList<>();
-        for (PsiElement elem : element.getChildren()) {
-            if (elem instanceof PsiKeyword) result.add((PsiKeyword) elem);
-        }
-        return result;
-    }
-
-    /**
      * Return the List containing PsiExpressionList Object in current PsiElement children
      *
      * @param element the PsiElement.
@@ -524,20 +380,6 @@ public class FindPsi {
         List<PsiReferenceExpression> result = new ArrayList<>();
         for (PsiElement elem : element.getChildren()) {
             if (elem instanceof PsiReferenceExpression) result.add((PsiReferenceExpression) elem);
-        }
-        return result;
-    }
-
-    /**
-     * Return the List containing PsiBinaryExpression Object in current PsiElement children
-     *
-     * @param element the PsiElement.
-     * @return List<PsiBinaryExpression> if element has PsiBinaryExpression, empty() otherwise
-     */
-    public static List<PsiBinaryExpression> findChildPsiBinaryExpressions(PsiElement element) {
-        List<PsiBinaryExpression> result = new ArrayList<>();
-        for (PsiElement elem : element.getChildren()) {
-            if (elem instanceof PsiBinaryExpression) result.add((PsiBinaryExpression) elem);
         }
         return result;
     }

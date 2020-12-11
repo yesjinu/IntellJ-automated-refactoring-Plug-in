@@ -295,23 +295,6 @@ public class CreatePsi {
     }
 
     /**
-     * Returns newly created statement based on string.
-     *
-     * @param project      Project
-     * @param statAsString Statement as String
-     * @return Newly created PsiStatement
-     */
-    public static PsiStatement createStatement(@NotNull Project project,
-                                               String statAsString) {
-
-        PsiElementFactory factory = PsiElementFactory.getInstance(project);
-
-        PsiStatement newStatement = factory.createStatementFromText(
-                statAsString, null);
-        return newStatement;
-    }
-
-    /**
      * Return same statement which is copied
      *
      * @param project   factory context
