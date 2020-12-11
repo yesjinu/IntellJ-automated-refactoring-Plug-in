@@ -425,7 +425,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
 
         List<PsiNewExpression> actual = FindPsi.findPsiNewExpressions(focusClass);
         List<String> expected = new ArrayList<>();
-        expected.add("new Dummy1()");
+        expected.add("new Dummy2()");
 
         assertEquals(actual.size(), 1);
         for (PsiNewExpression psiNewExpression : actual) {
@@ -440,10 +440,6 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
 
         assertTrue(FindPsi.findPsiNewExpressions(focusClass).isEmpty());
     }
-
-//    public void testFindChildPsiNewExpressions()
-//    public void testFindChildPsiJavaCodeReferenceElements()
-//    public void testFindChildPsiExpressionLists()
 
     public void testFindChildPsiReferenceExpressions() {
         Project project = getProject();
