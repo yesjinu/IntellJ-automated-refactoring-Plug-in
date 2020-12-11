@@ -15,6 +15,7 @@ import java.util.*;
  */
 public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
+    /* createSetMethod test : create set method call */
     public void testCreateSetMethod() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -31,6 +32,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, createElement.getText());
     }
 
+    /* createGetMethod test : create get method call */
     public void testCreateGetMethod() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);

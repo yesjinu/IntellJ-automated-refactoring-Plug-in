@@ -49,6 +49,13 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
                 "For Int type expression, it shouldn't be 0, 1, 2. </html>";
     }
 
+    /**
+     * Check if literal is valid and it is worth to refactor
+     *
+     * @param e AnActionevent
+     * @return true if it is refotorable, else return false
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e) {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);

@@ -17,10 +17,6 @@ import java.util.*;
 public class ParameterizeWholeObjectAction extends BaseRefactorAction {
     public Project project;
     private PsiClass focusClass;
-    private PsiMethod focusMethod;
-
-    List<PsiMethodCallExpression> methodCallsInClass;
-    List<PsiIdentifier> varFromGetter;
 
     /* Returns the story ID. */
     @Override
@@ -104,15 +100,12 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
                 }
             }
 
-            System.out.println("Param counter : " + paramCounter); // for debugging
             for (Map.Entry<String, Integer> entry : paramCounter.entrySet()) {
                 if (entry.getValue() >= 2) {
-                    System.out.println("FLAG : refactor valid");
                     return true;
                 }
             }
         }
-        System.out.println("FLAG : refactor NOT valid");
         return false;
     }
 
@@ -139,7 +132,6 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
             paramsNeedRefactor = new ArrayList<>();
 
             List<PsiReferenceExpression> paramsOfMethod = FindPsi.findReferenceExpression(meth.getArgumentList());
-            System.out.println("paramsOfMethod : " + paramsOfMethod); // PsiMethodCallExpression:p.getB()
 
             if (paramsOfMethod.size() < 2) continue;
 
@@ -168,11 +160,9 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
 
             for (Map.Entry<String, Integer> entry : paramCounter.entrySet()) {
                 if (entry.getValue() >= 2) {
-                    System.out.println("paramCounter : " + paramCounter); // for debugging
                     mapMethodToParam.put(meth, paramsNeedRefactor);
                 }
             }
-            System.out.println("mapMethodToParam : " + mapMethodToParam);
         }
 
         PsiType callerObjectType = callerObject.getType();
@@ -199,9 +189,6 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
                         CreatePsi.createMethodCall(project, (PsiMethod) focusMethodCall.getMethodExpression().resolve(),
                                 finalCallerObject, focusMethodCall.getMethodExpression().getQualifier());
                 focusMethodCall.replace(replacingMethodCall);
-
-                System.out.println("2. focusMethodCall : " + focusMethodCall);
-                System.out.println("2. newlyMadeMethodCall : " + replacingMethodCall);
 
                 // 3. method 본체 parameter 수정 :
                 //      1) method(int p_a, int p_b)에서 int p_a, int p_b 부분 삭제

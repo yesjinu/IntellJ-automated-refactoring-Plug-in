@@ -106,7 +106,14 @@ public class ReplacePsi {
         ifCondition.replace(newCondition);
     }
 
-    /* Replace variables in paramList by variables in paramRefList for element. */
+    /**
+     * Replace variables in paramList by variables in paramRefList for element.
+     *
+     * @param project Project
+     * @param element PsiElement
+     * @param paramList PsiParameterList
+     * @param paramRefList PsiExpressionList
+     * */
     public static PsiElement replaceParamToArgs(@NotNull Project project, @NotNull PsiElement element,
                                                 @NotNull PsiParameterList paramList, @NotNull PsiExpressionList paramRefList) {
         assert paramList.getParametersCount() == paramRefList.getExpressionCount();

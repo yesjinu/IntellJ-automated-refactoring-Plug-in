@@ -223,8 +223,7 @@ public class IntroduceLocalExtensionAction extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    public void refactor(AnActionEvent e)
-    {
+    public void refactor(AnActionEvent e) {
         Project project = e.getProject();
 
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -279,6 +278,12 @@ public class IntroduceLocalExtensionAction extends BaseRefactorAction {
         });
     }
 
+    /**
+     * Method that return the first class of file
+     *
+     * @param psiFile PsiFile
+     * @return psiElement that appears first in file, otherwier return null
+     */
     private PsiClass getFirstClassFromFile(PsiFile psiFile) {
         for (PsiElement psiElement: psiFile.getChildren()) {
             if (psiElement instanceof PsiClass) {

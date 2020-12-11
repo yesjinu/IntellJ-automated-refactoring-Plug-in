@@ -35,7 +35,7 @@ public class ExampleCodeBlock {
         return after.getOrDefault(id, "Wrong ID or No Example Code.").toCharArray();
     }
 
-    // Init Method
+    /* Init Method */
     private void init() {
         setBefore_EV(); setAfter_EV();
         setBefore_IM(); setAfter_IM();
@@ -152,8 +152,6 @@ public class ExampleCodeBlock {
         after.put("IMS", afterCodeBlock);
     }
 
-
-    // TODO: COPY AND DO YOUR WORK
     /* SEF: Self Encap Field */
     private void setBefore_SEF() {
         String beforeCodeBlock =

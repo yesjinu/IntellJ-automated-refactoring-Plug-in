@@ -86,6 +86,13 @@ public class TraverseProjectPsi {
         return rootClasses;
     }
 
+
+    /**
+     * Returns list of file in the project
+     *
+     * @param project A Project
+     * @return
+     */
     public static List<PsiFile> findFile(Project project) {
         List<PsiFile> fileList = new ArrayList<>();
 

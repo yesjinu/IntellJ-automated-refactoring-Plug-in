@@ -98,8 +98,6 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
     }
 
 
-
-
     /**
      * Method that performs refactoring: 'Remove Unused Parameter'
      *

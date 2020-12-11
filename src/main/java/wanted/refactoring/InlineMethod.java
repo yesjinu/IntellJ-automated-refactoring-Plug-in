@@ -165,6 +165,12 @@ public class InlineMethod extends BaseRefactorAction {
         });
     }
 
+    /**
+     * Method that checks if method has only one statement
+     *
+     * @param method PsiMethod
+     * @return true if method has only one statement, otherwise false.
+     */
     private static boolean isOneStatement(PsiMethod method) {
         PsiCodeBlock body = method.getBody();
         if (body == null) return false;
@@ -230,6 +236,13 @@ public class InlineMethod extends BaseRefactorAction {
         return check[0];
     }
 
+    /**
+     * Method that fetch value of return statement
+     *
+     * @param statement PsiStatement
+     * @return the return value of the statement if the statement is instance of PsiReturnStatement,
+     * otherwise just return the statement itself.
+     */
     protected PsiElement fetchReplaceElement(PsiStatement statement) {
         if (statement instanceof PsiReturnStatement) // Return Values
             return ((PsiReturnStatement) statement).getReturnValue();
@@ -237,6 +250,16 @@ public class InlineMethod extends BaseRefactorAction {
             return statement;
     }
 
+    /**
+     * Method that raplace variables in replaceElement and declarations with newParamArray
+     *
+     * @param reference PsiMethodCallExpression
+     * @param declarations List<PsiStatement>
+     * @param replaceElement PsiElement
+     * @param paramList PsiParameterList
+     * @param newParamArray PsiExpression[]
+     * @return replaced PsiElement
+     */
     protected PsiElement replaceParameters(PsiMethodCallExpression reference,
                                            List<PsiStatement> declarations, PsiElement replaceElement,
                                            PsiParameterList paramList, PsiExpression[] newParamArray) {
@@ -271,6 +294,13 @@ public class InlineMethod extends BaseRefactorAction {
         return afterReplaceElement;
     }
 
+    /**
+     * Method that insert declaration to the reference
+     *
+     * @param reference PsiMethodCallExpression
+     * @param declarations List<PsiStatement>
+     * @param replaceElement PsiElement
+     */
     protected void insertStatements(PsiMethodCallExpression reference,
                                     List<PsiStatement> declarations, PsiElement replaceElement) {
 

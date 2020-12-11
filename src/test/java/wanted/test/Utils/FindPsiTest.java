@@ -363,7 +363,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
     }
 
     /* test FindPsi::findChildPsiTypeElements */
-    public void testFindChildPsiTypeElements() throws TimeoutException, ExecutionException {
+    public void testFindChildPsiTypeElements() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -377,12 +377,12 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(typeList2.size(), 1);
         assertEquals(typeList2.get(0).getType(), PsiType.VOID);
     }
-
+///
+    /* test FindPsi::findPsiNewExpressions - two new-expressions */
     public void testFindPsiNewExpressions() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file10.java");
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
         PsiClass focusClass = navigator.findClass();
-        Project project = getProject();
 
         List<PsiNewExpression> actual = FindPsi.findPsiNewExpressions(focusClass);
         List<String> expected = new ArrayList<>();
@@ -395,6 +395,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         }
     }
 
+    /* test FindPsi::findPsiNewExpressions - one new-expression */
     public void testFindPsiNewExpressions2() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file11.java");
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
@@ -410,6 +411,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         }
     }
 
+    /* test FindPsi::findPsiNewExpressions - no new-expression  */
     public void testFindPsiNewExpressions3() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file12.java");
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
@@ -418,6 +420,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertTrue(FindPsi.findPsiNewExpressions(focusClass).isEmpty());
     }
 
+    /* test FindPsi::findChildPsiReferenceExpressions - with depth 1 */
     public void testFindChildPsiReferenceExpressions() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -431,6 +434,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.get(1).getQualifiedName(), "b");
     }
 
+    /* test FindPsi::findChildPsiReferenceExpressions - with depth more than 1 */
     public void testFindChildPsiReferenceExpressions2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -443,6 +447,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.get(0).getQualifiedName(), "a");
     }
 
+    /* test FindPsi::findChildPsiReferenceExpressions - with no reference expression*/
     public void testFindChildPsiReferenceExpressions3() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -454,6 +459,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.size(), 0);
     }
 
+    /* test FindPsi::findPsiLiteralExpressions - more than 2 literal expression */
     public void testFindPsiLiteralExpressions() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -468,6 +474,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.get(2).getValue(), 3);
     }
 
+    /* test FindPsi::findPsiLiteralExpressions - only one literal expression */
     public void testFindPsiLiteralExpressions2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -481,6 +488,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.get(0).getType(), PsiType.CHAR);
     }
 
+    /* test FindPsi::findPsiLiteralExpressions - no literal expression */
     public void testFindPsiLiteralExpressions3() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -492,6 +500,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.size(), 0);
     }
 
+    /* test FindPsi::findChildPsiLiteralExpressions - depth more than 1 */
     public void testFindChildPsiLiteralExpressions() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -505,6 +514,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.get(0).getValue(), 1);
     }
 
+    /* test FindPsi::findChildPsiLiteralExpressions - depth 1 */
     public void testFindChildPsiLiteralExpressions2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -518,6 +528,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.get(1).getValue(), 2);
     }
 
+    /* test FindPsi::findChildPsiLiteralExpressions - no literal expression */
     public void testFindChildPsiLiteralExpressions3() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -529,6 +540,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.size(), 0);
     }
 
+    /* test FindPsi::findChildPsiIdentifiers - PsiField */
     public void testFindChildPsiIdentifiers() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -541,6 +553,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(identifierList.get(0).getText(), "a");
     }
 
+    /* test FindPsi::findChildPsiIdentifiers - PsiStatement */
     public void testFindChildPsiIdentifiers2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -552,6 +565,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(identifierList.size(), 0);
     }
 
+    /* test FindPsi::findChildPsiJavaTokens - PsiField */
     public void testFindChildPsiJavaTokens() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -566,6 +580,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(tokenList.get(2).getTokenType(), JavaTokenType.SEMICOLON);
     }
 
+    /* test FindPsi::findChildPsiJavaTokens - PsiStatement */
     public void testFindChildPsiJavaTokens2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -577,6 +592,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(tokenList.size(), 0);
     }
 
+    /* test FindPsi::findLiteralUsage - appear only once */
     public void testFindLiteralUsage() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -598,6 +614,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.get(0).getValue(), 1);
     }
 
+    /* test FindPsi::findLiteralUsage - appear twice */
     public void testFindLiteralUsage2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -623,6 +640,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(expList.get(1).getValue(), 0.2);
     }
 
+    /* test FindPsi::findLiteralUsage - do not appear */
     public void testFindLiteralUsage3() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);

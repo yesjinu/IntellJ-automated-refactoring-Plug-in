@@ -275,6 +275,7 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         }
     }
 
+    /* ReplaceParamToArgs test */
     public void testChangeModifier() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);

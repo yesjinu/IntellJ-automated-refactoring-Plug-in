@@ -30,8 +30,7 @@ public class AddPsiTest extends LightActionTestCase {
         return super.getBasePath() + "/PsiUtilsTest/AddPsiTest";
     }
 
-    // test AddPsi::addMethod
-    // case 1 : Add one method to a class
+    // test AddPsi::addMethod - case 1 : Add one method to a class
     public void testAddMethod() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -105,7 +104,7 @@ public class AddPsiTest extends LightActionTestCase {
     }
 
     // test AddPsi::addField - case 2 : Add two fields to an filled class
-    // addFields method should add fields at the end of the Psifield that already exists.
+    // addFields method should add fields at the end of the Psifield that already exists
     public void testAddField2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);

@@ -114,6 +114,11 @@ public class InlineMethodStrengthen extends InlineMethod {
         });
     }
 
+    /**
+     * Method that makes local variables into inline variable array and replace original variable with them.
+     *
+     * @param statement PsiStatement
+     */
     private void introduceInnerVariable(PsiStatement statement) {
         List<PsiLocalVariable> localVarList = FindPsi.findPsiLocalVariables(statement);
 
@@ -129,6 +134,15 @@ public class InlineMethodStrengthen extends InlineMethod {
         ReplacePsi.replaceVariable(project, statement, paramNameArray, paramRefNameArray);
     }
 
+
+    /**
+     * Method that create new parameter array which is used for temporary time.
+     *
+     * @param statement PsiStatement
+     * @param paramList paramList
+     * @param List<PsiStatement> declarations
+     * @return newParamArray
+     */
     private PsiExpression[] introduceTemporaryVariable(PsiStatement statement,
                                             PsiParameterList paramList, List<PsiStatement> declarations) {
 
@@ -143,7 +157,6 @@ public class InlineMethodStrengthen extends InlineMethod {
         }
 
         // Re-constructing paramList
-
         PsiExpression[] newParamArray = new PsiExpression[paramList.getParametersCount()];
         for (int i = 0; i < paramList.getParametersCount(); i++) {
             newParamArray[i] =
@@ -153,6 +166,9 @@ public class InlineMethodStrengthen extends InlineMethod {
         return newParamArray;
     }
 
+    /**
+     * Method that initiate variable number.
+     */
     @VisibleForTesting
     public static void initVarNum() {
         parNum = 0;
