@@ -49,15 +49,14 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
-        return "Description.";
+        return "<html>Add the method to a client class and pass an object of the utility class to it as an argument.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
-        return "Precondition.";
+        return "<html>Make sure that when declaring a utility class through new expression, <br/>" +
+                "literal variable or an existing utility class variable must be used as a parameter.</html>";
     }
 
     /**

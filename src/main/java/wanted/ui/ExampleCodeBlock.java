@@ -47,7 +47,8 @@ public class ExampleCodeBlock {
         setBefore_CCE(); setAfter_CCE();
         setBefore_CDCF(); setAfter_CDCF();
         setBefore_INA(); setAfter_INA();
-        // TODO: ADD NEW METHOD HERE
+        setBefore_IFM(); setAfter_IFM();
+        setBefore_ILE(); setAfter_ILE();
     }
 
     /* EV: Extract Variable */
@@ -283,7 +284,80 @@ public class ExampleCodeBlock {
         after.put("INA", afterCodeBlock);
     }
 
-    // TODO: COPY AND DO YOUR WORK
+    /* IFM : Introduce Foreign Method */
+    private void setBefore_IFM() {
+        String beforeCodeBlock =
+                "import java.util.Date;\n" +
+                        "\n" +
+                        "class Test {\n" +
+                        "    Date previousEnd;\n" +
+                        "\n" +
+                        "    void sendReport() {\n" +
+                        "        Date nextDay = new Date(previousEnd.getYear(), previousEnd.getMonth(), previousEnd.getDate() + 1);\n" +
+                        "    }\n" +
+                        "}";
+
+        before.put("IFM", beforeCodeBlock);
+    }
+    private void setAfter_IFM() {
+        String afterCodeBlock =
+                "import java.util.Date;\n" +
+                        "\n" +
+                        "class Test {\n" +
+                        "    Date previousEnd;\n" +
+                        "\n" +
+                        "    void sendReport() {\n" +
+                        "        Date nextDay = nextDay(previousEnd);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Date nextDay(Date arg) {\n" +
+                        "        return new Date(arg.getYear(), arg.getMonth(), arg.getDate() + 1);\n" +
+                        "    }\n" +
+                        "}";
+
+        after.put("IFM", afterCodeBlock);
+    }
+
+    /* IFM : Introduce Local Extension */
+    private void setBefore_ILE() {
+        String beforeCodeBlock =
+                "import java.util.Date;\n" +
+                        "\n" +
+                        "class Test {\n" +
+                        "    Date previousEnd = new Date(2020, 11, 1);\n" +
+                        "\n" +
+                        "    void sendReport() {\n" +
+                        "        Date nextDay = new Date(previousEnd.getYear(), previousEnd.getMonth(), previousEnd.getDate() + 1);\n" +
+                        "    }\n" +
+                        "}";
+
+        before.put("ILE", beforeCodeBlock);
+    }
+    private void setAfter_ILE() {
+        String afterCodeBlock =
+                "import java.util.Date;\n" +
+                        "\n" +
+                        "class ModifiedDate extends Date {\n" +
+                        "    public ModifiedDate(int arg1, int arg2, int arg3) {\n" +
+                        "        super(arg1, arg2, arg3);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    ModifiedDate nextDay() {\n" +
+                        "        return new ModifiedDate(getYear(), getMonth(), getDate() + 1);\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Test {\n" +
+                        "    ModifiedDate previousEnd = new ModifiedDate(2020, 11, 1);\n" +
+                        "\n" +
+                        "    void sendReport() {\n" +
+                        "        ModifiedDate nextDay = previousEnd.nextDay();\n" +
+                        "    }\n" +
+                        "}";
+
+        after.put("ILE", afterCodeBlock);
+    }
+
     /*
     private void setBefore_EV() {
         String beforeCodeBlock =

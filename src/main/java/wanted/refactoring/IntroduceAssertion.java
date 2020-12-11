@@ -35,7 +35,6 @@ public class IntroduceAssertion extends BaseRefactorAction {
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        // TODO: description
         return "<html>When there are method calling expressions by some variables.<br/>" +
                 "make assert statement which checks nullptr exception before if statement.</html>";
     }
@@ -43,7 +42,6 @@ public class IntroduceAssertion extends BaseRefactorAction {
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        // TODO: precondition
         return "<html>Make sure that the cursor is in if Statement.<br/>" +
                 "This refactoring is valid when there are method calling expressions by some variables.</html>";
     }

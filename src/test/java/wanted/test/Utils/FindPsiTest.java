@@ -47,29 +47,6 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(FindPsi.findMemberReference(targetClass, targetField).get(0).getText(), expected.getText());
     }
 
-    //TODO: directory 에서 getFiles 안 되는 오류 해결하기
-    public void testFindMemberReference2() throws TimeoutException, ExecutionException {
-        AnActionEvent e = createAnActionEvent("file1.java");
-        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
-
-        PsiFile file = navigator.findFile();
-        Project project = navigator.findProject();
-        PsiClass targetClass = navigator.findClass();
-        PsiField targetField = navigator.findField();
-
-        System.out.println("file : " + file);
-        System.out.println("project : " + project);
-        System.out.println("targetClass : " + targetClass);
-        System.out.println("targetField : " + targetField);
-
-        // directory path까지는 잘 찾아짐. 그런데 왜 디렉토리에서 getFiles하면 안 받아질까?
-        System.out.println("file.getContainingDirectory() : " + file.getContainingDirectory());
-        System.out.println("file.getContainingDirectory().getFiles() : " + Arrays.toString(file.getContainingDirectory().getFiles()));
-
-        System.out.println(FindPsi.findMemberReference(file, targetField));
-
-    }
-
     /* test FindPsi::findParametersOfMethod - case 1 : more than 2 parameters */
     public void testFindParametersOfMethod() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file3.java");
