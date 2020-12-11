@@ -4,7 +4,7 @@ public class INAdata {
 
     public void INA(INAdata p, INAdata q, int num) {
         if (num == 1) num += 1;
-        assert ((num == 0) || ((p != null) && (q != null)));
+        assert ((num == 0) || ((q != null) && (p != null)));
         if (num == 0) {
             num = 1;
         }
