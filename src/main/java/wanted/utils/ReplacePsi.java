@@ -169,8 +169,8 @@ public class ReplacePsi {
     }
 
     /**
-     * Replace variables in paramList by variables in paramRefList for element.
-     * nth variable in paramList is replaced by nth variable in paramRefList
+     * Replace variables in paramArray by variables in paramRefList for element.
+     * nth variable in paramArray is replaced by nth variable in paramRefArray
      *
      * @param element        target PsiElement to replace variables
      * @param paramArray     Array of current target parameter names
