@@ -18,7 +18,9 @@ import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class to provide refactoring: 'Extract Variable'
@@ -28,7 +30,7 @@ import java.util.List;
 public class ExtractVariable extends BaseRefactorAction {
     private static int extVarNum = 0;
     private PsiStatement psiStatement;
-    private static List<PsiExpression> expRefactorList;
+    private static Set<PsiExpression> expRefactorSet;
 
     public static final int EXP_THRESHOLD = 30;
 
@@ -102,7 +104,7 @@ public class ExtractVariable extends BaseRefactorAction {
         // 0. Check whether statement is null
         if (statement == null) return false;
 
-        expRefactorList = new ArrayList<>();
+        expRefactorSet = new HashSet<>();
 
         JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
             // Type 1: New: Do not Refactor
@@ -119,26 +121,26 @@ public class ExtractVariable extends BaseRefactorAction {
             @Override
             public void visitBinaryExpression(PsiBinaryExpression expression) {
                 if (expression.getTextLength() > EXP_THRESHOLD)
-                    expRefactorList.add(expression);
+                    expRefactorSet.add(expression);
             }
             @Override
             public void visitPolyadicExpression(PsiPolyadicExpression expression) {
                 if (expression.getTextLength() > EXP_THRESHOLD)
-                    expRefactorList.add(expression);
+                    expRefactorSet.add(expression);
             }
 
             // Type 2: Array Access
             @Override
             public void visitArrayAccessExpression(PsiArrayAccessExpression expression) {
                 if (expression.getTextLength() > EXP_THRESHOLD)
-                    expRefactorList.add(expression);
+                    expRefactorSet.add(expression);
             }
 
             // Type 2: Instanceof
             @Override
             public void visitInstanceOfExpression(PsiInstanceOfExpression expression) {
                 if (expression.getTextLength() > EXP_THRESHOLD)
-                    expRefactorList.add(expression);
+                    expRefactorSet.add(expression);
             }
 
             // Type 3: Unary: Find Deeper
@@ -154,7 +156,7 @@ public class ExtractVariable extends BaseRefactorAction {
 
                 if (expression.getRExpression() != null) {
                     if (expression.getRExpression().getTextLength() > EXP_THRESHOLD)
-                        expRefactorList.add(expression.getRExpression());
+                        expRefactorSet.add(expression.getRExpression());
                 }
 
             }
@@ -163,7 +165,7 @@ public class ExtractVariable extends BaseRefactorAction {
         };
 
         statement.accept(visitor);
-        return !expRefactorList.isEmpty();
+        return !expRefactorSet.isEmpty();
     }
 
     /**
@@ -179,7 +181,7 @@ public class ExtractVariable extends BaseRefactorAction {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
         Project project = navigator.findProject();
 
-        for (PsiExpression psiExpression : expRefactorList) {
+        for (PsiExpression psiExpression : expRefactorSet) {
             String extVarName = "extVar" + Integer.toString(++extVarNum);
             PsiElement anchor = psiStatement;
 

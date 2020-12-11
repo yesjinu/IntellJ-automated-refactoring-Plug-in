@@ -27,6 +27,8 @@ import java.util.List;
  * @author Mintae Kim
  */
 public class InlineMethodStrengthen extends InlineMethod {
+    private static int inVarNum = 0;
+    private static int parNum = 0;
 
     /* Returns the story ID. */
     @Override
@@ -46,6 +48,12 @@ public class InlineMethodStrengthen extends InlineMethod {
         // TODO: ADD
         return "<html>When a method body is more obvious than the method itself, <br/>" +
                 "Replace calls to the method with the method's content and delete the method itself.</html>";
+    }
+
+    /* Initialize Number */
+    public boolean refactorValid(AnActionEvent e) {
+        initVarNum();
+        return super.refactorValid(e);
     }
 
     /**
@@ -106,23 +114,15 @@ public class InlineMethodStrengthen extends InlineMethod {
         List<PsiLocalVariable> localVarList = FindPsi.findPsiLocalVariables(statement);
 
         // Re-constructing paramList
-        PsiType[] paramTypeList = new PsiType[localVarList.size()];
-        String[] paramNameList = new String[localVarList.size()];
+        String[] paramNameArray = new String[localVarList.size()];
+        String[] paramRefNameArray = new String[localVarList.size()];
 
         for (int i = 0; i < localVarList.size(); i++) {
-            paramNameList[i] = "inVar" + Integer.toString(i + 1);
-            paramTypeList[i] = localVarList.get(i).getType();
-        }
-        PsiParameterList newParamList =
-                CreatePsi.createMethodParameterListMultiple(project, paramTypeList, paramNameList);
-
-        // Constructing expList
-        PsiExpression[] expList = new PsiExpression[localVarList.size()];
-        for (int i = 0; i < localVarList.size(); i++) {
-            expList[i] = CreatePsi.createExpression(project, paramNameList[i]);
+            paramNameArray[i] = localVarList.get(i).getName();
+            paramRefNameArray[i] = "inVar" + Integer.toString(++inVarNum);
         }
 
-        ReplacePsi.replaceParamToArgs(project, statement, newParamList.getParameters(), expList);
+        ReplacePsi.replaceVariable(project, statement, paramNameArray, paramRefNameArray);
     }
 
     private PsiExpression[] introduceTemporaryVariable(PsiStatement statement,
@@ -135,7 +135,7 @@ public class InlineMethodStrengthen extends InlineMethod {
                     CreatePsi.createStatement(
                             project,
                             paramArray[i].getType().getPresentableText() + " " +
-                            "par" + Integer.toString(i + 1) + " = " + paramArray[i].getName() + ";"));
+                            "par" + Integer.toString(parNum + i + 1) + " = " + paramArray[i].getName() + ";"));
         }
 
         // Re-constructing paramList
@@ -143,9 +143,15 @@ public class InlineMethodStrengthen extends InlineMethod {
         PsiExpression[] newParamArray = new PsiExpression[paramList.getParametersCount()];
         for (int i = 0; i < paramList.getParametersCount(); i++) {
             newParamArray[i] =
-                    CreatePsi.createExpression(project, "par" + Integer.toString(i + 1));
+                    CreatePsi.createExpression(project, "par" + Integer.toString(++parNum));
         }
 
         return newParamArray;
+    }
+
+    @VisibleForTesting
+    public static void initVarNum() {
+        parNum = 0;
+        inVarNum = 0;
     }
 }
