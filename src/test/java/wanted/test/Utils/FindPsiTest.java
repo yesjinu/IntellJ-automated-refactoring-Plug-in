@@ -319,6 +319,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(FindPsi.findChildPsiLocalVariables(focusStatements).get(0).toString(), expected);
     }
 
+    // TODO :
     public void testFindChildPsiTypeElements() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file10.java");
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
@@ -327,7 +328,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
 
     }
 
-
+    /* test FindPsi::findCheckDuplicateName - case 1: all elems are duplplicated */
     public void testCheckDuplicateName() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -348,6 +349,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertTrue(FindPsi.checkDuplicateName(targetClass, queries).isEmpty());
     }
 
+    /* test FindPsi::findCheckDuplicateName - case 2: some elems are duplplicated */
     public void testCheckDuplicateName2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -361,15 +363,16 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         targetClass.addBefore(dummyMethod2, targetClass.getRBrace());
         targetClass.addBefore(dummyMethod3, targetClass.getRBrace());
 
-        List<String> queries = new ArrayList<>();
         String[] elems = {"dummyMethod1", "dummyMethod2", "dummyMethod4"};
-        queries.addAll(Arrays.asList(elems));
+        List<String> queries = new ArrayList<>(Arrays.asList(elems));
 
-        String[] expected = {"dummyMethod3"};
+        String[] lastElem = {"dummyMethod4"};
+        List<String> expected = new ArrayList<>(Arrays.asList(lastElem));
 
-        assertEquals(FindPsi.checkDuplicateName(targetClass, queries), expected);
+        assertEquals(expected, FindPsi.checkDuplicateName(targetClass, queries));
     }
 
+    /* test FindPsi::findCheckDuplicateName - case 3: no elem is duplplicated */
     public void testCheckDuplicateName3() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -387,7 +390,7 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         String[] elems = {"dummyMethod4", "dummyMethod5", "dummyMethod6"};
         queries.addAll(Arrays.asList(elems));
 
-        assertEquals(FindPsi.checkDuplicateName(targetClass, queries), queries);
+        assertEquals(queries, FindPsi.checkDuplicateName(targetClass, queries));
     }
 
 //    public void testFindPsiNewExpressions()
