@@ -27,6 +27,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class TraverseProjectPsiTest extends AbstractLightCodeInsightTestCase {
 
+    /* test TraversePsi::getRootPackages */
     public void testGetRootPackages() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file1.java");
         Project project = e.getProject();
@@ -35,6 +36,7 @@ public class TraverseProjectPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(TraverseProjectPsi.getRootPackages(project).toString(), expected);
     }
 
+    /* test TraversePsi::findFile */
     public void testFindFile() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file2.java");
         Project project = e.getProject();
