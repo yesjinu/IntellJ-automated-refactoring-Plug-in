@@ -40,14 +40,17 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
     @Override
     public String descripton() {
         // TODO: description
-        return "Description.";
+        return "<html>When several statements from the first or last for every condition,<br/>" +
+               "move statements out from if statement.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
         // TODO: precondition
-        return "Precondition.";
+        return "<html>Make sure that the cursor is in if Statement.<br/>" +
+               "This refactoring is valid when first or last statement is same for every condition.<br/>" +
+               "If your if statement finishes with elseif, this refactoring doesn't work.</html>";
     }
 
     /**

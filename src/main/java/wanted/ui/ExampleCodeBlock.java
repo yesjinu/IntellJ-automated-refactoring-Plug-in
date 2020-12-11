@@ -44,6 +44,9 @@ public class ExampleCodeBlock {
         setBefore_RMN(); setAfter_RMN();
         setBefore_RPA(); setAfter_RPA();
         setBefore_PWO(); setAfter_PWO();
+        setBefore_CCE(); setAfter_CCE();
+        setBefore_CDCF(); setAfter_CDCF();
+        setBefore_INA(); setAfter_INA();
         // TODO: ADD NEW METHOD HERE
     }
 
@@ -218,6 +221,68 @@ public class ExampleCodeBlock {
 
         after.put("PWO", afterCodeBlock);
     }
+
+    /* CCE : Consolidate Conditional Expression */
+    private void setBefore_CCE() {
+        String beforeCodeBlock =
+                "if (num == 1) return true;\n" +
+                "else if (num == 2) return true;\n" +
+                "else return false;";
+
+        before.put("CCE", beforeCodeBlock);
+    }
+    private void setAfter_CCE() {
+        String afterCodeBlock =
+                "if ((num == 1) || (num == 2)) return true;\n" +
+                "else return false;";
+
+        after.put("CCE", afterCodeBlock);
+    }
+
+    /* CDCF : Consolidate Duplicate Conditional Fragments */
+    private void setBefore_CDCF() {
+        String beforeCodeBlock =
+                "if (i ==<caret> 1) {\n" +
+                "    j = 1;\n" +
+                "    k = 1;\n" +
+                "}\n" +
+                "else {\n" +
+                "    j = 1;\n" +
+                "    k = 3;\n" +
+                "}";
+
+        before.put("CDCF", beforeCodeBlock);
+    }
+    private void setAfter_CDCF() {
+        String afterCodeBlock =
+                "j = 1;\n" +
+                "if (i == 1) {\n" +
+                "    k = 1;\n" +
+                "}\n" +
+                "else {\n" +
+                "    k = 3;\n" +
+                "}";
+
+        after.put("CDCF", afterCodeBlock);
+    }
+
+    /* INA : Introduce Assertion */
+    private void setBefore_INA() {
+        String beforeCodeBlock =
+                "if (num == <caret>0) p.setX(0);\n" +
+                "else num = 0;";
+
+        before.put("INA", beforeCodeBlock);
+    }
+    private void setAfter_INA() {
+        String afterCodeBlock =
+                "assert (!(num == 0) || (p != null));\n" +
+                "if (num == <caret>0) p.setX(0);\n" +
+                "else num = 0;";
+
+        after.put("INA", afterCodeBlock);
+    }
+
     // TODO: COPY AND DO YOUR WORK
     /*
     private void setBefore_EV() {

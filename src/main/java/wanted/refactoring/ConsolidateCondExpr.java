@@ -36,14 +36,16 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
     @Override
     public String descripton() {
         // TODO: description
-        return "Description.";
+        return "<html>When all statements are same for several conditions from first,<br/>" +
+                "merge conditions and decrease number of conditions.</html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
         // TODO: precondition
-        return "Precondition.";
+        return "<html>Make sure that the cursor is in if Statement.<br/>" +
+                "This refactoring is valid when all statements in first two conditions are same.</html>";
     }
 
     /**
