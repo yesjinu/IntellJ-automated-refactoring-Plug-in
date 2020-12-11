@@ -60,26 +60,29 @@ public class InlineMethodStrengthen extends InlineMethod {
 
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
 
+        // Fetching element to replace
+        PsiStatement methodStatementOrigin = method.getBody().getStatements()[0];
+        // Fetching Method Parameter: Replace
+        PsiParameterList paramList = method.getParameterList();
+
         if (!references.isEmpty()) {
-            // Fetching element to replace
-            PsiStatement methodStatementOrigin = method.getBody().getStatements()[0];
-            PsiStatement methodStatement = CreatePsi.copyStatement(project, methodStatementOrigin);
-
-            // Step 1. Introduce Inner Variable
-            introduceInnerVariable(methodStatement);
-
-            PsiElement replaceElement = fetchReplaceElement(methodStatement);
-            assert replaceElement != null;
-
-            // Fetching Method Parameter: Replace
-            PsiParameterList paramList = method.getParameterList();
             for (PsiReference reference : references) {
+                // Copy Statement from origin
+                PsiStatement methodStatement = CreatePsi.copyStatement(project, methodStatementOrigin);
+
+                // Step 1. Introduce Inner Variable
+                introduceInnerVariable(methodStatement);
+
+                // Fetching Replace Element
+                PsiElement replaceElement = fetchReplaceElement(methodStatement);
+                assert replaceElement != null;
+
+                // Fetching Reference Element
                 PsiElement refElement = reference.getElement().getParent();
                 assert refElement instanceof PsiMethodCallExpression;
 
-                List<PsiStatement> declarations = new ArrayList<>();
-
                 // Step 2. Introduce Temporary Variable
+                List<PsiStatement> declarations = new ArrayList<>();
                 PsiExpression[] newParamArray =
                         introduceTemporaryVariable(methodStatement, paramList, declarations);
 

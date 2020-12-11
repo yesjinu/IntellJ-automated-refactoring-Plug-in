@@ -133,14 +133,18 @@ public class InlineMethod extends BaseRefactorAction {
 
             // Fetching element to replace
             PsiStatement methodStatementOrigin = method.getBody().getStatements()[0];
-            PsiStatement methodStatement = CreatePsi.copyStatement(project, methodStatementOrigin);
-
-            PsiElement replaceElement = fetchReplaceElement(methodStatement);
-            assert replaceElement != null;
-
             // Fetching Method Parameter: Replace
             PsiParameterList paramList = method.getParameterList();
+
             for (PsiReference reference : references) {
+                // Copy Statement from origin
+                PsiStatement methodStatement = CreatePsi.copyStatement(project, methodStatementOrigin);
+
+                // Fetching Replace Element
+                PsiElement replaceElement = fetchReplaceElement(methodStatement);
+                assert replaceElement != null;
+
+                // Fetching Reference Element
                 PsiElement refElement = reference.getElement().getParent();
                 assert refElement instanceof PsiMethodCallExpression;
 
@@ -272,20 +276,19 @@ public class InlineMethod extends BaseRefactorAction {
 
         // Replace Statement
         WriteCommandAction.runWriteCommandAction(project, () -> {
-            // 1. Replace replaceElement
-            // Checking Method Calls ending with semicolons
-            if (reference.getNextSibling() != null) {
-                if (reference.getNextSibling().getText().equals(";"))
+            // Removal of Semicolon for Void Type
+            if (reference.getType() != null && reference.getType().equals(PsiType.VOID))
                     reference.getNextSibling().delete();
-            }
 
-            // Fetch the Widest Statement or Expression
+            // 1. Replace replaceElement
             PsiElement anchor = reference.replace(replaceElement);
+
+            // 2. Insert Declarations
+            // Fetch the Widest Statement or Expression
             while (!(anchor.getParent().getParent() instanceof PsiClass ||
                     anchor.getParent().getParent() instanceof PsiMethod))
                 anchor = anchor.getParent();
 
-            // 2. Insert Declarations
             if (declarations != null) {
                 final PsiElement newLineNode =
                         PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");

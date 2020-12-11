@@ -150,4 +150,10 @@ public class InlineMethodTest extends LightActionTestCase {
         String[] files = {"B.java", "A.java", "C.java"};
         doTestFoldersMulti(files, 15);
     }
+
+    /* [Test 19] Refactor: 2 References */
+    public void testInlineMethod19() throws Exception {
+        String[] files = {"PizzaDelivery.java"};
+        doTestFoldersMulti(files, 19);
+    }
 }
