@@ -374,23 +374,23 @@ public class FindPsi {
         return result;
     }
 
-    /**
-     * Return the List containing PsiLocalVariable Object in current PsiElement
-     *
-     * @param element the PsiElement.
-     * @return List<PsiLocalVariable> if element has PsiLocalVariable, empty() otherwise
-     */
-    public static List<PsiLocalVariable> findPsiLocalVariables(PsiElement element) {
-        List<PsiLocalVariable> result = new ArrayList<>();
-        element.accept(new JavaRecursiveElementVisitor() {
-            @Override
-            public void visitLocalVariable(PsiLocalVariable element) {
-                super.visitLocalVariable(element);
-                result.add(element);
-            }
-        });
-        return result;
-    }
+//    /**
+//     * Return the List containing PsiLocalVariable Object in current PsiElement
+//     *
+//     * @param element the PsiElement.
+//     * @return List<PsiLocalVariable> if element has PsiLocalVariable, empty() otherwise
+//     */
+//    public static List<PsiLocalVariable> findPsiLocalVariables(PsiElement element) {
+//        List<PsiLocalVariable> result = new ArrayList<>();
+//        element.accept(new JavaRecursiveElementVisitor() {
+//            @Override
+//            public void visitLocalVariable(PsiLocalVariable element) {
+//                super.visitLocalVariable(element);
+//                result.add(element);
+//            }
+//        });
+//        return result;
+//    }
 
     /**
      * Return the List containing PsiLocalVariable Object in current PsiElement children
@@ -400,6 +400,7 @@ public class FindPsi {
      */
     public static List<PsiLocalVariable> findChildPsiLocalVariables(PsiElement element) {
         List<PsiLocalVariable> result = new ArrayList<>();
+        if (element == null) return result;
         for (PsiElement elem : element.getChildren()) {
             if (elem instanceof PsiLocalVariable) result.add((PsiLocalVariable) elem);
         }
@@ -432,6 +433,7 @@ public class FindPsi {
      */
     public static List<PsiTypeElement> findChildPsiTypeElements(PsiElement element) {
         List<PsiTypeElement> result = new ArrayList<>();
+        if (element == null) return result;
         for (PsiElement elem : element.getChildren()) {
             if (elem instanceof PsiTypeElement) result.add((PsiTypeElement) elem);
         }

@@ -5,6 +5,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.junit.jupiter.api.Assertions;
+import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.test.base.LightActionTestCase;
 import wanted.utils.AddPsi;
 
@@ -17,6 +18,7 @@ import java.util.Objects;
  *
  * @author Jinu Noh
  */
+
 public class AddPsiTest extends LightActionTestCase {
 
     protected AnAction getAction() {
@@ -54,8 +56,7 @@ public class AddPsiTest extends LightActionTestCase {
         assertEquals(0, targetClass.findMethodsByName("anotherName", false).length);
     }
 
-    // test AddPsi::addMethod
-    // case 2 : Add multiple methods to a class
+    // test AddPsi::addMethod - case 2 : Add multiple methods to a class
     public void testAddMethod2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -79,8 +80,7 @@ public class AddPsiTest extends LightActionTestCase {
         assertTrue(targetClass.findMethodsByName("tempMethod2", false).length == 1);
     }
 
-    // test AddPsi::addField
-    // case 1 : Add two fields to an empty class
+    // test AddPsi::addField - case 1 : Add two fields to an empty class
     public void testAddField() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -104,8 +104,7 @@ public class AddPsiTest extends LightActionTestCase {
 
     }
 
-    // test AddPsi::addField
-    // case 2 : Add two fields to an filled class
+    // test AddPsi::addField - case 2 : Add two fields to an filled class
     // addFields method should add fields at the end of the Psifield that already exists.
     public void testAddField2() {
         Project project = getProject();
