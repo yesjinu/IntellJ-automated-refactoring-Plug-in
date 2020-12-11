@@ -20,15 +20,30 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
 
     private PsiIfStatement ifStatement;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "CCE";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Consolidate Conditional Expression";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        return "<html>When all statements are same for several conditions from first,<br/>" +
+                "merge conditions and decrease number of conditions.</html>";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        return "<html>Make sure that the cursor is in if Statement.<br/>" +
+                "This refactoring is valid when all statements in first two conditions are same.</html>";
     }
 
     /**
@@ -44,9 +59,11 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
+        if(project==null) return false;
         targetClass = navigator.findClass();
         if(targetClass==null) return false;
 
+        if (e.getData(PlatformDataKeys.EDITOR) == null) return false;
         int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
         ifStatement = FindPsi.findIfStatement(targetClass, offset);
         if (ifStatement == null) return false;
@@ -78,7 +95,7 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e) {
+    public void refactor(AnActionEvent e) {
         PsiStatement thenStatement;
         PsiStatement elseStatement;
         PsiStatement elseThenStatement;

@@ -1,10 +1,9 @@
 package wanted.ui;
 
-import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
 import wanted.refactoring.*;
+import wanted.utils.FindPsi;
 import wanted.utils.TraverseProjectPsi;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -44,6 +43,7 @@ class ProjectTreeModelFactory {
 
         // traverse
         final JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
+
             @Override
             public void visitPackage(PsiPackage pack) {
                 for (PsiPackage subPack : pack.getSubPackages()) subPack.accept(this);
@@ -62,6 +62,27 @@ class ProjectTreeModelFactory {
                 if(IntroduceForeignMethodAction.refactorValid(project, psiClass)) {
                     addTreeNodes(root, rootRef, "IFM", psiClass);
                 }
+
+                // ILE
+                if(IntroduceLocalExtensionAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "ILE", psiClass);
+                }
+
+                // RMN
+                if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; }
+                Set<String> literals = new HashSet<>();
+                FindPsi.findPsiLiteralExpressions(psiClass).forEach(e -> {
+                    if (!literals.contains(e.getText()) && ReplaceMagicNumber.refactorValid(project, e)) { // if new refactorable literal
+                        addTreeNodes(root, rootRef, "RMN", e);
+                        literals.add(e.getText());
+                    }
+                });
+
+                // PWO
+                if(ParameterizeWholeObjectAction.refactorValid(project, psiClass)) {
+                    addTreeNodes(root, rootRef, "PWO", psiClass);
+                }
+
             }
 
             /**
@@ -93,14 +114,27 @@ class ProjectTreeModelFactory {
                 super.visitMethod(method);
 
                 // IM
-                if (InlineMethodAction.refactorValid(project, method)) {
+                if (InlineMethod.refactorValid(project, method)) {
                     addTreeNodes(root, rootRef, "IM", method);
                 }
-
+                // IMS
+                if (InlineMethodStrengthen.refactorValid(project, method)) {
+                    addTreeNodes(root, rootRef, "IMS", method);
+                }
                 // RPA
                 if (RemoveUnusedParameterAction.refactorValid(project, method)) {
                     addTreeNodes(root, rootRef, "RPA", method);
                 }
+            }
+
+            @Override
+            public void visitStatement(PsiStatement statement) {
+
+                // EV
+                if (ExtractVariable.refactorValid(statement)) {
+                    addTreeNodes(root, rootRef, "EV", statement);
+                }
+                super.visitStatement(statement);
             }
 
             /**
@@ -132,51 +166,28 @@ class ProjectTreeModelFactory {
                     }
                     if (adding) addTreeNodes(root, rootRef, "CDCF", s);
                 }
+
+                // INA
+                s = ifStatement;
+                while (s.getParent() instanceof PsiIfStatement) s = s.getParent();
+                if (IntroduceAssertion.refactorValid((PsiIfStatement) s)) {
+                    boolean adding = true;
+                    if (rootRef.get("INA") != null) {
+                        for (int i = 0; i < rootRef.get("INA").getChildCount(); i++) {
+                            if (((DefaultMutableTreeNode)rootRef.get("INA").getChildAt(i)).getUserObject() == s) {
+                                adding = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (adding) addTreeNodes(root, rootRef, "INA", s);
+                }
             }
         };
 
         TraverseProjectPsi.getRootPackages(project).forEach(aPackage -> aPackage.accept(visitor));
         TraverseProjectPsi.getRootClasses(project).forEach(aClass -> aClass.accept(visitor));
         return new DefaultTreeModel(root);
-    }
-
-    /**
-     * Method that fetches Refactoring Method name by ID.
-     *
-     * @param id Refactoring Techinque ID
-     * @return Corresponding Refactoring name (story name)
-     */
-    private static String getNameByID (String id) {
-        switch (id) {
-            // Scope: Class
-            case "IFM":
-                return new IntroduceForeignMethodAction().storyName();
-
-            // Scope: Field
-            case "SEF":
-                return new SelfEncapField().storyName();
-            case "EF":
-                return new EncapField().storyName();
-
-            // Scope: Method
-            case "IM":
-                return new InlineMethodAction().storyName();
-            case "RPA":
-                return new RemoveUnusedParameterAction().storyName();
-
-            // Scope: Statement
-            case "CCE":
-                return new ConsolidateCondExpr().storyName();
-
-            case "CDCF":
-                return new ConsolidateDupCondFrag().storyName();
-
-
-
-
-            default:
-                return null;
-        }
     }
 
     /**
@@ -199,6 +210,7 @@ class ProjectTreeModelFactory {
             addRefactoringTechniques(root, rootRef, id);
 
         rootRefNode = rootRef.get(id);
+
         rootRefNode.add(
                 new DefaultMutableTreeNode (psiElement));
     }
@@ -216,7 +228,8 @@ class ProjectTreeModelFactory {
             String id) {
 
         DefaultMutableTreeNode rootRefNode =
-                new DefaultMutableTreeNode (getNameByID (id));
+                new DefaultMutableTreeNode (
+                        BaseRefactorManager.getInstance().getRefactorActionByID(id));
         rootRef.put(id, rootRefNode);
         root.add(rootRefNode);
     }

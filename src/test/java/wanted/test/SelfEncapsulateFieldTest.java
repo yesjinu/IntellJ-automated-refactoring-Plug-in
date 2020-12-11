@@ -37,11 +37,43 @@ public class SelfEncapsulateFieldTest extends LightActionTestCase {
 
     /* Test 4: do not refactor when setter or getter already exist */
     public void testSelfEncapField4() throws Exception {
-        try
-        {
+        try {
             doTest(); // This cause error since refactorValid() returns false and Message dialog appears
-        }catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             // nothing
         }
+    }
+
+    /* Test 5: when caret doesn't point member */
+    public void testSelfEncapField5() throws Exception {
+        try {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        } catch (RuntimeException e) {
+            // nothing
+        }
+    }
+
+    /* Test 6: do not refactor when caret points to non-private element */
+    public void testSelfEncapField6() throws Exception {
+        try {
+            doTest(); // This cause error since refactorValid() returns false and Message dialog appears
+        } catch (RuntimeException e) {
+            // nothing
+        }
+    }
+
+    /* Test 7: Self Encapsulation for user-defined class */
+    public void testSelfEncapField7() throws Exception {
+        doTest();
+    }
+
+    /* Test 8: Self Encapsulation for private field of inner class */
+    public void testSelfEncapField8() throws Exception {
+        doTest();
+    }
+
+    /* Test 9: checkDuplicateName shouldn't consider method of other class */
+    public void testSelfEncapField9() throws Exception {
+        doTest();
     }
 }

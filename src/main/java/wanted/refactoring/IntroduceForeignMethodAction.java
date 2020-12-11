@@ -33,16 +33,30 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
     private static Map<PsiDeclarationStatement, Integer> paramCounts;
     private static List<PsiDeclarationStatement> possible;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "IFM";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName()
     {
         return "Introduce Foreign Method";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        return "<html>Add the method to a client class and pass an object of the utility class to it as an argument.</html>";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        return "<html>Make sure that when declaring a utility class through new expression, <br/>" +
+                "literal variable or an existing utility class variable must be used as a parameter.</html>";
     }
 
     /**
@@ -167,7 +181,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e)
+    public void refactor(AnActionEvent e)
     {
         Project project = e.getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);

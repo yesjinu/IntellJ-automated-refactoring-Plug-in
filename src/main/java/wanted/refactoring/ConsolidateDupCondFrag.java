@@ -24,15 +24,31 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
 
     private PsiIfStatement ifStatement;
 
-    /**
-     * Returns the story name as a string format, for message.
-     *
-     * @return story name as a string format
-     * @see BaseRefactorAction#storyName()
-     */
+    /* Returns the story ID. */
+    @Override
+    public String storyID() {
+        return "CDCF";
+    }
+
+    /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
         return "Consolidate Duplicate Conditional Fragments";
+    }
+
+    /* Returns the description of each story. (in html-style) */
+    @Override
+    public String descripton() {
+        return "<html>When several statements from the first or last for every condition,<br/>" +
+               "move statements out from if statement.</html>";
+    }
+
+    /* Returns the precondition of each story. (in html-style) */
+    @Override
+    public String precondition() {
+        return "<html>Make sure that the cursor is in if Statement.<br/>" +
+               "This refactoring is valid when first or last statement is same for every condition.<br/>" +
+               "If your if statement finishes with elseif, this refactoring doesn't work.</html>";
     }
 
     /**
@@ -48,9 +64,11 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
+        if(project==null) return false;
         targetClass = navigator.findClass();
         if(targetClass==null) return false;
 
+        if (e.getData(PlatformDataKeys.EDITOR) == null) return false;
         int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
         ifStatement = FindPsi.findIfStatement(targetClass, offset);
         if (ifStatement == null) return false;
@@ -87,29 +105,39 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
      * @see BaseRefactorAction#refactor(AnActionEvent)
      */
     @Override
-    protected void refactor(AnActionEvent e) {
-        List<PsiStatement> statementList = new ArrayList<>();
-        PsiStatement nowStatement = ifStatement;
-        while (nowStatement instanceof PsiIfStatement) {
-            statementList.add(((PsiIfStatement) nowStatement).getThenBranch());
-            nowStatement = ((PsiIfStatement) nowStatement).getElseBranch();
-        }
-        statementList.add(nowStatement);
+    public void refactor(AnActionEvent e) {
 
-        while (isDupStatementFirst(statementList)) {
+        while (isDupStatementFirst(getStatementList(ifStatement))) {
             WriteCommandAction.runWriteCommandAction(project, ()->{
-                ReplacePsi.pulloutFirstCondExpr(project, ifStatement, statementList);
+                ReplacePsi.pulloutFirstCondExpr(project, ifStatement, getStatementList(ifStatement));
             });
         }
 
-        while (isDupStatementLast(statementList)) {
+        while (isDupStatementLast(getStatementList(ifStatement))) {
             WriteCommandAction.runWriteCommandAction(project, ()->{
-                ReplacePsi.pulloutLastCondExpr(project, ifStatement, statementList);
+                ReplacePsi.pulloutLastCondExpr(project, ifStatement, getStatementList(ifStatement));
             });
         }
         WriteCommandAction.runWriteCommandAction(project, ()->{
             ReplacePsi.removeUselessCondition(project, ifStatement);
         });
+    }
+
+    /**
+     * Get list of statement from if statement
+     *
+     * @param s if Statement
+     * @return return list of statement which are statements after the condition
+     */
+    private static List<PsiStatement> getStatementList(PsiIfStatement s) {
+        List<PsiStatement> statementList = new ArrayList<>();
+        PsiStatement nowStatement = s;
+        while (nowStatement instanceof PsiIfStatement) {
+            statementList.add(((PsiIfStatement) nowStatement).getThenBranch());
+            nowStatement = ((PsiIfStatement) nowStatement).getElseBranch();
+        }
+        statementList.add(nowStatement);
+        return statementList;
     }
 
     /**
