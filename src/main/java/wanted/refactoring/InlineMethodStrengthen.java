@@ -26,12 +26,6 @@ import java.util.List;
  * @author Mintae Kim
  */
 public class InlineMethodStrengthen extends InlineMethod {
-    private static int tempVarNum = 0;
-
-    @VisibleForTesting
-    public static void initVarNum() {
-        tempVarNum = 0;
-    }
 
     /* Returns the story ID. */
     @Override
@@ -53,13 +47,6 @@ public class InlineMethodStrengthen extends InlineMethod {
                 "Replace calls to the method with the method's content and delete the method itself.</html>";
     }
 
-    /* Method that checks whether candidate method is refactorable. */
-    @Override
-    public boolean refactorValid(AnActionEvent e) {
-        initVarNum();
-        return super.refactorValid(e);
-    }
-
     /**
      * Method that performs refactoring: 'Inline Method (Strengthen)'
      *
@@ -73,10 +60,12 @@ public class InlineMethodStrengthen extends InlineMethod {
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
 
         if (!references.isEmpty()) {
-
             // Fetching element to replace
             PsiStatement methodStatementOrigin = method.getBody().getStatements()[0];
             PsiStatement methodStatement = CreatePsi.copyStatement(project, methodStatementOrigin);
+
+            // Step 1. Introduce Inner Variable
+            introduceInnerVariable(methodStatement);
 
             PsiElement replaceElement = fetchReplaceElement(methodStatement);
             assert replaceElement != null;
@@ -89,16 +78,14 @@ public class InlineMethodStrengthen extends InlineMethod {
 
                 List<PsiStatement> declarations = new ArrayList<>();
 
-                // Step 1. Introduce Temporary Variable
-                introduceTemporaryVariable(methodStatement, paramList, declarations);
-
-                // Step 2. Introduce Inner Variable
-                introduceInnerVariable(methodStatement, declarations);
+                // Step 2. Introduce Temporary Variable
+                PsiParameterList newParamList =
+                        introduceTemporaryVariable(methodStatement, paramList, declarations);
 
                 // Step 3. Replace Parameters (Be Aware of DummyHolder)
                 replaceElement =
                         replaceParameters(
-                                (PsiMethodCallExpression)refElement, declarations, replaceElement, paramList);
+                                (PsiMethodCallExpression)refElement, declarations, replaceElement, newParamList);
 
                 // Step 4. Insert Statement
                 insertStatements((PsiMethodCallExpression)refElement, declarations, replaceElement);
@@ -110,22 +97,54 @@ public class InlineMethodStrengthen extends InlineMethod {
         });
     }
 
-
-    private void introduceTemporaryVariable(PsiStatement statement,
-                                            PsiParameterList paramList, List<PsiStatement> declarations) {
-        // TODO: Introduce new Statements
-    }
-    private void introduceInnerVariable(PsiStatement statement, List<PsiStatement> declarations) {
+    private void introduceInnerVariable(PsiStatement statement) {
         List<PsiLocalVariable> localVarList = FindPsi.findPsiLocalVariables(statement);
 
-        JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
-            @Override
-            public void visitVariable(PsiVariable variable) {
-                super.visitVariable(variable);
-                // TODO: check equals
-            }
-        };
+        // Re-constructing paramList
+        PsiType[] paramTypeList = new PsiType[localVarList.size()];
+        String[] paramNameList = new String[localVarList.size()];
 
-        statement.accept(visitor);
+        for (int i = 0; i < localVarList.size(); i++) {
+            paramNameList[i] = "inVar" + Integer.toString(i + 1);
+            paramTypeList[i] = localVarList.get(i).getType();
+        }
+        PsiParameterList newParamList =
+                CreatePsi.createMethodParameterListMultiple(project, paramTypeList, paramNameList);
+
+        // Constructing expList
+        PsiExpression[] expList = new PsiExpression[localVarList.size()];
+        for (int i = 0; i < localVarList.size(); i++) {
+            expList[i] = CreatePsi.createExpression(project, paramNameList[i]);
+        }
+
+        ReplacePsi.replaceParamToArgs(project, statement, newParamList.getParameters(), expList);
+    }
+
+    private PsiParameterList introduceTemporaryVariable(PsiStatement statement,
+                                            PsiParameterList paramList, List<PsiStatement> declarations) {
+
+        // Introduce new declarations statements
+        PsiParameter[] paramArray = paramList.getParameters();
+        for (int i = 0; i < paramList.getParametersCount(); i++) {
+            declarations.add(
+                    CreatePsi.createStatement(
+                            project,
+                            paramArray[i].getType().getPresentableText() + " " +
+                            "par" + Integer.toString(i + 1) + " = " + paramArray[i].getName() + ";"));
+        }
+
+        // Re-constructing paramList
+        PsiType[] paramTypeList = new PsiType[paramList.getParametersCount()];
+        String[] paramNameList = new String[paramList.getParametersCount()];
+
+        for (int i = 0; i < paramList.getParametersCount(); i++) {
+            paramNameList[i] = "par" + Integer.toString(i + 1);
+            paramTypeList[i] = paramList.getParameter(i).getType();
+        }
+
+        PsiParameterList newParamList =
+                CreatePsi.createMethodParameterListMultiple(project, paramTypeList, paramNameList);
+
+        return newParamList;
     }
 }

@@ -207,6 +207,20 @@ public class CreatePsi {
     }
 
     /**
+     * Return parameter list of given method
+     *
+     * @param project   target project
+     * @param paramTypeList parameter Type List
+     * @param paramNameList parameter Name List
+     * @return Newly created parameter list
+     */
+    public static PsiParameterList createMethodParameterListMultiple(@NotNull Project project, PsiType[] paramTypeList, String[] paramNameList) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        return factory.createParameterList(paramNameList, paramTypeList);
+    }
+
+    /**
      * Return declaration statement
      *
      * @param

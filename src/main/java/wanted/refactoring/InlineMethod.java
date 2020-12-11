@@ -242,8 +242,15 @@ public class InlineMethod extends BaseRefactorAction {
         PsiElement afterReplaceElement = replaceElement.replace(
                 ReplacePsi.replaceParamToArgs(project, replaceElement, paramList, paramRefList));
 
+        // replace vars in declaration with Map paramList -> paramRefList
         if (declarations != null) {
-            // TODO: Modify Parameters for declarations
+            // Modify Parameters for declarations
+            for (int i = 0; i < declarations.size(); i++) {
+                PsiStatement declaration = declarations.get(i);
+                declarations.set(i,
+                        (PsiStatement) (declaration.replace
+                                (ReplacePsi.replaceParamToArgs(project, declaration, paramList, paramRefList))));
+            }
         }
 
         return afterReplaceElement;
@@ -254,18 +261,31 @@ public class InlineMethod extends BaseRefactorAction {
 
         // Replace Statement
         WriteCommandAction.runWriteCommandAction(project, () -> {
+            // 1. Replace replaceElement
             // Checking Method Calls ending with semicolons
             if (reference.getNextSibling() != null) {
                 if (reference.getNextSibling().getText().equals(";"))
                     reference.getNextSibling().delete();
             }
 
-            reference.replace(replaceElement);
-        });
+            // Fetch the Widest Statement or Expression
+            PsiElement anchor = reference.replace(replaceElement);
+            while (!(anchor.getParent().getParent() instanceof PsiClass ||
+                    anchor.getParent().getParent() instanceof PsiMethod))
+                anchor = anchor.getParent();
 
-        if (declarations != null) {
-            // TODO: Search Statement w/ getParent()
-            // TODO: Insert Declarations
-        }
+            // 2. Insert Declarations
+            if (declarations != null) {
+                final PsiElement newLineNode =
+                        PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
+                for (PsiStatement declaration : declarations) {
+                    // Insert AssignExp
+                    anchor.getParent().addBefore(declaration, anchor);
+
+                    // New Line
+                    anchor.getParent().addBefore(newLineNode, anchor);
+                }
+            }
+        });
     }
 }

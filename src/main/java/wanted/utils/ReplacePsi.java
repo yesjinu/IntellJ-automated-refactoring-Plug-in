@@ -113,17 +113,34 @@ public class ReplacePsi {
         PsiParameter[] paramArray = paramList.getParameters();
         PsiExpression[] paramRefArray = paramRefList.getExpressions();
 
+        return replaceParamToArgs(project, element, paramArray, paramRefArray);
+    }
+
+    /**
+     * Replace variables in paramList by variables in paramRefList for element.
+     * nth variable in paramList is replaced by nth variable in paramRefList
+     *
+     * @param element        target PsiElement to replace variables
+     * @param paramArray     Array of target PsiMethod parameters
+     * @param paramRefArray  Array of expressions that invokes target PsiMethod
+     *                       lengths of paramList and paramRefList need to be same
+     * @return PsiElement with altered PsiTree
+     */
+    public static PsiElement replaceParamToArgs(@NotNull Project project, @NotNull PsiElement element,
+                                                @NotNull PsiParameter[] paramArray, @NotNull PsiExpression[] paramRefArray) {
+
+        assert paramArray.length == paramRefArray.length;
         List<PsiElement> resolveList = new ArrayList<>();
+
         JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
             final List<PsiElement> resolveList_inner = resolveList;
 
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof PsiIdentifier) return;
-                for (int i = 0; i < paramList.getParametersCount(); i++) {
+                for (int i = 0; i < paramArray.length; i++) {
                     if (element.getText().equals(paramArray[i].getName())) {
                         resolveList_inner.add(element);
-                        break;
+                        return;
                     }
                 }
                 super.visitElement(element);
@@ -133,7 +150,7 @@ public class ReplacePsi {
         element.accept(visitor);
 
         for (PsiElement resolveEntry : resolveList) {
-            for (int i = 0; i < paramList.getParametersCount(); i++) {
+            for (int i = 0; i < paramArray.length; i++) {
                 if (resolveEntry.getText().equals(paramArray[i].getName())) {
                     PsiExpression newExp = CreatePsi.copyExpression(project, paramRefArray[i]);
                     resolveEntry.replace(newExp);
