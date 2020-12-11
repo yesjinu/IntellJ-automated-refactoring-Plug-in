@@ -43,4 +43,11 @@ public class InlineMethodStrengthenTest extends InlineMethodTest {
     /* [Test 13] Refactor: Non Used Method */
     /* [Test 14] Refactor: Void Qualifier Method */
     /* [Test 15] Refactor: Void + Class Member */
+    /* [Test 19] Refactor: 2 References */
+
+    /* [Test 20] Refactor: 2 Conditional For Loop with Local Variable */
+    public void testInlineMethodStrengthen20() throws Exception {
+        String[] files = {"PizzaDelivery.java"};
+        doTestFoldersMulti(files, 20);
+    }
 }
