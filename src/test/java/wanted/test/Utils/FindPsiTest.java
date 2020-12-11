@@ -27,6 +27,7 @@ import java.util.concurrent.TimeoutException;
  * Test class for 'FindPsi' util
  *
  * @author Jinu Noh
+ * @author SeungjaeYoo
  */
 
 public class FindPsiTest extends AbstractLightCodeInsightTestCase {
@@ -443,12 +444,234 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
 //    public void testFindChildPsiNewExpressions()
 //    public void testFindChildPsiJavaCodeReferenceElements()
 //    public void testFindChildPsiExpressionLists()
-//    public void testFindChildPsiReferenceExpressions()
-//    public void testFindPsiLiteralExpressions()
-//    public void testFindChildPsiLiteralExpressions()
-//    public void testFindChildPsiIdentifiers()
-//    public void testFindChildPsiJavaTokens()
-//    public void testFindLiteralUsage()
+
+    public void testFindChildPsiReferenceExpressions() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression dummyExpression1 = factory.createExpressionFromText("a + b", null);
+
+        List<PsiReferenceExpression> expList = FindPsi.findChildPsiReferenceExpressions(dummyExpression1);
+
+        assertEquals(expList.size(), 2);
+        assertEquals(expList.get(0).getQualifiedName(), "a");
+        assertEquals(expList.get(1).getQualifiedName(), "b");
+    }
+
+    public void testFindChildPsiReferenceExpressions2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression dummyExpression1 = factory.createExpressionFromText("a + (c * d)", null);
+
+        List<PsiReferenceExpression> expList = FindPsi.findChildPsiReferenceExpressions(dummyExpression1);;
+
+        assertEquals(expList.size(), 1);
+        assertEquals(expList.get(0).getQualifiedName(), "a");
+    }
+
+    public void testFindChildPsiReferenceExpressions3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression dummyExpression1 = factory.createExpressionFromText("1 + 1", null);
+
+        List<PsiReferenceExpression> expList = FindPsi.findChildPsiReferenceExpressions(dummyExpression1);;
+
+        assertEquals(expList.size(), 0);
+    }
+
+    public void testFindPsiLiteralExpressions() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression dummyExpression1 = factory.createExpressionFromText("1 + (2 + 3)", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findPsiLiteralExpressions(dummyExpression1);
+
+        assertEquals(expList.size(), 3);
+        assertEquals(expList.get(0).getValue(), 1);
+        assertEquals(expList.get(1).getType(), PsiType.INT);
+        assertEquals(expList.get(2).getValue(), 3);
+    }
+
+    public void testFindPsiLiteralExpressions2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement dummyStatement1 = factory.createStatementFromText("char a = 'k';", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findPsiLiteralExpressions(dummyStatement1);
+
+        assertEquals(expList.size(), 1);
+        assertEquals(expList.get(0).getValue(), 'k');
+        assertEquals(expList.get(0).getType(), PsiType.CHAR);
+    }
+
+    public void testFindPsiLiteralExpressions3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement dummyStatement1 = factory.createStatementFromText("char a = b;", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findPsiLiteralExpressions(dummyStatement1);
+
+        assertEquals(expList.size(), 0);
+    }
+
+    public void testFindChildPsiLiteralExpressions() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression dummyExpression1 = factory.createExpressionFromText("1 + (2 + 3)", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findChildPsiLiteralExpressions(dummyExpression1);
+
+        assertEquals(expList.size(), 1);
+        assertEquals(expList.get(0).getType(), PsiType.INT);
+        assertEquals(expList.get(0).getValue(), 1);
+    }
+
+    public void testFindChildPsiLiteralExpressions2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression dummyExpression1 = factory.createExpressionFromText("1 + 2", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findChildPsiLiteralExpressions(dummyExpression1);
+
+        assertEquals(expList.size(), 2);
+        assertEquals(expList.get(0).getType(), PsiType.INT);
+        assertEquals(expList.get(1).getValue(), 2);
+    }
+
+    public void testFindChildPsiLiteralExpressions3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiExpression dummyExpression1 = factory.createExpressionFromText("a + b", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findChildPsiLiteralExpressions(dummyExpression1);
+
+        assertEquals(expList.size(), 0);
+    }
+
+    public void testFindChildPsiIdentifiers() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiField dummyField1 = factory.createFieldFromText("int a = b + 1;", null);
+
+        List<PsiIdentifier> identifierList = FindPsi.findChildPsiIdentifiers(dummyField1);
+
+        assertEquals(identifierList.size(), 1);
+        assertEquals(identifierList.get(0).getText(), "a");
+    }
+
+    public void testFindChildPsiIdentifiers2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement dummyStatement1 = factory.createStatementFromText("{}", null);
+
+        List<PsiIdentifier> identifierList = FindPsi.findChildPsiIdentifiers(dummyStatement1);
+
+        assertEquals(identifierList.size(), 0);
+    }
+
+    public void testFindChildPsiJavaTokens() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiField dummyField1 = factory.createFieldFromText("int a = 1;", null);
+
+        List<PsiJavaToken> tokenList = FindPsi.findChildPsiJavaTokens(dummyField1);
+
+        assertEquals(tokenList.size(), 3);
+        assertEquals(tokenList.get(0).getTokenType(), JavaTokenType.IDENTIFIER);
+        assertEquals(tokenList.get(1).getTokenType(), JavaTokenType.EQ);
+        assertEquals(tokenList.get(2).getTokenType(), JavaTokenType.SEMICOLON);
+    }
+
+    public void testFindChildPsiJavaTokens2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiStatement dummyStatement1 = factory.createStatementFromText("int a = 1;", null);
+
+        List<PsiJavaToken> tokenList = FindPsi.findChildPsiJavaTokens(dummyStatement1);
+
+        assertEquals(tokenList.size(), 0);
+    }
+
+    public void testFindLiteralUsage() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+
+        PsiMethod dummyMethod1 = factory.createMethod("dummyMethod1", PsiType.VOID);
+        PsiStatement dummyStatement1 = factory.createStatementFromText("int a = 1;\n", null);
+        PsiStatement dummyStatement2 = factory.createStatementFromText("int b = 2;\n", null);
+        dummyMethod1.getBody().addBefore(dummyStatement1, dummyMethod1.getBody().getRBrace());
+        dummyMethod1.getBody().addBefore(dummyStatement2, dummyMethod1.getBody().getRBrace());
+        targetClass.addBefore(dummyMethod1, targetClass.getRBrace());
+
+        PsiLiteralExpression dummyLiteral1 = (PsiLiteralExpression) factory.createExpressionFromText("1", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findLiteralUsage(dummyMethod1, dummyLiteral1);
+
+        assertEquals(expList.size(), 1);
+        assertEquals(expList.get(0).getType(), PsiType.INT);
+        assertEquals(expList.get(0).getValue(), 1);
+    }
+
+    public void testFindLiteralUsage2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+
+        PsiMethod dummyMethod1 = factory.createMethod("dummyMethod1", PsiType.VOID);
+        PsiStatement dummyStatement1 = factory.createStatementFromText("int a = 1;\n", null);
+        PsiStatement dummyStatement2 = factory.createStatementFromText("double b = 0.2;\n", null);
+        PsiStatement dummyStatement3 = factory.createStatementFromText("double c = 0.2;\n", null);
+        PsiStatement dummyStatement4 = factory.createStatementFromText("double d = 0.1;\n", null);
+        dummyMethod1.getBody().addBefore(dummyStatement1, dummyMethod1.getBody().getRBrace());
+        dummyMethod1.getBody().addBefore(dummyStatement2, dummyMethod1.getBody().getRBrace());
+        dummyMethod1.getBody().addBefore(dummyStatement3, dummyMethod1.getBody().getRBrace());
+        dummyMethod1.getBody().addBefore(dummyStatement4, dummyMethod1.getBody().getRBrace());
+        targetClass.addBefore(dummyMethod1, targetClass.getRBrace());
+
+        PsiLiteralExpression dummyLiteral1 = (PsiLiteralExpression) factory.createExpressionFromText("0.2", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findLiteralUsage(dummyMethod1, dummyLiteral1);
+
+        assertEquals(expList.size(), 2);
+        assertEquals(expList.get(0).getType(), PsiType.DOUBLE);
+        assertEquals(expList.get(1).getValue(), 0.2);
+    }
+
+    public void testFindLiteralUsage3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+
+        PsiMethod dummyMethod1 = factory.createMethod("dummyMethod1", PsiType.VOID);
+        PsiStatement dummyStatement1 = factory.createStatementFromText("int a = 1;\n", null);
+        PsiStatement dummyStatement2 = factory.createStatementFromText("double b = 0.2;\n", null);
+        PsiStatement dummyStatement3 = factory.createStatementFromText("double c = 0.2;\n", null);
+        PsiStatement dummyStatement4 = factory.createStatementFromText("double d = 0.1;\n", null);
+        dummyMethod1.getBody().addBefore(dummyStatement1, dummyMethod1.getBody().getRBrace());
+        dummyMethod1.getBody().addBefore(dummyStatement2, dummyMethod1.getBody().getRBrace());
+        dummyMethod1.getBody().addBefore(dummyStatement3, dummyMethod1.getBody().getRBrace());
+        dummyMethod1.getBody().addBefore(dummyStatement4, dummyMethod1.getBody().getRBrace());
+        targetClass.addBefore(dummyMethod1, targetClass.getRBrace());
+
+        PsiLiteralExpression dummyLiteral1 = (PsiLiteralExpression) factory.createExpressionFromText("0.3", null);
+
+        List<PsiLiteralExpression> expList = FindPsi.findLiteralUsage(dummyMethod1, dummyLiteral1);
+
+        assertEquals(expList.size(), 0);
+    }
 
 
     /**
