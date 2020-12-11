@@ -66,9 +66,11 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
         project = navigator.findProject();
+        if(project==null) return false;
         targetClass = navigator.findClass();
         if(targetClass==null) return false;
 
+        if (e.getData(PlatformDataKeys.EDITOR) == null) return false;
         int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
         ifStatement = FindPsi.findIfStatement(targetClass, offset);
         if (ifStatement == null) return false;
