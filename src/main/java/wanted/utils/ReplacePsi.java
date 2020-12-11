@@ -74,11 +74,17 @@ public class ReplacePsi {
     public static void removeCondStatement(@NotNull Project project, @NotNull PsiIfStatement ifStatement) {
         PsiStatement thenStatement = ifStatement.getThenBranch();
 
-        if (thenStatement != null) {
+        if (thenStatement == null) ifStatement.delete();
+        else if (thenStatement instanceof PsiBlockStatement) {
+            for (PsiStatement s : ((PsiBlockStatement) thenStatement).getCodeBlock().getStatements()) {
+                PsiStatement newStatement = CreatePsi.copyStatement(project, s);
+                ifStatement.getParent().addBefore(s, ifStatement);
+            }
+            ifStatement.delete();
+        }
+        else {
             PsiStatement newThenStatement = CreatePsi.copyStatement(project, thenStatement);
             ifStatement.replace(newThenStatement);
-        } else {
-            ifStatement.delete();
         }
     }
 

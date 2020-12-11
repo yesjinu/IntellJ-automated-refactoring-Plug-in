@@ -124,9 +124,7 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
 
         String expected = "public boolean dummy() {\n"
                 + "int x = 1;\n"
-                + "{\n"
                 + "return true;\n"
-                + "}\n"
                 + "}";
 
         Assertions.assertEquals(expected, parent.getText());
