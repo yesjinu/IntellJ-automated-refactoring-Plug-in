@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.PsiExpression;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.concurrency.Promise;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
@@ -15,6 +16,7 @@ import wanted.utils.AddPsi;
 import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
+
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -268,7 +270,40 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertTrue(actual.isEmpty());
     }
 
-//    public void testFindChildPsiExpressions()
+    /* test FindPsi::findChildPsiExpressions - one child, one grand child PsiExp */
+    public void testFindChildPsiExpressions() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+        PsiClass subClass = factory.createClass("Sub");
+
+        PsiExpression targetExp = factory.createExpressionFromText("x = targetField", targetClass);
+        PsiExpression subExp = factory.createExpressionFromText("System.out.println(targetField)", targetClass);
+
+        targetClass.addBefore(targetExp, targetClass.getRBrace());
+        subClass.addBefore(subExp, subClass.getRBrace());
+        targetClass.addBefore(subClass, targetClass.getRBrace());
+
+        assertEquals(FindPsi.findChildPsiExpressions(targetClass).get(0).getText(), targetExp.getText());
+    }
+
+    /* test FindPsi::findChildPsiExpressions - no child, two grand child PsiExp */
+    public void testFindChildPsiExpressions2() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+        PsiClass targetClass = factory.createClass("Temp");
+        PsiClass subClass = factory.createClass("Sub");
+
+        PsiExpression subExp1 = factory.createExpressionFromText("x = targetField", subClass);
+        PsiExpression subExp2 = factory.createExpressionFromText("System.out.println(targetField)", subClass);
+
+        subClass.addBefore(subExp1, subClass.getRBrace());
+        subClass.addBefore(subExp2, subClass.getRBrace());
+        targetClass.addBefore(subClass, targetClass.getRBrace());
+
+        assertTrue(FindPsi.findChildPsiExpressions(targetClass).isEmpty());
+    }
+
 //    public void testFindPsiLocalVariables()
 //    public void testFindChildPsiLocalVariables()
 //    public void testFindChildPsiTypeElements()
