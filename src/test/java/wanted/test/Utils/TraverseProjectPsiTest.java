@@ -29,22 +29,19 @@ public class TraverseProjectPsiTest extends AbstractLightCodeInsightTestCase {
 
     public void testGetRootPackages() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file1.java");
-        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
-        Project project = navigator.findProject();
-
-
-
-        System.out.println(TraverseProjectPsi.getRootPackages(project));
+        Project project = e.getProject();
+        String expected = "[PsiPackage:testData]";
+        assertEquals(TraverseProjectPsi.getRootPackages(project).size(), 1);
+        assertEquals(TraverseProjectPsi.getRootPackages(project).toString(), expected);
     }
 
-    public void testGetRootClasses() {
-
+    public void testFindFile() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file2.java");
+        Project project = e.getProject();
+        String expected = "[PsiJavaFile:file2.java]";
+        assertEquals(TraverseProjectPsi.findFile(project).size(), 1);
+        assertEquals(TraverseProjectPsi.findFile(project).toString(), expected);
     }
-
-    public void testFindFile() {
-
-    }
-
 
 
     /**
