@@ -11,7 +11,10 @@ class PizzaDelivery {
         boolean b = false;
         int c = 124;
         String temp = null;
-        return (numberofLateDeliveries > 5 && b && c != 124 && temp != null) ? 2 : 1;
+        boolean par1 = b;
+        int par2 = c;
+        String par3 = temp;
+        return (numberofLateDeliveries > 5 && par1 && par2 != 124 && par3 != null) ? 2 : 1;
     }
 
 }

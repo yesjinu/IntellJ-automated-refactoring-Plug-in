@@ -20,5 +20,4 @@ public class A {
         param = new C(4);
     }
 
-
 }

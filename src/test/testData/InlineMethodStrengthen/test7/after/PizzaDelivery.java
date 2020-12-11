@@ -8,7 +8,8 @@ class PizzaDelivery {
     }
 
     int getRating() {
-        for (int i = 0; i < 5; i++) doSomething(i);
+        int par1 = 32;
+        for (int inVar1 = 0; inVar1 < 5; inVar1++) doSomething(inVar1);
     }
 
     void doSomething(int int_random)

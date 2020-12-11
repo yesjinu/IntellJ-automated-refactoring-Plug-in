@@ -9,7 +9,8 @@ class PizzaDelivery {
 
     int getRating() {
         boolean b = false;
-        return (numberofLateDeliveries > 5 && b) ? 2 : 1;
+        boolean par1 = b;
+        return (numberofLateDeliveries > 5 && par1) ? 2 : 1;
     }
 
 }

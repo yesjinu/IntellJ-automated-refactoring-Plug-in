@@ -2,6 +2,7 @@ public class A {
     public void func() {
         B b = new B();
 
-        b.bb3.cc1 = 32;
+        C par1 = b.bb3;
+        par1.cc1 = 32;
     }
 }

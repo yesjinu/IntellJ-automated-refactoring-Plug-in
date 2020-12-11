@@ -2,8 +2,8 @@ public class A {
     public void func() {
         B b = new B();
 
-        int tempVar1 = b.bb1;
-        tempVar1 = 30;
+        int par1 = b.bb1;
+        par1 = 30;
         doSomething2(b.bb2);
         doSomething3(b.bb3);
         b.doSomethingB(b.bb1);

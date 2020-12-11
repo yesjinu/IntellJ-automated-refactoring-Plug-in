@@ -4,8 +4,8 @@ public class A {
 
         doSomething1(b.bb1);
         doSomething2(b.bb2);
-        C tempVar1 = b.bb3;
-        tempVar1 = new C(4);
+        C par1 = b.bb3;
+        par1 = new C(4);
         b.doSomethingB(b.bb1);
         b.doSomethingBArray(b.bb2);
         b.doSomethingBClass(b.bb3);

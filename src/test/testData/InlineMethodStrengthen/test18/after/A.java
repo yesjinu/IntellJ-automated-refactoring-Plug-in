@@ -3,9 +3,9 @@ public class A {
         int for2 = 5;
 
         doSomethingWhileUseless(for2);
-        int tempVar1 = for2;
-        while (tempVar1 > 3) {
-            tempVar1 -= 2;
+        int par1 = for2;
+        while (par1 > 3) {
+            par1 -= 2;
         }
     }
 

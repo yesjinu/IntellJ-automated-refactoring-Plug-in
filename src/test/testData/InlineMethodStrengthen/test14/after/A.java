@@ -5,8 +5,8 @@ public class A {
         doSomething1(b.bb1);
         doSomething2(b.bb2);
         doSomething3(b.bb3);
-        int tempVar1 = b.bb1;
-        tempVar1 = 30;
+        int par1 = b.bb1;
+        par1 = 30;
         b.doSomethingBArray(b.bb2);
         b.doSomethingBClass(b.bb3);
     }
