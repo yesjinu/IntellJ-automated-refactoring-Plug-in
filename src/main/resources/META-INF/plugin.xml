@@ -34,6 +34,8 @@
                     description="Composing methods: Extract variable"/>
             <action id="Wanted-Refactoring.IM" class="wanted.refactoring.InlineMethod" text="Inline Method"
                     description="Composing methods: Inline method"/>
+            <action id="Wanted-Refactoring.IMS" class="wanted.refactoring.InlineMethodStrengthen" text="Inline Method (Strengthen)"
+                    description="Composing methods: Inline method (Strengthen)"/>
             <action id="Wanted-Refactoring.CCE" class="wanted.refactoring.ConsolidateCondExpr" text="consolidate conditional expression"
                     description="Simplifying Conditional Expressions: consolidate conditional expression"/>
             <action id="Wanted-Refactoring.EF" class="wanted.refactoring.EncapField" text="encapsulate field"
