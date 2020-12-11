@@ -117,7 +117,10 @@ class ProjectTreeModelFactory {
                 if (InlineMethod.refactorValid(project, method)) {
                     addTreeNodes(root, rootRef, "IM", method);
                 }
-
+                // IMS
+                if (InlineMethodStrengthen.refactorValid(project, method)) {
+                    addTreeNodes(root, rootRef, "IMS", method);
+                }
                 // RPA
                 if (RemoveUnusedParameterAction.refactorValid(project, method)) {
                     addTreeNodes(root, rootRef, "RPA", method);
