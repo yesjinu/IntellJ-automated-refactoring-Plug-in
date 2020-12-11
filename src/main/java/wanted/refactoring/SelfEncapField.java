@@ -78,7 +78,7 @@ public class SelfEncapField extends BaseRefactorAction {
      * @param project Project
      * @param member  PsiField Object
      * @return true if method is refactorable
-     * @see InlineMethodAction#refactorValid(Project, PsiMethod)
+     * @see InlineMethod#refactorValid(Project, PsiMethod)
      */
     public static boolean refactorValid(Project project, PsiField member) {
         if (member == null || member.getContainingClass() == null) {

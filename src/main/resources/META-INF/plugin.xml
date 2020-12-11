@@ -32,7 +32,7 @@
                     description="Data Organize: self encapsulate field"/>
             <action id="Wanted-Refactoring.EV" class="wanted.refactoring.ExtractVariable" text="Extract Variable"
                     description="Composing methods: Extract variable"/>
-            <action id="Wanted-Refactoring.IM" class="wanted.refactoring.InlineMethodAction" text="Inline Method"
+            <action id="Wanted-Refactoring.IM" class="wanted.refactoring.InlineMethod" text="Inline Method"
                     description="Composing methods: Inline method"/>
             <action id="Wanted-Refactoring.CCE" class="wanted.refactoring.ConsolidateCondExpr" text="consolidate conditional expression"
                     description="Simplifying Conditional Expressions: consolidate conditional expression"/>

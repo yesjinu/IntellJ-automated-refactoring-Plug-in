@@ -16,6 +16,18 @@ import java.util.Set;
  */
 public class CreatePsi {
     /**
+     * Return empty block statement
+     *
+     * @param project Project
+     * @return Newly created Empty PsiBlockStatement
+     */
+    public static PsiIdentifier createIdentifier(@NotNull Project project, String text) {
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        return factory.createIdentifier(text);
+    }
+
+    /**
      * Create setter method for given member
      *
      * @param project        target project

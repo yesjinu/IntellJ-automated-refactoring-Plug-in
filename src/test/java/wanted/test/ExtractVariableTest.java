@@ -2,7 +2,6 @@ package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.ExtractVariable;
-import wanted.refactoring.InlineMethodAction;
 import wanted.test.base.LightActionTestCase;
 
 /**
@@ -22,26 +21,26 @@ public class ExtractVariableTest extends LightActionTestCase {
     }
 
     public void testExtractVariable1() throws Exception {
-        doTest_io(1);
+        doTestFoldersSingle(1);
     }
 
     public void testExtractVariable2() throws Exception {
-        doTest_io(2);
+        doTestFoldersSingle(2);
     }
 
     public void testExtractVariable3() throws Exception {
-        doTest_io(3);
+        doTestFoldersSingle(3);
     }
 
     public void testExtractVariable4() throws Exception {
-        doTest_io(4);
+        doTestFoldersSingle(4);
     }
 
     public void testExtractVariable5() throws Exception {
-        doTest_io(5);
+        doTestFoldersSingle(5);
     }
 
     public void testExtractVariable6() throws Exception {
-        doTest_io(6);
+        doTestFoldersSingle(6);
     }
 }

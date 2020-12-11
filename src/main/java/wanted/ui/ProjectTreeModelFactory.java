@@ -1,8 +1,6 @@
 package wanted.ui;
 
-import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
 import wanted.refactoring.*;
 import wanted.utils.FindPsi;
@@ -116,7 +114,7 @@ class ProjectTreeModelFactory {
                 super.visitMethod(method);
 
                 // IM
-                if (InlineMethodAction.refactorValid(project, method)) {
+                if (InlineMethod.refactorValid(project, method)) {
                     addTreeNodes(root, rootRef, "IM", method);
                 }
 

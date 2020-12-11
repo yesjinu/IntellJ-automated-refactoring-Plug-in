@@ -2,10 +2,13 @@ package wanted.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.tree.java.PsiLocalVariableImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class to replace specific Psi Elements.
@@ -103,33 +106,41 @@ public class ReplacePsi {
         ifCondition.replace(newCondition);
     }
 
-    /**
-     * Replace variables in paramList by variables in paramRefList for element.
-     * nth variable in paramList is replaced by nth variable in paramRefList
-     *
-     * @param element      target PsiElement to replace variables
-     * @param paramList    List of target PsiMethod parameters
-     * @param paramRefList List of expressions that invokes target PsiMethod
-     *                     # of parameter in paramList and # of expression in expression list are same
-     * @return PsiElement with altered PsiTree
-     */
+    /* Replace variables in paramList by variables in paramRefList for element. */
     public static PsiElement replaceParamToArgs(@NotNull Project project, @NotNull PsiElement element,
                                                 @NotNull PsiParameterList paramList, @NotNull PsiExpressionList paramRefList) {
         assert paramList.getParametersCount() == paramRefList.getExpressionCount();
         PsiParameter[] paramArray = paramList.getParameters();
         PsiExpression[] paramRefArray = paramRefList.getExpressions();
 
-        List<PsiElement> resolveList = new ArrayList<>();
+        return replaceParamToArgs(project, element, paramArray, paramRefArray);
+    }
+
+    /**
+     * Replace variables in paramList by variables in paramRefList for element.
+     * nth variable in paramList is replaced by nth variable in paramRefList
+     *
+     * @param element        target PsiElement to replace variables
+     * @param paramArray     Array of target PsiMethod parameters
+     * @param paramRefArray  Array of expressions that invokes target PsiMethod
+     *                       # of parameter in paramList and # of expression in expression list are same
+     * @return PsiElement with altered PsiTree
+     */
+    public static PsiElement replaceParamToArgs(@NotNull Project project, @NotNull PsiElement element,
+                                                @NotNull PsiParameter[] paramArray, @NotNull PsiExpression[] paramRefArray) {
+
+        assert paramArray.length == paramRefArray.length;
+        Set<PsiElement> resolveList = new HashSet<>();
+
         JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
-            final List<PsiElement> resolveList_inner = resolveList;
+            final Set<PsiElement> resolveList_inner = resolveList;
 
             @Override
             public void visitElement(@NotNull PsiElement element) {
-                if (element instanceof PsiIdentifier) return;
-                for (int i = 0; i < paramList.getParametersCount(); i++) {
+                for (int i = 0; i < paramArray.length; i++) {
                     if (element.getText().equals(paramArray[i].getName())) {
                         resolveList_inner.add(element);
-                        break;
+                        return;
                     }
                 }
                 super.visitElement(element);
@@ -139,10 +150,61 @@ public class ReplacePsi {
         element.accept(visitor);
 
         for (PsiElement resolveEntry : resolveList) {
-            for (int i = 0; i < paramList.getParametersCount(); i++) {
+            for (int i = 0; i < paramArray.length; i++) {
                 if (resolveEntry.getText().equals(paramArray[i].getName())) {
                     PsiExpression newExp = CreatePsi.copyExpression(project, paramRefArray[i]);
                     resolveEntry.replace(newExp);
+                    break;
+                }
+            }
+        }
+        return element;
+    }
+
+    /**
+     * Replace variables in paramList by variables in paramRefList for element.
+     * nth variable in paramList is replaced by nth variable in paramRefList
+     *
+     * @param element        target PsiElement to replace variables
+     * @param paramArray     Array of current target parameter names
+     * @param paramRefArray  Array of target parameter names to be changed
+     *                       lengths of paramList and paramRefList need to be same
+     * @return PsiElement with altered PsiTree
+     */
+    public static PsiElement replaceVariable(@NotNull Project project, @NotNull PsiElement element,
+                                                @NotNull String[] paramArray, @NotNull String[] paramRefArray) {
+
+        assert paramArray.length == paramRefArray.length;
+        Set<PsiElement> resolveList = new HashSet<>();
+
+        JavaRecursiveElementVisitor visitor = new JavaRecursiveElementVisitor() {
+            final Set<PsiElement> resolveList_inner = resolveList;
+
+            @Override
+            public void visitElement(@NotNull PsiElement element) {
+                for (int i = 0; i < paramArray.length; i++) {
+                    if (element.getText().equals(paramArray[i])) {
+                        resolveList_inner.add(element);
+                        return;
+                    }
+                }
+                super.visitElement(element);
+            }
+        };
+
+        element.accept(visitor);
+
+        for (PsiElement resolveEntry : resolveList) {
+            for (int i = 0; i < paramArray.length; i++) {
+                if (resolveEntry.getText().equals(paramArray[i])) {
+                    if (resolveEntry instanceof PsiIdentifier) {
+                        PsiIdentifier newVarIden = CreatePsi.createIdentifier(project, paramRefArray[i]);
+                        resolveEntry.replace(newVarIden);
+                    }
+                    if (resolveEntry instanceof PsiExpression) {
+                        PsiExpression newVarExp = CreatePsi.createExpression(project, paramRefArray[i]);
+                        resolveEntry.replace(newVarExp);
+                    }
                     break;
                 }
             }

@@ -1,7 +1,5 @@
 package wanted.refactoring;
 
-import wanted.ui.RefactorAboutWindow;
-
 /**
  * Singleton Class with managing features of Multiple BaseRefactorActions.
  *
@@ -40,7 +38,9 @@ public class BaseRefactorManager {
 
             // Scope: Method
             case "IM":
-                return new InlineMethodAction();
+                return new InlineMethod();
+            case "IMS":
+                return new InlineMethodStrengthen();
             case "RPA":
                 return new RemoveUnusedParameterAction();
 
@@ -57,7 +57,6 @@ public class BaseRefactorManager {
             // Scope: expression
             case "RMN":
                 return new ReplaceMagicNumber();
-
             case "PWO":
                 return new ParameterizeWholeObjectAction();
 

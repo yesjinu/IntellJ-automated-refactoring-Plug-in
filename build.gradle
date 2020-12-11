@@ -55,4 +55,3 @@ targetCompatibility = 11
 
 apply plugin: 'java'
 
-
