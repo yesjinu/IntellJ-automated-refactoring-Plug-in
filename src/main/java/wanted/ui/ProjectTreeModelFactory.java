@@ -188,49 +188,6 @@ class ProjectTreeModelFactory {
     }
 
     /**
-     * Method that fetches Refactoring Method name by ID.
-     *
-     * @param id Refactoring Techinque ID
-     * @return Corresponding Refactoring name (story name)
-     */
-    private static String getNameByID (String id) {
-        switch (id) {
-            // Scope: Class
-            case "IFM":
-                return new IntroduceForeignMethodAction().storyName();
-            case "ILE":
-                return new IntroduceLocalExtensionAction().storyName();
-
-            // Scope: Field
-            case "SEF":
-                return new SelfEncapField().storyName();
-            case "EF":
-                return new EncapField().storyName();
-
-            // Scope: Method
-            case "IM":
-                return new InlineMethodAction().storyName();
-            case "RPA":
-                return new RemoveUnusedParameterAction().storyName();
-
-            // Scope: Statement
-            case "CCE":
-                return new ConsolidateCondExpr().storyName();
-            case "CDCF":
-                return new ConsolidateDupCondFrag().storyName();
-            case "INA":
-                return new IntroduceAssertion().storyName();
-
-            // Scope: expression
-            case "RMN":
-                return new ReplaceMagicNumber().storyName();
-
-            default:
-                return null;
-        }
-    }
-
-    /**
      * Adds new DefaultMutableTreeNode (Category) if missing,
      * and Adds new DefaultMutableTreeNode (PsiElement).
      *
