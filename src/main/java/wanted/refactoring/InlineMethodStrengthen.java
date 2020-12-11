@@ -6,6 +6,7 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.tree.java.PsiLocalVariableImpl;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiSearchHelper;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
@@ -79,13 +80,14 @@ public class InlineMethodStrengthen extends InlineMethod {
                 List<PsiStatement> declarations = new ArrayList<>();
 
                 // Step 2. Introduce Temporary Variable
-                PsiParameterList newParamList =
+                PsiExpression[] newParamArray =
                         introduceTemporaryVariable(methodStatement, paramList, declarations);
 
                 // Step 3. Replace Parameters (Be Aware of DummyHolder)
                 replaceElement =
-                        replaceParameters(
-                                (PsiMethodCallExpression)refElement, declarations, replaceElement, newParamList);
+                        replaceParameters((PsiMethodCallExpression)refElement,
+                                declarations, replaceElement,
+                                paramList, newParamArray);
 
                 // Step 4. Insert Statement
                 insertStatements((PsiMethodCallExpression)refElement, declarations, replaceElement);
@@ -120,7 +122,7 @@ public class InlineMethodStrengthen extends InlineMethod {
         ReplacePsi.replaceParamToArgs(project, statement, newParamList.getParameters(), expList);
     }
 
-    private PsiParameterList introduceTemporaryVariable(PsiStatement statement,
+    private PsiExpression[] introduceTemporaryVariable(PsiStatement statement,
                                             PsiParameterList paramList, List<PsiStatement> declarations) {
 
         // Introduce new declarations statements
@@ -134,17 +136,13 @@ public class InlineMethodStrengthen extends InlineMethod {
         }
 
         // Re-constructing paramList
-        PsiType[] paramTypeList = new PsiType[paramList.getParametersCount()];
-        String[] paramNameList = new String[paramList.getParametersCount()];
 
+        PsiExpression[] newParamArray = new PsiExpression[paramList.getParametersCount()];
         for (int i = 0; i < paramList.getParametersCount(); i++) {
-            paramNameList[i] = "par" + Integer.toString(i + 1);
-            paramTypeList[i] = paramList.getParameter(i).getType();
+            newParamArray[i] =
+                    CreatePsi.createExpression(project, "par" + Integer.toString(i + 1));
         }
 
-        PsiParameterList newParamList =
-                CreatePsi.createMethodParameterListMultiple(project, paramTypeList, paramNameList);
-
-        return newParamList;
+        return newParamArray;
     }
 }

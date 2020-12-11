@@ -146,8 +146,9 @@ public class InlineMethod extends BaseRefactorAction {
 
                 // Step 3. Replace Parameters (Be Aware of DummyHolder)
                 replaceElement =
-                        replaceParameters(
-                                (PsiMethodCallExpression)refElement, null, replaceElement, paramList);
+                        replaceParameters((PsiMethodCallExpression)refElement,
+                                null, replaceElement,
+                                paramList, null);
 
                 // Step 4. Insert Statement
                 insertStatements((PsiMethodCallExpression)refElement, null, replaceElement);
@@ -233,14 +234,23 @@ public class InlineMethod extends BaseRefactorAction {
     }
 
     protected PsiElement replaceParameters(PsiMethodCallExpression reference,
-                                                 List<PsiStatement> declarations, PsiElement replaceElement,
-                                                 PsiParameterList paramList) {
+                                           List<PsiStatement> declarations, PsiElement replaceElement,
+                                           PsiParameterList paramList, PsiExpression[] newParamArray) {
 
         PsiExpressionList paramRefList = reference.getArgumentList();
 
+        PsiElement afterReplaceElement;
         // replace vars in replaceElement with Map paramList -> paramRefList
-        PsiElement afterReplaceElement = replaceElement.replace(
-                ReplacePsi.replaceParamToArgs(project, replaceElement, paramList, paramRefList));
+        if (newParamArray == null) {
+            afterReplaceElement = replaceElement.replace(
+                    ReplacePsi.replaceParamToArgs(project, replaceElement,
+                            paramList, paramRefList));
+        }
+        else {
+            afterReplaceElement = replaceElement.replace(
+                    ReplacePsi.replaceParamToArgs(project, replaceElement,
+                            paramList.getParameters(), newParamArray));
+        }
 
         // replace vars in declaration with Map paramList -> paramRefList
         if (declarations != null) {
@@ -249,7 +259,8 @@ public class InlineMethod extends BaseRefactorAction {
                 PsiStatement declaration = declarations.get(i);
                 declarations.set(i,
                         (PsiStatement) (declaration.replace
-                                (ReplacePsi.replaceParamToArgs(project, declaration, paramList, paramRefList))));
+                                (ReplacePsi.replaceParamToArgs(project, declaration,
+                                        paramList, paramRefList))));
             }
         }
 
