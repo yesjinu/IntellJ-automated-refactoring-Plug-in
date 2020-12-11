@@ -1,9 +1,9 @@
 import java.util.Date;
 
 class Te<caret>st {
-    Dummy1 dummy1 = new Dummy1();
+    Dummy1 dummy1;
 
     void sendReport() {
-        Dummy2 dummy2 = new Dummy2();
+        Dummy2 dummy2;
     }
 }

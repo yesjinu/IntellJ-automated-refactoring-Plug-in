@@ -319,15 +319,6 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(FindPsi.findChildPsiLocalVariables(focusStatements).get(0).toString(), expected);
     }
 
-    // TODO :
-    public void testFindChildPsiTypeElements() throws TimeoutException, ExecutionException {
-        AnActionEvent e = createAnActionEvent("file10.java");
-        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
-        PsiClass focusClass = navigator.findClass();
-        PsiMethod[] focusMethods = focusClass.getMethods();
-
-    }
-
     /* test FindPsi::findCheckDuplicateName - case 1: all elems are duplplicated */
     public void testCheckDuplicateName() {
         Project project = getProject();
@@ -393,7 +384,62 @@ public class FindPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(queries, FindPsi.checkDuplicateName(targetClass, queries));
     }
 
-//    public void testFindPsiNewExpressions()
+    /* test FindPsi::findChildPsiTypeElements */
+    public void testFindChildPsiTypeElements() throws TimeoutException, ExecutionException {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        PsiField dummyField = factory.createFieldFromText("int a = 3", null);
+        PsiMethod dummyMethod = factory.createMethodFromText("void tempMethod() {}", null);
+
+        List<PsiTypeElement> typeList1 = FindPsi.findChildPsiTypeElements(dummyField);
+        List<PsiTypeElement> typeList2 = FindPsi.findChildPsiTypeElements(dummyMethod);
+        assertEquals(typeList1.size(), 1);
+        assertEquals(typeList1.get(0).getType(), PsiType.INT);
+        assertEquals(typeList2.size(), 1);
+        assertEquals(typeList2.get(0).getType(), PsiType.VOID);
+    }
+
+    public void testFindPsiNewExpressions() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file10.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass focusClass = navigator.findClass();
+        Project project = getProject();
+
+        List<PsiNewExpression> actual = FindPsi.findPsiNewExpressions(focusClass);
+        List<String> expected = new ArrayList<>();
+        expected.add("new Dummy1()");
+        expected.add("new Dummy2()");
+
+        assertEquals(actual.size(), 2);
+        for (PsiNewExpression psiNewExpression : actual) {
+            assertTrue(expected.contains(psiNewExpression.getText()));
+        }
+    }
+
+    public void testFindPsiNewExpressions2() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file11.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass focusClass = navigator.findClass();
+
+        List<PsiNewExpression> actual = FindPsi.findPsiNewExpressions(focusClass);
+        List<String> expected = new ArrayList<>();
+        expected.add("new Dummy1()");
+
+        assertEquals(actual.size(), 1);
+        for (PsiNewExpression psiNewExpression : actual) {
+            assertTrue(expected.contains(psiNewExpression.getText()));
+        }
+    }
+
+    public void testFindPsiNewExpressions3() throws TimeoutException, ExecutionException {
+        AnActionEvent e = createAnActionEvent("file12.java");
+        NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
+        PsiClass focusClass = navigator.findClass();
+
+        assertTrue(FindPsi.findPsiNewExpressions(focusClass).isEmpty());
+    }
+
 //    public void testFindChildPsiNewExpressions()
 //    public void testFindChildPsiJavaCodeReferenceElements()
 //    public void testFindChildPsiExpressionLists()
