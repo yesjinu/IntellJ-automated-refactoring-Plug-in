@@ -78,30 +78,6 @@ public abstract class LightActionTestCase extends AbstractLightCodeInsightTestCa
     }
 
     /**
-     * Test function for multiple files
-     * @param files names of files in BasePath()+before<testName>/
-     * @throws Exception
-     * caution: there should be no package statement for each file
-     *          first element of files[] will be opened with editor.
-     *          i.e, the target file(file to inspect, file with caret ... ) must be the first element of files[]
-     */
-    protected void doTestDirectory(String[] files) throws Exception {
-        String beforePath = getBasePath() + "/before" + getTestName(false) + "/";
-        String afterPath = getBasePath() + "/after" + getTestName(false) + "/";
-
-        String[] inputFiles = new String[files.length]; // add path
-        for(int i=0; i<files.length; i++)
-        {
-            inputFiles[i] = beforePath + files[i];
-        }
-
-        myFixture.configureByFiles(inputFiles);
-
-        performActionTest();
-        checkResultByFiles(afterPath, beforePath);
-    }
-
-    /**
      * Perform action test with action that is acquired by getAction()
      *
      * @throws TimeoutException, ExecutionException
