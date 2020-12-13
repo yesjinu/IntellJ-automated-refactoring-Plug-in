@@ -1,17 +1,15 @@
 package wanted.refactoring;
 
-import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.uast.UContinueExpression;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class to provide refactoring: 'Introduce Local Extension'
@@ -126,7 +124,8 @@ public class HideDelegateAction extends BaseRefactorAction {
 
         // Firt Method Call Expression Check: A.getB().getC()
         mcexp = _mcexp;
-        if (!isValidMethodCallExp(mcexp)) return false;
+        if (!isReturnTypeExistedAsClass(mcexp.getType())) return false;
+        if (!isMethodOnlyReturnStatement(mcexp)) return false;
 
         rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
         if (rexpList.size() != 1) return false;
@@ -138,7 +137,8 @@ public class HideDelegateAction extends BaseRefactorAction {
 
         // Seconde Method Call Expression Check: A.getB()
         mcexp = mcexpList.get(0);
-        if (!isValidMethodCallExp(mcexp)) return false;
+        if (!isReturnTypeExistedAsClass(mcexp.getType())) return false;
+        if (!isMethodOnlyReturnStatement(mcexp)) return false;
 
         rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
         if (rexpList.size() != 1) return false;
@@ -149,8 +149,9 @@ public class HideDelegateAction extends BaseRefactorAction {
         rexpList = FindPsi.findChildPsiReferenceExpressions(rexp);
         if (rexpList.size() != 1) return false;
 
-        // Check the subject type same with the first Type
+        // Check the subject type same with the last return Type
         if (!rexpList.get(0).getType().equals(_mcexp.getType())) return false;
+
 
         firstMethodCall = _mcexp;
         secondMethodCall = mcexp;
@@ -158,17 +159,37 @@ public class HideDelegateAction extends BaseRefactorAction {
         return true;
     }
 
-    private static boolean isValidMethodCallExp(PsiMethodCallExpression mcexp) {
-        String returnName = mcexp.getType().getPresentableText();
+    private static boolean isMethodOnlyReturnStatement(PsiMethodCallExpression mcexp) {
+        String ReturnType = mcexp.getType().getPresentableText();
+        String[] MethodNames = mcexp.getText().replace("()", "").split(".");
+        if (MethodNames.length < 2) return false;
+
+        String LastMethodName = MethodNames[MethodNames.length - 1];
 
         for (PsiClass cls : classList) {
-            if (returnName.equals(cls.getName())) {
-
+            if (ReturnType.equals(cls.getName())) {
+                for (PsiMethod m : FindPsi.findPsiMethods(cls)) {
+                    if (m.getName().equals(LastMethodName)) {
+                        PsiCodeBlock cb = m.getBody();
+                        if (cb.getStatementCount() == 1 && cb.getStatements()[0] instanceof PsiReturnStatement)
+                            return true;
+                    }
+                }
             }
         }
 
         return false;
     }
+
+    private static boolean isReturnTypeExistedAsClass(PsiType type) {
+        for (PsiClass cls : classList) {
+            if (type.getPresentableText().equals(cls.getName()))
+                return true;
+        }
+
+        return false;
+    }
+
 
     /**
      * Method that performs refactoring: 'Introduct Local Extension'
