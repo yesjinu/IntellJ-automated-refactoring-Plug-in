@@ -22,8 +22,18 @@ public class HideDelegateActionTest extends LightActionTestCase {
         return super.getBasePath() + "/hideDelegate";
     }
 
-    /* Test 1: simple case */
+
     public void testHideDelegate1() throws Exception {
+        String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
+        doTestDirectory(beforeFiles);
+    }
+
+    public void testHideDelegate2() throws Exception {
+        String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
+        doTestDirectory(beforeFiles);
+    }
+
+    public void testHideDelegate3() throws Exception {
         String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
         doTestDirectory(beforeFiles);
     }
