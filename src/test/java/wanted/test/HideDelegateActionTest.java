@@ -37,4 +37,34 @@ public class HideDelegateActionTest extends LightActionTestCase {
         String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
         doTestDirectory(beforeFiles);
     }
+
+    public void testHideDelegate4() throws Exception {
+        try {
+            String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
+            doTestDirectory(beforeFiles);
+        }
+        catch(RuntimeException e){
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
+    }
+
+    public void testHideDelegate5() throws Exception {
+        try {
+            String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
+            doTestDirectory(beforeFiles);
+        }
+        catch(RuntimeException e){
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
+    }
+
+    public void testHideDelegate6() throws Exception {
+        try {
+            String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
+            doTestDirectory(beforeFiles);
+        }
+        catch(RuntimeException e){
+            assertEquals(e.getMessage(), "Nothing to do");
+        }
+    }
 }

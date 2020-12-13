@@ -123,13 +123,10 @@ public class HideDelegateAction extends BaseRefactorAction {
         List<PsiReferenceExpression> rexpList;
         PsiMethodCallExpression mcexp;
         PsiReferenceExpression rexp;
-        PsiType first;
-        PsiType second;
 
         // Firt Method Call Expression Check: A.getB().getC()
         mcexp = _mcexp;
-        first = mcexp.getType();
-        if (!isTypeExistedAsClass(first)) return false;
+        if (!isValidMethodCallExp(mcexp)) return false;
 
         rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
         if (rexpList.size() != 1) return false;
@@ -141,8 +138,7 @@ public class HideDelegateAction extends BaseRefactorAction {
 
         // Seconde Method Call Expression Check: A.getB()
         mcexp = mcexpList.get(0);
-        second = mcexp.getType();
-        if (!isTypeExistedAsClass(second)) return false;
+        if (!isValidMethodCallExp(mcexp)) return false;
 
         rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
         if (rexpList.size() != 1) return false;
@@ -154,7 +150,7 @@ public class HideDelegateAction extends BaseRefactorAction {
         if (rexpList.size() != 1) return false;
 
         // Check the subject type same with the first Type
-        if (!rexpList.get(0).getType().equals(first)) return false;
+        if (!rexpList.get(0).getType().equals(_mcexp.getType())) return false;
 
         firstMethodCall = _mcexp;
         secondMethodCall = mcexp;
@@ -162,10 +158,13 @@ public class HideDelegateAction extends BaseRefactorAction {
         return true;
     }
 
-    private static boolean isTypeExistedAsClass(PsiType type) {
+    private static boolean isValidMethodCallExp(PsiMethodCallExpression mcexp) {
+        String returnName = mcexp.getType().getPresentableText();
+
         for (PsiClass cls : classList) {
-            if (type.getPresentableText().equals(cls.getName()))
-                return true;
+            if (returnName.equals(cls.getName())) {
+
+            }
         }
 
         return false;
