@@ -83,24 +83,38 @@ public class HideDelegateAction extends BaseRefactorAction {
 
         // PsiAssignmentExpression case
         List<PsiAssignmentExpression> aexpList = FindPsi.findPsiAssignmentExpressions(targetClass);
-        if (!aexpList.isEmpty()) {
-            for (PsiAssignmentExpression aexp: aexpList) {
-                // Firt Method Call Expression Check: A.getB().getC()
-                List<PsiMethodCallExpression> mcexpList = FindPsi.findChildPsiMethodCallExpressions(aexp);
-                if (mcexpList.size() != 1) continue;
+        for (PsiAssignmentExpression aexp: aexpList) {
+            List<PsiMethodCallExpression> mcexpList = FindPsi.findChildPsiMethodCallExpressions(aexp);
+            if (mcexpList.size() != 1) continue;
 
-                PsiMethodCallExpression mcexp = mcexpList.get(0);
-                if (!isDoubleMethodCallExp(mcexp)) continue;
-            }
+            PsiMethodCallExpression mcexp = mcexpList.get(0);
+            if (isDoubleMethodCallExp(mcexp)) return true;
         }
-
-        
 
         // PsiDeclarationStatement case
-        List<PsiDeclarationStatement> dsttList = FindPsi.findPsiDeclarationStatements(targetClass);
-        if (!dsttList.isEmpty()) {
+        List<PsiDeclarationStatement> dstmList = FindPsi.findPsiDeclarationStatements(targetClass);
+        for (PsiDeclarationStatement dstm : dstmList) {
+            List<PsiLocalVariable> lvList = FindPsi.findChildPsiLocalVariables(dstm);
+            if (lvList.size() != 1) continue;
 
+            PsiLocalVariable lvar = lvList.get(0);
+            List<PsiMethodCallExpression> mcexpList = FindPsi.findChildPsiMethodCallExpressions(lvar);
+            if (mcexpList.size() != 1) continue;
+
+            PsiMethodCallExpression mcexp = mcexpList.get(0);
+            if (isDoubleMethodCallExp(mcexp)) return true;
         }
+
+        // PsiField case
+        List<PsiField> fList = FindPsi.findPsiFields(targetClass);
+        for (PsiField f : fList) {
+            List<PsiMethodCallExpression> mcexpList = FindPsi.findChildPsiMethodCallExpressions(f);
+            if (mcexpList.size() != 1) continue;
+
+            PsiMethodCallExpression mcexp = mcexpList.get(0);
+            if (isDoubleMethodCallExp(mcexp)) return true;
+        }
+
         return false;
     }
 
