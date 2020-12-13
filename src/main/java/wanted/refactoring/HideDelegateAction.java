@@ -21,9 +21,9 @@ import java.util.*;
  * @author Chanyoung Kim
  */
 public class HideDelegateAction extends BaseRefactorAction {
-    private static Project project;
-    private static PsiFile file;
-    private static PsiClass targetClass;
+    private static List<PsiClass> classList = new ArrayList<>();
+    private static PsiMethodCallExpression firstMethodCall;
+    private static PsiMethodCallExpression secondMethodCall;
 
     /* Returns the story ID. */
     @Override
@@ -57,13 +57,13 @@ public class HideDelegateAction extends BaseRefactorAction {
     {
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
-        project = navigator.findProject();
+        Project project = navigator.findProject();
         if (project == null) return false;
 
-        file = navigator.findFile();
+        PsiFile file = navigator.findFile();
         if (file == null) return false;
 
-        targetClass = navigator.findClass();
+        PsiClass targetClass = navigator.findClass();
         if (targetClass == null) return false;
 
         return refactorValid(project, targetClass);
@@ -71,21 +71,30 @@ public class HideDelegateAction extends BaseRefactorAction {
 
 
     public static boolean refactorValid(Project project, @NotNull PsiClass targetClass) {
+        PsiFile file = targetClass.getContainingFile();
+        if (file == null) return false;
+
+        for (PsiFile f : targetClass.getContainingFile().getContainingDirectory().getFiles()) {
+            if (f.equals(file)) continue;
+            else {
+                for (PsiClass c : ((PsiClassOwner) f).getClasses()) classList.add(c);
+            }
+        }
+
         // PsiAssignmentExpression case
         List<PsiAssignmentExpression> aexpList = FindPsi.findPsiAssignmentExpressions(targetClass);
         if (!aexpList.isEmpty()) {
-            List<PsiMethodCallExpression> mcexpList;
-            PsiMethodCallExpression mcexp;
-
             for (PsiAssignmentExpression aexp: aexpList) {
                 // Firt Method Call Expression Check: A.getB().getC()
-                mcexpList = FindPsi.findChildPsiMethodCallExpressions(aexp);
+                List<PsiMethodCallExpression> mcexpList = FindPsi.findChildPsiMethodCallExpressions(aexp);
                 if (mcexpList.size() != 1) continue;
 
-                mcexp = mcexpList.get(0);
+                PsiMethodCallExpression mcexp = mcexpList.get(0);
                 if (!isDoubleMethodCallExp(mcexp)) continue;
             }
         }
+
+        
 
         // PsiDeclarationStatement case
         List<PsiDeclarationStatement> dsttList = FindPsi.findPsiDeclarationStatements(targetClass);
@@ -100,19 +109,27 @@ public class HideDelegateAction extends BaseRefactorAction {
         List<PsiReferenceExpression> rexpList;
         PsiMethodCallExpression mcexp;
         PsiReferenceExpression rexp;
+        PsiType first;
+        PsiType second;
 
         // Firt Method Call Expression Check: A.getB().getC()
         mcexp = _mcexp;
+        first = mcexp.getType();
+        if (!isTypeExistedAsClass(first)) return false;
+
         rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
         if (rexpList.size() != 1) return false;
         if (!FindPsi.findChildPsiExpressionLists(mcexp).get(0).getText().equals("()")) return false;
 
-        // Seconde Method Call Expression Check: A.getB()
         rexp = rexpList.get(0);
         mcexpList = FindPsi.findChildPsiMethodCallExpressions(rexp);
         if (mcexpList.size() != 1) return false;
 
+        // Seconde Method Call Expression Check: A.getB()
         mcexp = mcexpList.get(0);
+        second = mcexp.getType();
+        if (!isTypeExistedAsClass(second)) return false;
+
         rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
         if (rexpList.size() != 1) return false;
         if (!FindPsi.findChildPsiExpressionLists(mcexp).get(0).getText().equals("()")) return false;
@@ -122,7 +139,22 @@ public class HideDelegateAction extends BaseRefactorAction {
         rexpList = FindPsi.findChildPsiReferenceExpressions(rexp);
         if (rexpList.size() != 1) return false;
 
+        // Check the subject type same with the first Type
+        if (!rexpList.get(0).getType().equals(first)) return false;
+
+        firstMethodCall = _mcexp;
+        secondMethodCall = mcexp;
+
         return true;
+    }
+
+    private static boolean isTypeExistedAsClass(PsiType type) {
+        for (PsiClass cls : classList) {
+            if (type.getPresentableText().equals(cls.getName()))
+                return true;
+        }
+
+        return false;
     }
 
     /**
