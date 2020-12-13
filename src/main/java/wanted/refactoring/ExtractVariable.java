@@ -1,25 +1,16 @@
 package wanted.refactoring;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.intellij.codeInsight.hint.PsiImplementationSessionViewFactory;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.PsiElementFactoryImpl;
-import com.intellij.psi.impl.source.codeStyle.CodeStyleManagerImpl;
-import com.intellij.psi.impl.source.tree.PsiWhiteSpaceImpl;
-import org.eclipse.jdt.internal.compiler.ast.ModuleStatement;
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -51,7 +42,7 @@ public class ExtractVariable extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>If you have an expression that's hard to understand, <br/>" +
                 "You can apply this technique by placing the result of the expression <br/>" +
                 "or its parts in separate variables that are self-explanatory.</html>";

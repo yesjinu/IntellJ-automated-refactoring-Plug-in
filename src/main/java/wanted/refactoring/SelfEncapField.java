@@ -33,7 +33,7 @@ public class SelfEncapField extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When class directly access a private field inside a class, <br/>" +
                 "create getter and setter method, and use them for accessing the field.</html>";
     }

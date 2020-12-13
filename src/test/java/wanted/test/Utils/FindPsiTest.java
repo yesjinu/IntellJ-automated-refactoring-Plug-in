@@ -2,7 +2,6 @@
 package wanted.test.Utils;
 
 import com.intellij.ide.DataManager;
-import com.intellij.ide.navigationToolbar.NavBarActions;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
@@ -11,8 +10,6 @@ import com.intellij.psi.PsiExpression;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.concurrency.Promise;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
-import wanted.test.base.LightActionTestCase;
-import wanted.utils.AddPsi;
 import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;

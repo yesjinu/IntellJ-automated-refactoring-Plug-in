@@ -5,13 +5,11 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.junit.jupiter.api.Assertions;
-import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.test.base.LightActionTestCase;
 import wanted.utils.AddPsi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Test class for 'AddPsi' util

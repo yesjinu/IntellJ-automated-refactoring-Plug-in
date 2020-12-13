@@ -34,7 +34,7 @@ public class ConsolidateCondExpr extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When all statements are same for several conditions from first,<br/>" +
                 "merge conditions and decrease number of conditions.</html>";
     }

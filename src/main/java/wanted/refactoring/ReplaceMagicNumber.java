@@ -37,7 +37,7 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When literal expression are repeatedly used inside class, <br/>" +
                 "replace literal expression to constant.</html>";
     }

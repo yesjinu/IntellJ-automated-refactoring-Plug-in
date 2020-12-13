@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.*;
 
 import java.util.*;
@@ -32,7 +31,7 @@ public class ParameterizeWholeObjectAction extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When there are more than two parameters originated from same object<br/>" +
                 "in a method, replace them in parameter list with source object.</html>";
     }

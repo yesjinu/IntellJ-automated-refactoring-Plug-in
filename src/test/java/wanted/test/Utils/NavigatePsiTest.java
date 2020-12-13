@@ -6,7 +6,6 @@ import com.intellij.psi.PsiLiteralExpression;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.concurrency.Promise;
 import org.junit.jupiter.api.Assertions;
-import wanted.refactoring.SelfEncapField;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.NavigatePsi;
 

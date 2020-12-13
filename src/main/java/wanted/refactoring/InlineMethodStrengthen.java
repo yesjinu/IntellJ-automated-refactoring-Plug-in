@@ -44,7 +44,7 @@ public class InlineMethodStrengthen extends InlineMethod {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When a method body is more obvious than the method itself, <br/>" +
                 "Replace calls to the method with the method's content and delete the method itself.<br/><br/>" +
                 "Plus, Inline Method (Strengthen) thoroughly considers about<br/>" +

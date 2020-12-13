@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
@@ -35,7 +34,7 @@ public class RemoveUnusedParameterAction extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When there are parameters that are not used in the method<br/>" +
                 "refactor codes by removing unused parameters in the parameter list.</html>";
     }

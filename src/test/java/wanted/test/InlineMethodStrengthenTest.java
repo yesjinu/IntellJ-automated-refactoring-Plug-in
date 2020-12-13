@@ -2,7 +2,6 @@ package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import wanted.refactoring.InlineMethodStrengthen;
-import wanted.test.base.LightActionTestCase;
 
 /**
  * Test class for 'Inline Method Strengthen'

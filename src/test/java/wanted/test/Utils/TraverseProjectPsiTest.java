@@ -6,14 +6,9 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.concurrency.Promise;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
-import wanted.test.base.LightActionTestCase;
-import wanted.utils.NavigatePsi;
 import wanted.utils.TraverseProjectPsi;
 
 import java.util.concurrent.ExecutionException;

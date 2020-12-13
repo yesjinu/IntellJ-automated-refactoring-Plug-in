@@ -9,7 +9,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
@@ -40,7 +39,7 @@ public class InlineMethod extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When a method body is more obvious than the method itself, <br/>" +
                 "Replace calls to the method with the method's content and delete the method itself.</html>";
     }

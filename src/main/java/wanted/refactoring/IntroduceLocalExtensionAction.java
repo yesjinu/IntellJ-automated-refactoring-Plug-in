@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.PsiJavaParserFacade;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import wanted.utils.FindPsi;
@@ -49,7 +48,7 @@ public class IntroduceLocalExtensionAction extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When a utility class is newly declared as a utility class variable inside the user class, <br/>" +
                 "Add a method that receives a utility class in the user class, transforms it, and returns it.</html>";
     }
