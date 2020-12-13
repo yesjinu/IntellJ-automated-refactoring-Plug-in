@@ -20,8 +20,8 @@ import java.util.List;
  */
 public class HideDelegateAction extends BaseRefactorAction {
     private static List<PsiClass> classList = new ArrayList<>();
-    private static PsiMethodCallExpression firstMethodCall;
-    private static PsiMethodCallExpression secondMethodCall;
+    private static PsiMethodCallExpression targetMethodCallExp;
+    private static String targetClassName;
 
     /* Returns the story ID. */
     @Override
@@ -69,6 +69,11 @@ public class HideDelegateAction extends BaseRefactorAction {
 
 
     public static boolean refactorValid(Project project, @NotNull PsiClass targetClass) {
+        classList.clear();
+        targetMethodCallExp = null;
+        targetClassName = null;
+
+
         PsiFile file = targetClass.getContainingFile();
         if (file == null) return false;
 
@@ -123,13 +128,12 @@ public class HideDelegateAction extends BaseRefactorAction {
         PsiReferenceExpression rexp;
 
         // Firt Method Call Expression Check: A.getB().getC()
-        mcexp = _mcexp;
-        if (!isReturnTypeExistedAsClass(mcexp.getType())) return false;
-        if (!isMethodOnlyReturnStatement(mcexp)) return false;
+        if (!isReturnTypeExistedAsClass(_mcexp.getType())) return false;
+        if (!isMethodOnlyReturnStatement(_mcexp)) return false;
 
-        rexpList = FindPsi.findChildPsiReferenceExpressions(mcexp);
+        rexpList = FindPsi.findChildPsiReferenceExpressions(_mcexp);
         if (rexpList.size() != 1) return false;
-        if (!FindPsi.findChildPsiExpressionLists(mcexp).get(0).getText().equals("()")) return false;
+        if (!FindPsi.findChildPsiExpressionLists(_mcexp).get(0).getText().equals("()")) return false;
 
         rexp = rexpList.get(0);
         mcexpList = FindPsi.findChildPsiMethodCallExpressions(rexp);
@@ -149,21 +153,15 @@ public class HideDelegateAction extends BaseRefactorAction {
         rexpList = FindPsi.findChildPsiReferenceExpressions(rexp);
         if (rexpList.size() != 1) return false;
 
-        // Check the subject type same with the last return Type
-        if (!rexpList.get(0).getType().equals(_mcexp.getType())) return false;
 
-
-        firstMethodCall = _mcexp;
-        secondMethodCall = mcexp;
-
+        targetMethodCallExp = _mcexp;
+        targetClassName = rexpList.get(0).getType().getPresentableText();
         return true;
     }
 
     private static boolean isMethodOnlyReturnStatement(PsiMethodCallExpression mcexp) {
-        String ReturnType = mcexp.getType().getPresentableText();
-        String[] MethodNames = mcexp.getText().replace("()", "").split(".");
-        if (MethodNames.length < 2) return false;
-
+        String ReturnType = mcexp.getMethodExpression().getQualifierExpression().getType().getPresentableText();
+        String[] MethodNames = mcexp.getText().replace("()", "").split("\\.");
         String LastMethodName = MethodNames[MethodNames.length - 1];
 
         for (PsiClass cls : classList) {
@@ -186,7 +184,6 @@ public class HideDelegateAction extends BaseRefactorAction {
             if (type.getPresentableText().equals(cls.getName()))
                 return true;
         }
-
         return false;
     }
 
@@ -208,6 +205,35 @@ public class HideDelegateAction extends BaseRefactorAction {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
+            String[] splited = targetMethodCallExp.getText().replace("()", "").split("\\.");
+            String replaced = splited[0] + "." + splited[2] + "()";
+            String type = targetMethodCallExp.getType().getPresentableText();
+            PsiExpression exp = factory.createExpressionFromText(replaced, null);
+            targetMethodCallExp.replace(exp);
+
+            PsiClass targetClass = null;
+            String referenceName = null;
+            for (PsiClass cls : classList) {
+                if (targetClassName.equals(cls.getName())) {
+                    for (PsiMethod m : FindPsi.findPsiMethods(cls)) {
+                        if (splited[1].equals(m.getName())) {
+                            referenceName = m.getBody().getStatements()[0].getText();
+                            targetClass = cls;
+                        }
+                    }
+                }
+            }
+
+            referenceName = referenceName.substring(0, referenceName.length() - 1);
+
+
+            String Method = "public " + type + " " + splited[2] + "() {\n" +
+                            referenceName + "." + splited[2] + "();\n" +
+                            "}";
+
+            PsiMethod method = factory.createMethodFromText(Method, null);
+
+            targetClass.addBefore(method, targetClass.getLastChild());
 
         });
     }
