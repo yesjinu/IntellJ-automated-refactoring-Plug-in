@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class to provide refactoring: 'Introduce Local Extension'
- * - Create new class that inherits the utility,
- * - Add the method required by the user in the class,
+ * Class to provide refactoring: 'Hide Delegate'
+ * - Create a new method in class A that delegates the call to object B.
+ * - Now the client doesn’t know about, or depend on, class B.
  *
  * @author Chanyoung Kim
  */
@@ -26,30 +26,38 @@ public class HideDelegateAction extends BaseRefactorAction {
     /* Returns the story ID. */
     @Override
     public String storyID() {
-        return "";
+        return "HD";
     }
 
     /* Returns the story name as a string format, for message. */
     @Override
     public String storyName() {
-        return "";
+        return "Hide Delegate";
     }
 
     /* Returns the description of each story. (in html-style) */
     @Override
     public String descripton() {
-        return "<html>, <br/>" +
-                ".</html>";
+        return "<html>Create a new method in class A that delegates the call to object B. <br/>" +
+                "Now the client doesn’t know about, or depend on, class B. </html>";
     }
 
     /* Returns the precondition of each story. (in html-style) */
     @Override
     public String precondition() {
-        return "<html>, <br/>" +
-                ".</html>";
+        return "<html> The method call that returns an object is called twice in series. <br/>" +
+                "Both method calls have no parameters, only return statements. <br/>" +
+                "The object returned by the method call must be defined as a class. </html>";
     }
 
-
+    /**
+     * Method that checks whether candidate method is refactorable
+     * using 'Hide Delegate'.
+     *
+     * @param e AnActionevent
+     * @return true if method is refactorable
+     * @see BaseRefactorAction#refactorValid(AnActionEvent)
+     */
     @Override
     public boolean refactorValid(AnActionEvent e)
     {
@@ -64,11 +72,23 @@ public class HideDelegateAction extends BaseRefactorAction {
         PsiClass targetClass = navigator.findClass();
         if (targetClass == null) return false;
 
-        return refactorValid(project, targetClass);
+        return refactorValid(targetClass);
     }
 
-
-    public static boolean refactorValid(Project project, @NotNull PsiClass targetClass) {
+    /**
+     * Static method that checks whether candidate method is refactorable
+     * using 'Hide Delegate'.
+     *
+     * When does this refactoring activiate,
+     * -> a utility object is declared in a function inside a class, using existing utility object as a parameter
+     *
+     * How to implement this refactoring
+     * - In (Assignment, Declaration, Field) cases, we check the existence of methodcallexp that can be refactored.
+     *
+     * @param targetClass PsiField Object
+     * @return true if method is refactorable
+     */
+    public static boolean refactorValid(@NotNull PsiClass targetClass) {
         classList.clear();
         targetMethodCallExp = null;
         targetClassName = null;
@@ -91,6 +111,7 @@ public class HideDelegateAction extends BaseRefactorAction {
             if (mcexpList.size() != 1) continue;
 
             PsiMethodCallExpression mcexp = mcexpList.get(0);
+            // Check the MethodCallExp is suitable for refactoring
             if (isDoubleMethodCallExp(mcexp)) return true;
         }
 
@@ -105,6 +126,7 @@ public class HideDelegateAction extends BaseRefactorAction {
             if (mcexpList.size() != 1) continue;
 
             PsiMethodCallExpression mcexp = mcexpList.get(0);
+            // Check the MethodCallExp is suitable for refactoring
             if (isDoubleMethodCallExp(mcexp)) return true;
         }
 
@@ -115,12 +137,20 @@ public class HideDelegateAction extends BaseRefactorAction {
             if (mcexpList.size() != 1) continue;
 
             PsiMethodCallExpression mcexp = mcexpList.get(0);
+            // Check the MethodCallExp is suitable for refactoring
             if (isDoubleMethodCallExp(mcexp)) return true;
         }
 
         return false;
     }
 
+    /**
+     * Check if MethodCallExp is suitable for refactoring.
+     * The refactorable format is like "A.getB().getC()"
+     *
+     * @param _mcexp PsiMethodCallExpression
+     * @return true if the PsiMethodCallExpression is suitable format
+     */
     private static boolean isDoubleMethodCallExp(PsiMethodCallExpression _mcexp) {
         List<PsiMethodCallExpression> mcexpList;
         List<PsiReferenceExpression> rexpList;
@@ -159,6 +189,12 @@ public class HideDelegateAction extends BaseRefactorAction {
         return true;
     }
 
+    /**
+     * Check if the method pointed by MethodCallExp consists of only PsiReturnStatement.
+     *
+     * @param mcexp PsiMethodCallExpression
+     * @return true if the method pointed by MethodCallExp consists of only PsiReturnStatement
+     */
     private static boolean isMethodOnlyReturnStatement(PsiMethodCallExpression mcexp) {
         String ReturnType = mcexp.getMethodExpression().getQualifierExpression().getType().getPresentableText();
         String[] MethodNames = mcexp.getText().replace("()", "").split("\\.");
@@ -179,6 +215,12 @@ public class HideDelegateAction extends BaseRefactorAction {
         return false;
     }
 
+    /**
+     * Check if the class type exists in classList.
+     *
+     * @param type PsiType
+     * @return true if the class type exists in classList
+     */
     private static boolean isReturnTypeExistedAsClass(PsiType type) {
         for (PsiClass cls : classList) {
             if (type.getPresentableText().equals(cls.getName()))
@@ -189,11 +231,11 @@ public class HideDelegateAction extends BaseRefactorAction {
 
 
     /**
-     * Method that performs refactoring: 'Introduct Local Extension'
+     * Method that performs refactoring: 'Hide Delegate'
      *
      * How to implement this refactoring:
-     * 1. Change it to a new PsiDeclarationStatement.
-     * 2. Add a new method at the end of the class to which the method belongs.
+     * 1. transfer targetMethodCallExp into calling once method call.
+     * 2. Add a new method about getting at the end of the class to targetClassName
      *
      * @param e AnActionEvent
      * @see BaseRefactorAction#refactor(AnActionEvent)
