@@ -42,6 +42,7 @@ public class ExampleCodeBlock {
         setBefore_SEF(); setAfter_SEF();
         setBefore_EF(); setAfter_EF();
         setBefore_RMN(); setAfter_RMN();
+        setBefore_HD(); setAfter_HD();
         // TODO: ADD NEW METHOD HERE
     }
 
@@ -181,6 +182,85 @@ public class ExampleCodeBlock {
                         "}\n";
 
         after.put("RMN", afterCodeBlock);
+    }
+
+    private void setBefore_HD() {
+        String beforeCodeBlock =
+                "class Department {\n" +
+                        "    private Person _manager;\n" +
+                        "\n" +
+                        "    public Department(Person manager) {\n" +
+                        "        _manager = manager;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public Person getManager() {\n" +
+                        "        return _manager;\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Person {\n" +
+                        "    Department _department;\n" +
+                        "\n" +
+                        "    public Department getDepartment() {\n" +
+                        "        return _department;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public void setDepartment(Department arg) {\n" +
+                        "        _department = arg;\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Test {\n" +
+                        "    public static void main(String[] args) {\n" +
+                        "        Person john = new Person();\n" +
+                        "        Person manager;\n" +
+                        "\n" +
+                        "        manager = john.getDepartment().getManager();\n" +
+                        "    }\n" +
+                        "}";
+
+        before.put("HD", beforeCodeBlock);
+    }
+    private void setAfter_HD() {
+        String afterCodeBlock =
+                "class Department {\n" +
+                        "    private Person _manager;\n" +
+                        "\n" +
+                        "    public Department(Person manager) {\n" +
+                        "        _manager = manager;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public Person getManager() {\n" +
+                        "        return _manager;\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Person {\n" +
+                        "    Department _department;\n" +
+                        "\n" +
+                        "    public Department getDepartment() {\n" +
+                        "        return _department;\n" +
+                        "    }\n" +
+                        "    \n" +
+                        "    public void setDepartment(Department arg) {\n" +
+                        "        _department = arg;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public Person getDepartment() {\n" +
+                        "        return _department.getManager();\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Test {\n" +
+                        "    public static void main(String[] args) {\n" +
+                        "        Person john = new Person();\n" +
+                        "        Person manager;\n" +
+                        "\n" +
+                        "        manager = john.getManager();\n" +
+                        "    }\n" +
+                        "}";
+
+        after.put("HD", afterCodeBlock);
     }
 
     // TODO: COPY AND DO YOUR WORK
