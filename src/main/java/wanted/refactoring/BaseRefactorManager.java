@@ -29,6 +29,9 @@ public class BaseRefactorManager {
                 return new IntroduceForeignMethodAction();
             case "ILE":
                 return new IntroduceLocalExtensionAction();
+            case "HD":
+                return new HideDelegateAction();
+
 
             // Scope: Field
             case "SEF":

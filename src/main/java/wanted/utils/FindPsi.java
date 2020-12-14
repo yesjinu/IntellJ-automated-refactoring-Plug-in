@@ -180,6 +180,24 @@ public class FindPsi {
     }
 
     /**
+     * Return the List containing PsiAssignmentExpression Object in current PSI Element
+     *
+     * @param element the PSI Element.
+     * @return List<PsiAssignmentExpression> if element has PsiAssignmentExpression, empty() otherwise
+     */
+    public static List<PsiAssignmentExpression> findPsiAssignmentExpressions(PsiElement element) {
+        List<PsiAssignmentExpression> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitAssignmentExpression(PsiAssignmentExpression elem) {
+                super.visitAssignmentExpression(elem);
+                result.add(elem);
+            }
+        });
+        return result;
+    }
+
+    /**
      * Return PsiIfstatement from cursor offset inside of PsiClass
      *
      * @param psiClass the scope this function find ifstatement
@@ -457,6 +475,20 @@ public class FindPsi {
         List<PsiJavaToken> result = new ArrayList<>();
         for (PsiElement elem : element.getChildren()) {
             if (elem instanceof PsiJavaToken) result.add((PsiJavaToken) elem);
+        }
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiMethodCallExpression Object in current PsiElement children
+     *
+     * @param element the PsiElement.
+     * @return List<PsiMethodCallExpression> if element has PsiMethodCallExpression, empty() otherwise
+     */
+    public static List<PsiMethodCallExpression> findChildPsiMethodCallExpressions(PsiElement element) {
+        List<PsiMethodCallExpression> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiMethodCallExpression) result.add((PsiMethodCallExpression) elem);
         }
         return result;
     }
