@@ -42,7 +42,7 @@ public class HideDelegateAction extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>Create a new method in class A that delegates the call to object B. <br/>" +
                 "Now the client doesn’t know about, or depend on, class B. </html>";
     }
@@ -230,7 +230,7 @@ public class HideDelegateAction extends BaseRefactorAction {
 
         for (PsiClass cls : classList) {
             if (ReturnType.equals(cls.getName())) {
-                for (PsiMethod m : FindPsi.findPsiMethods(cls)) {
+                for (PsiMethod m : cls.getMethods()) {
                     if (m.getName().equals(LastMethodName)) {
                         PsiCodeBlock cb = m.getBody();
                         if (cb.getStatementCount() == 1 && cb.getStatements()[0] instanceof PsiReturnStatement)

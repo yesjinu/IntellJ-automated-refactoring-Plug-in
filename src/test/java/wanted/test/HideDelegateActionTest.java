@@ -25,23 +25,23 @@ public class HideDelegateActionTest extends LightActionTestCase {
 
     public void testHideDelegate1() throws Exception {
         String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
-        doTestDirectory(beforeFiles);
+        doTestFoldersMulti(beforeFiles, 1);
     }
 
     public void testHideDelegate2() throws Exception {
         String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
-        doTestDirectory(beforeFiles);
+        doTestFoldersMulti(beforeFiles, 2);
     }
 
     public void testHideDelegate3() throws Exception {
         String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
-        doTestDirectory(beforeFiles);
+        doTestFoldersMulti(beforeFiles, 3);
     }
 
     public void testHideDelegate4() throws Exception {
         try {
             String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
-            doTestDirectory(beforeFiles);
+            doTestFoldersMulti(beforeFiles, 4);
         }
         catch(RuntimeException e){
             assertEquals(e.getMessage(), "Nothing to do");
@@ -51,7 +51,7 @@ public class HideDelegateActionTest extends LightActionTestCase {
     public void testHideDelegate5() throws Exception {
         try {
             String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
-            doTestDirectory(beforeFiles);
+            doTestFoldersMulti(beforeFiles, 5);
         }
         catch(RuntimeException e){
             assertEquals(e.getMessage(), "Nothing to do");
@@ -61,7 +61,7 @@ public class HideDelegateActionTest extends LightActionTestCase {
     public void testHideDelegate6() throws Exception {
         try {
             String[] beforeFiles = {"HD_test.java", "HD_person.java", "HD_department.java"};
-            doTestDirectory(beforeFiles);
+            doTestFoldersMulti(beforeFiles, 6);
         }
         catch(RuntimeException e){
             assertEquals(e.getMessage(), "Nothing to do");
