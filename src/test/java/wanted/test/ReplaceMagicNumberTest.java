@@ -95,4 +95,9 @@ public class ReplaceMagicNumberTest extends LightActionTestCase {
     public void testReplaceMagicNumber13() throws Exception {
         doTest();
     }
+
+    /* Test 14: replace with pre-defined constant(general case) */
+    public void testReplaceMagicNumber14() throws Exception {
+        doTest();
+    }
 }
