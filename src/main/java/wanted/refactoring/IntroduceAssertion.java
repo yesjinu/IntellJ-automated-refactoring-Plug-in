@@ -9,9 +9,7 @@ import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class IntroduceAssertion extends BaseRefactorAction {
 
@@ -101,11 +99,20 @@ public class IntroduceAssertion extends BaseRefactorAction {
         PsiStatement thenStatement = ifStatement.getThenBranch();
         PsiStatement elseStatement = ifStatement.getElseBranch();
 
-        Set<PsiReferenceExpression> thenSet = getReferenceSet(thenStatement);
-        Set<PsiReferenceExpression> elseSet = getReferenceSet(elseStatement);
+        Comparator<PsiReferenceExpression> comparator = new Comparator<PsiReferenceExpression>() {
+            @Override
+            public int compare(PsiReferenceExpression a, PsiReferenceExpression b) {
+                return a.getText().compareTo(b.getText());
+            }
+        };
+
+        List<PsiReferenceExpression> thenList = new ArrayList<>(getReferenceSet(thenStatement));
+        List<PsiReferenceExpression> elseList = new ArrayList<>(getReferenceSet(elseStatement));
+        Collections.sort(thenList, comparator);
+        Collections.sort(elseList, comparator);
 
         WriteCommandAction.runWriteCommandAction(project, ()-> {
-            ifStatement.getParent().addBefore(CreatePsi.createAssertStatement(project, ifStatement.getCondition(), thenSet, elseSet), ifStatement);
+            ifStatement.getParent().addBefore(CreatePsi.createAssertStatement(project, ifStatement.getCondition(), thenList, elseList), ifStatement);
         });
 
     }

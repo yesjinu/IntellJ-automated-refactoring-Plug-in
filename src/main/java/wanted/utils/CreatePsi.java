@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.sun.istack.NotNull;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -223,32 +224,32 @@ public class CreatePsi {
      *
      * @param project   target project
      * @param condition condition of ifStatement
-     * @param thenSet   set of expressions in then statement that should be check not null
-     * @param elseSet   set of expressions in else statement that should be check not null
+     * @param thenList   set of expressions in then statement that should be check not null
+     * @param elseList   set of expressions in else statement that should be check not null
      *                  either thenSet.size() or elseSet.size() is not empty
      * @return Assert Statement
      */
-    public static PsiStatement createAssertStatement(@NotNull Project project, @NotNull PsiExpression condition, @NotNull Set<PsiReferenceExpression> thenSet, @NotNull Set<PsiReferenceExpression> elseSet) {
+    public static PsiStatement createAssertStatement(@NotNull Project project, @NotNull PsiExpression condition, @NotNull List<PsiReferenceExpression> thenList, @NotNull List<PsiReferenceExpression> elseList) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
         String context = "";
 
-        if (thenSet.isEmpty()) {
+        if (thenList.isEmpty()) {
             context = "(" + condition.getText() + ")" + " || " + "(";
             boolean first = true;
-            for (PsiReferenceExpression exp : elseSet) {
+            for (PsiReferenceExpression exp : elseList) {
                 if (first) {
-                    if (elseSet.size() == 1) context = context + exp.getText() + " != null";
+                    if (elseList.size() == 1) context = context + exp.getText() + " != null";
                     else context = context + "(" + exp.getText() + " != null)";
                 } else context = context + " && " + "(" + exp.getText() + " != null)";
                 first = false;
             }
             context = context + ")";
-        } else if (elseSet.isEmpty()) {
+        } else if (elseList.isEmpty()) {
             context = "!(" + condition.getText() + ")" + " || " + "(";
             boolean first = true;
-            for (PsiReferenceExpression exp : thenSet) {
+            for (PsiReferenceExpression exp : thenList) {
                 if (first) {
-                    if (thenSet.size() == 1) context = context + exp.getText() + " != null";
+                    if (thenList.size() == 1) context = context + exp.getText() + " != null";
                     else context = context + "(" + exp.getText() + " != null)";
                 } else context = context + " && " + "(" + exp.getText() + " != null)";
                 first = false;
@@ -256,11 +257,11 @@ public class CreatePsi {
             context = context + ")";
         } else {
             context = "(" + "(" + condition.getText() + ")";
-            for (PsiReferenceExpression exp : thenSet) {
+            for (PsiReferenceExpression exp : thenList) {
                 context = context + " && " + "(" + exp.getText() + " != null)";
             }
             context = context + ")" + " || " + "(" + "!(" + condition.getText() + ")";
-            for (PsiReferenceExpression exp : elseSet) {
+            for (PsiReferenceExpression exp : elseList) {
                 context = context + " && " + "(" + exp.getText() + " != null)";
             }
             context = context + ")";
