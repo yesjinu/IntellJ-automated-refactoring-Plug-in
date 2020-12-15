@@ -74,6 +74,7 @@ public class ExtractVariable extends BaseRefactorAction {
         PsiClass targetClass = navigator.findClass();
         if(targetClass==null) return false;
 
+        if (e.getData(PlatformDataKeys.EDITOR) == null) return false;
         int offset = e.getData(PlatformDataKeys.EDITOR).getCaretModel().getOffset();
         psiStatement = FindPsi.findStatement(targetClass, offset);
         if (psiStatement == null) return false;
