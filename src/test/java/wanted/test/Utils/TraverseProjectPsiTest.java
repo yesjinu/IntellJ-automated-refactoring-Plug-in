@@ -37,13 +37,33 @@ public class TraverseProjectPsiTest extends AbstractLightCodeInsightTestCase {
         assertEquals(TraverseProjectPsi.getRootPackages(project).toString(), expected);
     }
 
-    /* test TraversePsi::findFile */
+    /* test TraversePsi::findFile - Contains only 1 file */
     public void testFindFile() throws TimeoutException, ExecutionException {
         AnActionEvent e = createAnActionEvent("file2.java");
         Project project = e.getProject();
         String expected = "[PsiJavaFile:file2.java]";
         assertEquals(TraverseProjectPsi.findFile(project).size(), 1);
         assertEquals(TraverseProjectPsi.findFile(project).toString(), expected);
+    }
+
+    /* test TraversePsi::findFile - Contains several files */
+    public void testFindFile2() throws TimeoutException, ExecutionException {
+        String file1 = "TravPsiGetRootClsFile1.java";
+        String file2 = "TravPsiGetRootClsFile2.java";
+        String file3 = "TravPsiGetRootClsFile3.java";
+        String file4 = "TravPsiGetRootClsDir/TravPsiGetRootClsFile4.java";
+        String file5 = "TravPsiGetRootClsDir/TravPsiGetRootClsFile5.java";
+
+        String[] fileNames = {file1, file2, file3, file4, file5};
+        AnActionEvent e = createAnActionEventWithSeveralFiles(fileNames);
+        Project project = e.getProject();
+
+        List<PsiFile> actual = TraverseProjectPsi.findFile(project);
+        List<String> expected = Arrays.asList("TravPsiGetRootClsFile4.java", "TravPsiGetRootClsFile5.java", "TravPsiGetRootClsFile1.java", "TravPsiGetRootClsFile2.java", "TravPsiGetRootClsFile3.java");
+        assertEquals(actual.size(), 5);
+        for (PsiFile f : actual) {
+            assertTrue(expected.contains(f.getName()));
+        }
     }
 
     public void testGetRootClasses() throws TimeoutException, ExecutionException {
