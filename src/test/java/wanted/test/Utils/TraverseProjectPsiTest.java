@@ -48,18 +48,18 @@ public class TraverseProjectPsiTest extends AbstractLightCodeInsightTestCase {
 
     /* test TraversePsi::findFile - Contains several files */
     public void testFindFile2() throws TimeoutException, ExecutionException {
-        String file1 = "TravPsiGetRootClsFile1.java";
-        String file2 = "TravPsiGetRootClsFile2.java";
-        String file3 = "TravPsiGetRootClsFile3.java";
-        String file4 = "TravPsiGetRootClsDir/TravPsiGetRootClsFile4.java";
-        String file5 = "TravPsiGetRootClsDir/TravPsiGetRootClsFile5.java";
+        String file1 = "TravProjPsiFile1.java";
+        String file2 = "TravProjPsiFile2.java";
+        String file3 = "TravProjPsiFile3.java";
+        String file4 = "TravProjPsiDir/TravProjPsiFile4.java";
+        String file5 = "TravProjPsiDir/TravProjPsiFile5.java";
 
         String[] fileNames = {file1, file2, file3, file4, file5};
         AnActionEvent e = createAnActionEventWithSeveralFiles(fileNames);
         Project project = e.getProject();
 
         List<PsiFile> actual = TraverseProjectPsi.findFile(project);
-        List<String> expected = Arrays.asList("TravPsiGetRootClsFile4.java", "TravPsiGetRootClsFile5.java", "TravPsiGetRootClsFile1.java", "TravPsiGetRootClsFile2.java", "TravPsiGetRootClsFile3.java");
+        List<String> expected = Arrays.asList("TravProjPsiFile4.java", "TravProjPsiFile5.java", "TravProjPsiFile1.java", "TravProjPsiFile2.java", "TravProjPsiFile3.java");
         assertEquals(actual.size(), 5);
         for (PsiFile f : actual) {
             assertTrue(expected.contains(f.getName()));
@@ -68,11 +68,11 @@ public class TraverseProjectPsiTest extends AbstractLightCodeInsightTestCase {
 
     /* test TraversePsi::getRootClasses - root classes and non-root classes mixed case */
     public void testGetRootClasses() throws TimeoutException, ExecutionException {
-        String file1 = "TravPsiGetRootClsFile1.java";
-        String file2 = "TravPsiGetRootClsFile2.java";
-        String file3 = "TravPsiGetRootClsFile3.java";
-        String file4 = "TravPsiGetRootClsDir/TravPsiGetRootClsFile4.java";
-        String file5 = "TravPsiGetRootClsDir/TravPsiGetRootClsFile5.java";
+        String file1 = "TravProjPsiFile1.java";
+        String file2 = "TravProjPsiFile2.java";
+        String file3 = "TravProjPsiFile3.java";
+        String file4 = "TravProjPsiDir/TravProjPsiFile4.java";
+        String file5 = "TravProjPsiDir/TravProjPsiFile5.java";
 
         String[] fileNames = {file1, file2, file3, file4, file5};
         AnActionEvent e = createAnActionEventWithSeveralFiles(fileNames);
