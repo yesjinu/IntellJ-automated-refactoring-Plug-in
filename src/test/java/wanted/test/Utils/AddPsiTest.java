@@ -101,7 +101,7 @@ public class AddPsiTest extends LightActionTestCase {
     }
 
     // test AddPsi::addField - case 2 : Add two fields to an filled class
-    // addFields method should add fields at the end of the Psifield that already exists
+    // addFields method should add fields before Psifield that already exists
     public void testAddField2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -121,7 +121,7 @@ public class AddPsiTest extends LightActionTestCase {
         fieldList.add(field2);
 
         String expected =
-                "public class Temp { char c = 'c';int a = 0;boolean b = true;void doNothing() {}}";
+                "public class Temp {int a = 0;boolean b = true; char c = 'c';void doNothing() {}}";
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
             AddPsi.addField(targetClass, fieldList);
