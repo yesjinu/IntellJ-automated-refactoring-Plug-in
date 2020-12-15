@@ -66,6 +66,7 @@ public class TraverseProjectPsiTest extends AbstractLightCodeInsightTestCase {
         }
     }
 
+    /* test TraversePsi::getRootClasses - root classes and non-root classes mixed case */
     public void testGetRootClasses() throws TimeoutException, ExecutionException {
         String file1 = "TravPsiGetRootClsFile1.java";
         String file2 = "TravPsiGetRootClsFile2.java";
@@ -112,6 +113,12 @@ public class TraverseProjectPsiTest extends AbstractLightCodeInsightTestCase {
         return anActionEvent;
     }
 
+    /**
+     * Method to create dummy AnActionEvent with given file
+     *
+     * @param fileNames files to test
+     * @return AnActionEvent with given file context
+     */
     public AnActionEvent createAnActionEventWithSeveralFiles(String[] fileNames) throws TimeoutException, ExecutionException {
         myFixture.configureByFiles(fileNames);
 
