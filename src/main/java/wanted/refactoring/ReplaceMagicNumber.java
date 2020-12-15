@@ -90,7 +90,9 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
         if ((literal == null) || (literal.getType() == null || (literal.getValue() == null))) {
             return false;
         }
-        if(FindPsi.getContainingClass(literal)==null){ return false; }
+        if (FindPsi.getContainingClass(literal) == null) {
+            return false;
+        }
 
         IElementType literalType = ((PsiLiteralExpressionImpl) literal).getLiteralElementType();
 
@@ -127,19 +129,19 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
 
         expressions = FindPsi.findLiteralUsage(targetClass, literal);
 
-        // build symbolic constant with name constant#N
-        int num = 1;
+        // find if there is constant with same value or name CONSTANT#N
         PsiField constant = null;
         boolean needNewSymbol = true;
         Set<String> names = new HashSet<>();
+        PsiExpression ret;
 
-        // find if there is constant with same value or name CONSTANT#N
         for (PsiField f : targetClass.getFields()) {
             if (f.hasInitializer() && f.getInitializer().getText().equals(literal.getText())) // if value is same
             {
                 if (f.hasModifierProperty(PsiModifier.STATIC) && f.hasModifierProperty(PsiModifier.FINAL)) // if static final field already exists
                 {
                     needNewSymbol = false;
+                    constant = f;
                     expressions.remove(FindPsi.findChildPsiLiteralExpressions(f).get(0));
                     break;
                 }
@@ -149,8 +151,9 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
             }
         }
 
-        // introduce constant if needed
+        // build symbolic constant with name constant#N if needed
         List<PsiField> addList = new ArrayList<>();
+        int num = 1;
         if (needNewSymbol) {
             String[] modifiers = {PsiModifier.STATIC, PsiModifier.FINAL};
 
@@ -165,14 +168,16 @@ public class ReplaceMagicNumber extends BaseRefactorAction {
             WriteCommandAction.runWriteCommandAction(project, () -> {
                 AddPsi.addField(targetClass, addList);  // add constant to field
             });
+            ret = CreatePsi.createExpression(project, "CONSTANT" + num);
+        } else {
+            ret = CreatePsi.createExpression(project, constant.getName());
         }
 
-        PsiExpression ret = CreatePsi.createExpression(project,"CONSTANT"+num);
-
+        PsiExpression finalRet = ret;
         WriteCommandAction.runWriteCommandAction(project, () -> {
             // replace literal expression into constant
             for (PsiLiteralExpression expression : expressions) {
-                expression.replace(ret);
+                expression.replace(finalRet);
             }
         });
     }
