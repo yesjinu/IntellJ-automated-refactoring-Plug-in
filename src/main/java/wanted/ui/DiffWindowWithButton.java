@@ -135,7 +135,6 @@ public class DiffWindowWithButton extends DiffWindow {
             JPanel buttonPanel_sub = new JPanel(new GridLayout(1, 2));
 
             JButton applyButton = new JButton("Apply");
-            // TODO: Color
             JButton cancelButton = new JButton("Cancel");
 
             // Apply Listener
@@ -184,7 +183,7 @@ public class DiffWindowWithButton extends DiffWindow {
      */
     @Override
     @NotNull
-    protected DiffRequestProcessor createProcessor() {
+        protected DiffRequestProcessor createProcessor() {
         return new RefactorChainProcessor(myProject, myRequestChain);
     }
 

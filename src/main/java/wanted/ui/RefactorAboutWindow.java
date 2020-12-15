@@ -31,8 +31,6 @@ public class RefactorAboutWindow extends DialogWrapper {
     private JLabel precondition_title;
     private JLabel precondition;
 
-    private JComponent beforeEditor, afterEditor;
-
     private BaseRefactorAction refactorAction;
 
     public RefactorAboutWindow(BaseRefactorAction refactorAction) {

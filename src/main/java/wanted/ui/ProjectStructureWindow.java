@@ -39,15 +39,6 @@ class ProjectStructureWindow {
         return topContainer;
     }
 
-    /**
-     * Returns the current tree model for this plugin
-     *
-     * @return a tree model
-     */
-    @NotNull
-    public TreeModel getProjectStructureTree() {
-        return tree.getModel();
-    }
 
     /**
      * Returns the open project of the current IntelliJ IDEA window

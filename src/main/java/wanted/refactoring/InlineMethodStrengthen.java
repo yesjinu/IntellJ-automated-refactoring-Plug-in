@@ -96,7 +96,7 @@ public class InlineMethodStrengthen extends InlineMethod {
                 // Step 2. Introduce Temporary Variable
                 List<PsiStatement> declarations = new ArrayList<>();
                 PsiExpression[] newParamArray =
-                        introduceTemporaryVariable(methodStatement, paramList, declarations);
+                        introduceTemporaryVariable(paramList, declarations);
 
                 // Step 3. Replace Parameters (Be Aware of DummyHolder)
                 replaceElement =
@@ -138,13 +138,11 @@ public class InlineMethodStrengthen extends InlineMethod {
     /**
      * Method that create new parameter array which is used for temporary time.
      *
-     * @param statement PsiStatement
-     * @param paramList paramList
-     * @param List<PsiStatement> declarations
-     * @return newParamArray
+     * @param paramList PsiParameterList
+     * @param declarations List<PsiStatement>
+     * @return PsiExpression[]
      */
-    private PsiExpression[] introduceTemporaryVariable(PsiStatement statement,
-                                            PsiParameterList paramList, List<PsiStatement> declarations) {
+    private PsiExpression[] introduceTemporaryVariable(PsiParameterList paramList, List<PsiStatement> declarations) {
 
         // Introduce new declarations statements
         PsiParameter[] paramArray = paramList.getParameters();

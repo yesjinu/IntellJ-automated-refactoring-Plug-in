@@ -32,9 +32,6 @@ import java.util.List;
  */
 public abstract class BaseRefactorAction extends AnAction {
 
-    protected int changedCount = 0;
-    private String basePath;
-
     /**
      * Returns the story ID.
      *

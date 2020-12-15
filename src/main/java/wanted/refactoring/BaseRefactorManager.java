@@ -10,6 +10,7 @@ public class BaseRefactorManager {
 
     /* Design Pattern: Singleton */
     protected BaseRefactorManager () { }
+
     public static BaseRefactorManager getInstance() {
         if (manager == null)
             manager = new BaseRefactorManager();

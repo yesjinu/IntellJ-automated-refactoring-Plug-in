@@ -51,8 +51,6 @@ public class ExampleCodeBlock {
         setBefore_IFM(); setAfter_IFM();
         setBefore_ILE(); setAfter_ILE();
         setBefore_HD(); setAfter_HD();
-
-        // TODO: ADD NEW METHOD HERE
     }
 
     /* EV: Extract Variable */
@@ -493,20 +491,4 @@ public class ExampleCodeBlock {
 
         after.put("HD", afterCodeBlock);
     }
-    // TODO: COPY AND DO YOUR WORK
-
-    /*
-    private void setBefore_EV() {
-        String beforeCodeBlock = "" + <- 복붙 후 삭제
-                ""; <- 여기다가 코드 복붙
-
-        before.put("EV", beforeCodeBlock);
-    }
-    private void setAfter_EV() {
-        String afterCodeBlock = "" + <- 복붙 후 삭제
-                ""; <- 여기다가 코드 복붙
-
-        after.put("EV", afterCodeBlock);
-    }
-    */
 }
