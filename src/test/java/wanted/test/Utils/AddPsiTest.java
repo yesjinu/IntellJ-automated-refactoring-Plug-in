@@ -32,7 +32,6 @@ public class AddPsiTest extends LightActionTestCase {
     public void testAddMethod() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
-//        PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
 
         final PsiClass targetClass = factory.createClass("Temp");
 
