@@ -15,7 +15,7 @@
     <depends>com.intellij.java</depends>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <toolWindow id="Project Structure" anchor="right" factoryClass="wanted.ui.MyToolWindowFactory"/>
+        <toolWindow id="Wanted Refactoring" anchor="right" factoryClass="wanted.ui.MyToolWindowFactory" icon="/general/settings.svg"/>
     </extensions>
 
     <actions>
