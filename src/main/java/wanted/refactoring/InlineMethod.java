@@ -126,7 +126,15 @@ public class InlineMethod extends BaseRefactorAction {
     public void refactor(AnActionEvent e) {
         assert refactorValid (project, method);
 
+        Comparator<PsiReference> comparator = new Comparator<PsiReference>() {
+            @Override
+            public int compare(PsiReference a, PsiReference b) {
+                return a.getElement().getText().compareTo(b.getElement().getText());
+            }
+        };
+
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
+        Collections.sort(references, comparator);
 
         if (!references.isEmpty()) {
 
@@ -141,7 +149,7 @@ public class InlineMethod extends BaseRefactorAction {
 
                 // Fetching Replace Element
                 PsiElement replaceElement = fetchReplaceElement(methodStatement);
-                assert replaceElement != null;
+                if (replaceElement == null) continue;
 
                 // Fetching Reference Element
                 PsiElement refElement = reference.getElement().getParent();
