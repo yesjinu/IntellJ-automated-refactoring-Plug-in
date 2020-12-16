@@ -19,6 +19,8 @@ import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -70,7 +72,15 @@ public class InlineMethodStrengthen extends InlineMethod {
     public void refactor(AnActionEvent e) {
         assert InlineMethod.refactorValid (project, method);
 
+        Comparator<PsiReference> comparator = new Comparator<PsiReference>() {
+            @Override
+            public int compare(PsiReference a, PsiReference b) {
+                return a.getElement().getText().compareTo(b.getElement().getText());
+            }
+        };
+
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
+        Collections.sort(references, comparator);
 
         // Fetching element to replace
         PsiStatement methodStatementOrigin = method.getBody().getStatements()[0];
@@ -87,7 +97,7 @@ public class InlineMethodStrengthen extends InlineMethod {
 
                 // Fetching Replace Element
                 PsiElement replaceElement = fetchReplaceElement(methodStatement);
-                assert replaceElement != null;
+                if (replaceElement == null) continue;
 
                 // Fetching Reference Element
                 PsiElement refElement = reference.getElement().getParent();
