@@ -79,7 +79,7 @@ public class NavigatePsiTest extends AbstractLightCodeInsightTestCase {
         AnActionEvent e = createAnActionEvent("file7.xml");
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
-        Assertions.assertEquals(navigator.findClass(), null);
+        Assertions.assertNull(navigator.findClass());
     }
 
     /* findMethod test 1 - select method */

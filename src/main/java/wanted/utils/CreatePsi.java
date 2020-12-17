@@ -20,7 +20,7 @@ public class CreatePsi {
      *
      * @param project target project
      * @param text    text of identifier
-     * @return
+     * @return new Identifier
      */
     public static PsiIdentifier createIdentifier(@NotNull Project project, @NotNull String text) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -132,7 +132,7 @@ public class CreatePsi {
      * @param isFirstTime parameter to check whether this function was used before for this ifStatement
      * @return newExpression which is "Left || Right"
      */
-    public static PsiExpression createMergeCondition(@NotNull Project project, @NotNull PsiExpression Left, @NotNull PsiExpression Right, @NotNull boolean isFirstTime) {
+    public static PsiExpression createMergeCondition(@NotNull Project project, @NotNull PsiExpression Left, @NotNull PsiExpression Right, boolean isFirstTime) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         String par;

@@ -1,6 +1,5 @@
 package wanted.ui;
 
-import com.intellij.icons.*;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -13,9 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import wanted.refactoring.BaseRefactorAction;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalIconFactory;
 import javax.swing.tree.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;

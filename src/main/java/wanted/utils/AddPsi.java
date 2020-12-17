@@ -5,8 +5,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,9 +37,6 @@ public class AddPsi {
      */
     public static void addField(@NotNull PsiClass targetClass, @NotNull List<PsiField> addList) {
         PsiElement element = targetClass.getLBrace();
-
-        List<PsiField> fields = new ArrayList<>();
-        fields.addAll(Arrays.asList(targetClass.getFields()));
 
         for (int i = 0; i < addList.size(); i++) {
             targetClass.addAfter(addList.get(i), element);

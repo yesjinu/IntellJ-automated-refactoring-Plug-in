@@ -21,7 +21,6 @@ import wanted.utils.NavigatePsi;
 import wanted.utils.TraverseProjectPsi;
 
 import java.util.*;
-import java.util.List;
 
 /**
  * Abstract class to provide refactoring techniques.
@@ -84,7 +83,7 @@ public abstract class BaseRefactorAction extends AnAction {
      * @see AnAction#update(AnActionEvent)
      */
     @Override
-    public void actionPerformed(AnActionEvent e) {
+    public void actionPerformed(@NotNull AnActionEvent e) {
         refactorRequestWithWindow(e);
     }
 

@@ -11,7 +11,7 @@ import wanted.test.base.LightActionTestCase;
  */
 public class RemoveUnusedParameterActionTest extends LightActionTestCase {
 
-    public RemoveUnusedParameterActionTest() {};
+    public RemoveUnusedParameterActionTest() {}
 
     protected AnAction getAction() {
         return new RemoveUnusedParameterAction();

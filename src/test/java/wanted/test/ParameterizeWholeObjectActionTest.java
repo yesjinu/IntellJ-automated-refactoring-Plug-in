@@ -6,7 +6,7 @@ import wanted.test.base.LightActionTestCase;
 
 public class ParameterizeWholeObjectActionTest extends LightActionTestCase {
 
-    public ParameterizeWholeObjectActionTest() {};
+    public ParameterizeWholeObjectActionTest() {}
 
     protected AnAction getAction() {
         return new ParameterizeWholeObjectAction();

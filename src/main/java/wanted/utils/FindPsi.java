@@ -5,9 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Class to find specific Psi element in given context.
@@ -64,7 +61,7 @@ public class FindPsi {
     public static List<PsiReferenceExpression> findMemberReference(@NotNull PsiFile file, @NotNull PsiField member) {
         List<PsiReferenceExpression> ret = new ArrayList<>();
 
-        List<PsiFile> files = Arrays.asList(file.getContainingDirectory().getFiles());
+        PsiFile[] files = file.getContainingDirectory().getFiles();
 
         for (PsiFile f : files) {
             if (f.equals(file)) {
