@@ -75,7 +75,7 @@ public class InlineMethodStrengthen extends InlineMethod {
         Comparator<PsiReference> comparator = new Comparator<PsiReference>() {
             @Override
             public int compare(PsiReference a, PsiReference b) {
-                return a.getElement().getText().compareTo(b.getElement().getText());
+                return a.getElement().getParent().getText().compareTo(b.getElement().getParent().getText());
             }
         };
 
