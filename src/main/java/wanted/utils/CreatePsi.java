@@ -2,10 +2,9 @@ package wanted.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.sun.istack.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Class to create Psi Elements.

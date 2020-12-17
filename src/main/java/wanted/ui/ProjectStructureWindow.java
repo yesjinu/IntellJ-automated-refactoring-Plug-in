@@ -7,7 +7,6 @@ import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.tree.TreeModel;
 import java.awt.*;
 
 /**

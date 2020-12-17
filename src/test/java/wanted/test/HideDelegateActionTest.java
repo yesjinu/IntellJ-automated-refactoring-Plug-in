@@ -1,9 +1,7 @@
 package wanted.test;
 
 import com.intellij.openapi.actionSystem.AnAction;
-import wanted.refactoring.EncapField;
 import wanted.refactoring.HideDelegateAction;
-import wanted.refactoring.IntroduceLocalExtensionAction;
 import wanted.test.base.LightActionTestCase;
 
 /**

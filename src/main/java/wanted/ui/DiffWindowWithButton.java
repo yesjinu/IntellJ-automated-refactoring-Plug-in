@@ -26,7 +26,6 @@ import com.intellij.diff.util.DiffUtil;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.WindowWrapper;
 import com.intellij.openapi.ui.WindowWrapperBuilder;
 import com.intellij.openapi.util.Disposer;

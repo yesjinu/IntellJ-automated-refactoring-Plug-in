@@ -1,22 +1,21 @@
 package wanted.test.Utils;
 
 import com.intellij.ide.DataManager;
-import com.intellij.lang.Language;
-import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.fileTypes.PlainTextFileType;
-import com.intellij.openapi.fileTypes.PlainTextLanguage;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectUtil;
-import com.intellij.psi.impl.file.PsiDirectoryImpl;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.concurrency.Promise;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
-import com.intellij.openapi.project.ProjectManager;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import wanted.utils.TraverseProjectPsi;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
