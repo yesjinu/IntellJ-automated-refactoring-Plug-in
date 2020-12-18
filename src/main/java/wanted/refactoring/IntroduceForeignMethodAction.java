@@ -1,9 +1,7 @@
 package wanted.refactoring;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +46,7 @@ public class IntroduceForeignMethodAction extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>Add the method to a client class and pass an object of the utility class to it as an argument.</html>";
     }
 

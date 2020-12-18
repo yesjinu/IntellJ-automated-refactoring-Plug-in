@@ -1,6 +1,6 @@
 public class basic {
-    static final double CONSTANT1 = 3.141592;
     static final String CONSTANT2 = "Good";
+    static final double CONSTANT1 = 3.141592;
 
     double area(double radius) {
         return radius * radius * CONSTANT1;

@@ -50,7 +50,7 @@ public class ExampleCodeBlock {
         setBefore_INA(); setAfter_INA();
         setBefore_IFM(); setAfter_IFM();
         setBefore_ILE(); setAfter_ILE();
-        // TODO: ADD NEW METHOD HERE
+        setBefore_HD(); setAfter_HD();
     }
 
     /* EV: Extract Variable */
@@ -413,18 +413,82 @@ public class ExampleCodeBlock {
         after.put("ILE", afterCodeBlock);
     }
 
-    /*
-    private void setBefore_EV() {
-        String beforeCodeBlock = "" + <- 복붙 후 삭제
-                ""; <- 여기다가 코드 복붙
+    private void setBefore_HD() {
+        String beforeCodeBlock =
+                "class Department {\n" +
+                        "    private Person _manager;\n" +
+                        "\n" +
+                        "    public Department(Person manager) {\n" +
+                        "        _manager = manager;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public Person getManager() {\n" +
+                        "        return _manager;\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Person {\n" +
+                        "    Department _department;\n" +
+                        "\n" +
+                        "    public Department getDepartment() {\n" +
+                        "        return _department;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public void setDepartment(Department arg) {\n" +
+                        "        _department = arg;\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Test {\n" +
+                        "    public static void main(String[] args) {\n" +
+                        "        Person john = new Person();\n" +
+                        "        Person manager;\n" +
+                        "\n" +
+                        "        manager = john.getDepartment().getManager();\n" +
+                        "    }\n" +
+                        "}";
 
-        before.put("EV", beforeCodeBlock);
+        before.put("HD", beforeCodeBlock);
     }
-    private void setAfter_EV() {
-        String afterCodeBlock = "" + <- 복붙 후 삭제
-                ""; <- 여기다가 코드 복붙
+    private void setAfter_HD() {
+        String afterCodeBlock =
+                "class Department {\n" +
+                        "    private Person _manager;\n" +
+                        "\n" +
+                        "    public Department(Person manager) {\n" +
+                        "        _manager = manager;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public Person getManager() {\n" +
+                        "        return _manager;\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Person {\n" +
+                        "    Department _department;\n" +
+                        "\n" +
+                        "    public Department getDepartment() {\n" +
+                        "        return _department;\n" +
+                        "    }\n" +
+                        "    \n" +
+                        "    public void setDepartment(Department arg) {\n" +
+                        "        _department = arg;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public Person getDepartment() {\n" +
+                        "        return _department.getManager();\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Test {\n" +
+                        "    public static void main(String[] args) {\n" +
+                        "        Person john = new Person();\n" +
+                        "        Person manager;\n" +
+                        "\n" +
+                        "        manager = john.getManager();\n" +
+                        "    }\n" +
+                        "}";
 
-        after.put("EV", afterCodeBlock);
+        after.put("HD", afterCodeBlock);
     }
-    */
 }

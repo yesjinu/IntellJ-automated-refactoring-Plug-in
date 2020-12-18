@@ -68,6 +68,11 @@ class ProjectTreeModelFactory {
                     addTreeNodes(root, rootRef, "ILE", psiClass);
                 }
 
+                // HD
+                if(HideDelegateAction.refactorValid(psiClass)) {
+                    addTreeNodes(root, rootRef, "HD", psiClass);
+                }
+
                 // RMN
                 if(psiClass instanceof PsiAnonymousClass || (psiClass.getContainingClass()!=null)){ return; }
                 Set<String> literals = new HashSet<>();

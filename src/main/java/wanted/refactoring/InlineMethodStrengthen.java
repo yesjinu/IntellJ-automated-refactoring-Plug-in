@@ -3,22 +3,15 @@ package wanted.refactoring;
 import com.google.common.annotations.VisibleForTesting;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.project.IndexNotReadyException;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.java.PsiLocalVariableImpl;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.PsiSearchHelper;
-import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.MethodSignatureUtil;
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
-import wanted.utils.NavigatePsi;
 import wanted.utils.ReplacePsi;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -44,7 +37,7 @@ public class InlineMethodStrengthen extends InlineMethod {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When a method body is more obvious than the method itself, <br/>" +
                 "Replace calls to the method with the method's content and delete the method itself.<br/><br/>" +
                 "Plus, Inline Method (Strengthen) thoroughly considers about<br/>" +
@@ -70,7 +63,15 @@ public class InlineMethodStrengthen extends InlineMethod {
     public void refactor(AnActionEvent e) {
         assert InlineMethod.refactorValid (project, method);
 
+        Comparator<PsiReference> comparator = new Comparator<PsiReference>() {
+            @Override
+            public int compare(PsiReference a, PsiReference b) {
+                return a.getElement().getParent().getText().compareTo(b.getElement().getParent().getText());
+            }
+        };
+
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
+        Collections.sort(references, comparator);
 
         // Fetching element to replace
         PsiStatement methodStatementOrigin = method.getBody().getStatements()[0];
@@ -87,7 +88,7 @@ public class InlineMethodStrengthen extends InlineMethod {
 
                 // Fetching Replace Element
                 PsiElement replaceElement = fetchReplaceElement(methodStatement);
-                assert replaceElement != null;
+                if (replaceElement == null) continue;
 
                 // Fetching Reference Element
                 PsiElement refElement = reference.getElement().getParent();
@@ -96,7 +97,7 @@ public class InlineMethodStrengthen extends InlineMethod {
                 // Step 2. Introduce Temporary Variable
                 List<PsiStatement> declarations = new ArrayList<>();
                 PsiExpression[] newParamArray =
-                        introduceTemporaryVariable(methodStatement, paramList, declarations);
+                        introduceTemporaryVariable(paramList, declarations);
 
                 // Step 3. Replace Parameters (Be Aware of DummyHolder)
                 replaceElement =
@@ -138,13 +139,11 @@ public class InlineMethodStrengthen extends InlineMethod {
     /**
      * Method that create new parameter array which is used for temporary time.
      *
-     * @param statement PsiStatement
-     * @param paramList paramList
-     * @param List<PsiStatement> declarations
-     * @return newParamArray
+     * @param paramList PsiParameterList
+     * @param declarations List<PsiStatement>
+     * @return PsiExpression[]
      */
-    private PsiExpression[] introduceTemporaryVariable(PsiStatement statement,
-                                            PsiParameterList paramList, List<PsiStatement> declarations) {
+    private PsiExpression[] introduceTemporaryVariable(PsiParameterList paramList, List<PsiStatement> declarations) {
 
         // Introduce new declarations statements
         PsiParameter[] paramArray = paramList.getParameters();

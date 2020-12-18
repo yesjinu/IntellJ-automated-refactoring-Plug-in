@@ -2,10 +2,8 @@ package wanted.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.tree.java.PsiLocalVariableImpl;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -169,8 +167,8 @@ public class ReplacePsi {
     }
 
     /**
-     * Replace variables in paramList by variables in paramRefList for element.
-     * nth variable in paramList is replaced by nth variable in paramRefList
+     * Replace variables in paramArray by variables in paramRefList for element.
+     * nth variable in paramArray is replaced by nth variable in paramRefArray
      *
      * @param element        target PsiElement to replace variables
      * @param paramArray     Array of current target parameter names

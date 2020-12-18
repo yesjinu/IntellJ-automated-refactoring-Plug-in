@@ -1,11 +1,7 @@
 package wanted.test.Utils;
 
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.impl.source.codeStyle.CodeStyleManagerImpl;
-import com.intellij.psi.impl.source.tree.PsiWhiteSpaceImpl;
 import org.junit.jupiter.api.Assertions;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.FindPsi;
@@ -154,6 +150,32 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         Assertions.assertEquals(expected, parent.getText());
     }
 
+    /* removeCondStatement test 3 : when then statement is not block statement */
+    public void testRemoveCondStatement3() {
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        /* Parent method that contains IfStatement to remove */
+        String parentString = "public boolean dummy() {\n"
+                + "int x = 1;\n"
+                + "int y = 1;"
+                + "if(x==1) y = 1;\n"
+                + "}";
+        PsiMethod parent = factory.createMethodFromText(parentString, null);
+
+        /* IfStatement to modify */
+        PsiIfStatement ifStatement = (PsiIfStatement) parent.getChildren()[9].getChildren()[5];
+
+        ReplacePsi.removeCondStatement(project, ifStatement);
+
+        String expected = "public boolean dummy() {\n"
+                + "int x = 1;\n"
+                + "int y = 1;y = 1;\n"
+                + "}";
+
+        Assertions.assertEquals(expected, parent.getText());
+    }
+
     /* mergeCondExpr test 1: when condition hasn't been merged yet */
     public void testMergeCondExpr1() {
         Project project = getProject();
@@ -275,7 +297,29 @@ public class ReplacePsiTest extends AbstractLightCodeInsightTestCase {
         }
     }
 
-    /* ReplaceParamToArgs test */
+
+    /* ReplaceVariable test */
+    public void testReplaceVariable(){
+        Project project = getProject();
+        PsiElementFactory factory = PsiElementFactory.getInstance(project);
+
+        /* expression to replace variables */
+        PsiElement element = factory.createStatementFromText("int x = y;", null);
+        Assertions.assertTrue(element.isValid());
+
+        String[] paramArray = {"x", "y"};
+        String[] paramRefArray = {"b", "a"};
+
+        // apply replace parameter to arguments
+        PsiElement replaceElement = ReplacePsi.replaceVariable(project, element, paramArray, paramRefArray);
+
+        String expected = "int b = a;";
+
+        Assertions.assertTrue(replaceElement.isValid());
+        Assertions.assertEquals(expected, replaceElement.getText());
+    }
+
+
     public void testChangeModifier() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);

@@ -2,9 +2,9 @@ package wanted.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.sun.istack.NotNull;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Class to create Psi Elements.
@@ -16,12 +16,13 @@ import java.util.Set;
  */
 public class CreatePsi {
     /**
-     * Return empty block statement
+     * Return PsiIdentifier constructed from text
      *
-     * @param project Project
-     * @return Newly created Empty PsiBlockStatement
+     * @param project target project
+     * @param text    text of identifier
+     * @return new Identifier
      */
-    public static PsiIdentifier createIdentifier(@NotNull Project project, String text) {
+    public static PsiIdentifier createIdentifier(@NotNull Project project, @NotNull String text) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         return factory.createIdentifier(text);
@@ -30,12 +31,12 @@ public class CreatePsi {
     /**
      * Returns newly created statement based on string.
      *
-     * @param project Project
+     * @param project      Project
      * @param statAsString Statement as String
      * @return Newly created PsiStatement
      */
     public static PsiStatement createStatement(@NotNull Project project,
-                                               String statAsString) {
+                                               @NotNull String statAsString) {
 
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
@@ -131,7 +132,7 @@ public class CreatePsi {
      * @param isFirstTime parameter to check whether this function was used before for this ifStatement
      * @return newExpression which is "Left || Right"
      */
-    public static PsiExpression createMergeCondition(@NotNull Project project, @NotNull PsiExpression Left, @NotNull PsiExpression Right, @NotNull boolean isFirstTime) {
+    public static PsiExpression createMergeCondition(@NotNull Project project, @NotNull PsiExpression Left, @NotNull PsiExpression Right, boolean isFirstTime) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
 
         String par;
@@ -176,11 +177,11 @@ public class CreatePsi {
      * Return variable declaration statement,
      * which initializes its value with given method call
      *
-     * @param project   target project
-     * @param typeElem  element of variable
-     * @param varName   name of variable
+     * @param project       target project
+     * @param typeElem      element of variable
+     * @param varName       name of variable
      * @param methodCallExp method call to initialize the variable
-     * @return  Newly created declaration statement
+     * @return Newly created declaration statement
      */
     public static PsiDeclarationStatement createGetDeclarationStatement(@NotNull Project project, @NotNull PsiTypeElement typeElem,
                                                                         @NotNull String varName, @NotNull PsiMethodCallExpression methodCallExp) {
@@ -222,32 +223,32 @@ public class CreatePsi {
      *
      * @param project   target project
      * @param condition condition of ifStatement
-     * @param thenSet   set of expressions in then statement that should be check not null
-     * @param elseSet   set of expressions in else statement that should be check not null
+     * @param thenList   set of expressions in then statement that should be check not null
+     * @param elseList   set of expressions in else statement that should be check not null
      *                  either thenSet.size() or elseSet.size() is not empty
      * @return Assert Statement
      */
-    public static PsiStatement createAssertStatement(@NotNull Project project, @NotNull PsiExpression condition, @NotNull Set<PsiReferenceExpression> thenSet, @NotNull Set<PsiReferenceExpression> elseSet) {
+    public static PsiStatement createAssertStatement(@NotNull Project project, @NotNull PsiExpression condition, @NotNull List<PsiReferenceExpression> thenList, @NotNull List<PsiReferenceExpression> elseList) {
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
         String context = "";
 
-        if (thenSet.isEmpty()) {
+        if (thenList.isEmpty()) {
             context = "(" + condition.getText() + ")" + " || " + "(";
             boolean first = true;
-            for (PsiReferenceExpression exp : elseSet) {
+            for (PsiReferenceExpression exp : elseList) {
                 if (first) {
-                    if (elseSet.size() == 1) context = context + exp.getText() + " != null";
+                    if (elseList.size() == 1) context = context + exp.getText() + " != null";
                     else context = context + "(" + exp.getText() + " != null)";
                 } else context = context + " && " + "(" + exp.getText() + " != null)";
                 first = false;
             }
             context = context + ")";
-        } else if (elseSet.isEmpty()) {
+        } else if (elseList.isEmpty()) {
             context = "!(" + condition.getText() + ")" + " || " + "(";
             boolean first = true;
-            for (PsiReferenceExpression exp : thenSet) {
+            for (PsiReferenceExpression exp : thenList) {
                 if (first) {
-                    if (thenSet.size() == 1) context = context + exp.getText() + " != null";
+                    if (thenList.size() == 1) context = context + exp.getText() + " != null";
                     else context = context + "(" + exp.getText() + " != null)";
                 } else context = context + " && " + "(" + exp.getText() + " != null)";
                 first = false;
@@ -255,11 +256,11 @@ public class CreatePsi {
             context = context + ")";
         } else {
             context = "(" + "(" + condition.getText() + ")";
-            for (PsiReferenceExpression exp : thenSet) {
+            for (PsiReferenceExpression exp : thenList) {
                 context = context + " && " + "(" + exp.getText() + " != null)";
             }
             context = context + ")" + " || " + "(" + "!(" + condition.getText() + ")";
-            for (PsiReferenceExpression exp : elseSet) {
+            for (PsiReferenceExpression exp : elseList) {
                 context = context + " && " + "(" + exp.getText() + " != null)";
             }
             context = context + ")";

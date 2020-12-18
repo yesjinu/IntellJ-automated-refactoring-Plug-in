@@ -6,7 +6,6 @@ import com.intellij.psi.PsiLiteralExpression;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.concurrency.Promise;
 import org.junit.jupiter.api.Assertions;
-import wanted.refactoring.SelfEncapField;
 import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.utils.NavigatePsi;
 
@@ -80,7 +79,7 @@ public class NavigatePsiTest extends AbstractLightCodeInsightTestCase {
         AnActionEvent e = createAnActionEvent("file7.xml");
         NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
 
-        Assertions.assertEquals(navigator.findClass(), null);
+        Assertions.assertNull(navigator.findClass());
     }
 
     /* findMethod test 1 - select method */

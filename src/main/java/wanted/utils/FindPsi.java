@@ -5,9 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Class to find specific Psi element in given context.
@@ -64,7 +61,7 @@ public class FindPsi {
     public static List<PsiReferenceExpression> findMemberReference(@NotNull PsiFile file, @NotNull PsiField member) {
         List<PsiReferenceExpression> ret = new ArrayList<>();
 
-        List<PsiFile> files = Arrays.asList(file.getContainingDirectory().getFiles());
+        PsiFile[] files = file.getContainingDirectory().getFiles();
 
         for (PsiFile f : files) {
             if (f.equals(file)) {
@@ -173,6 +170,24 @@ public class FindPsi {
             @Override
             public void visitReferenceElement(PsiJavaCodeReferenceElement elem) {
                 super.visitReferenceElement(elem);
+                result.add(elem);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiAssignmentExpression Object in current PSI Element
+     *
+     * @param element the PSI Element.
+     * @return List<PsiAssignmentExpression> if element has PsiAssignmentExpression, empty() otherwise
+     */
+    public static List<PsiAssignmentExpression> findPsiAssignmentExpressions(PsiElement element) {
+        List<PsiAssignmentExpression> result = new ArrayList<>();
+        element.accept(new JavaRecursiveElementVisitor() {
+            @Override
+            public void visitAssignmentExpression(PsiAssignmentExpression elem) {
+                super.visitAssignmentExpression(elem);
                 result.add(elem);
             }
         });
@@ -457,6 +472,20 @@ public class FindPsi {
         List<PsiJavaToken> result = new ArrayList<>();
         for (PsiElement elem : element.getChildren()) {
             if (elem instanceof PsiJavaToken) result.add((PsiJavaToken) elem);
+        }
+        return result;
+    }
+
+    /**
+     * Return the List containing PsiMethodCallExpression Object in current PsiElement children
+     *
+     * @param element the PsiElement.
+     * @return List<PsiMethodCallExpression> if element has PsiMethodCallExpression, empty() otherwise
+     */
+    public static List<PsiMethodCallExpression> findChildPsiMethodCallExpressions(PsiElement element) {
+        List<PsiMethodCallExpression> result = new ArrayList<>();
+        for (PsiElement elem : element.getChildren()) {
+            if (elem instanceof PsiMethodCallExpression) result.add((PsiMethodCallExpression) elem);
         }
         return result;
     }

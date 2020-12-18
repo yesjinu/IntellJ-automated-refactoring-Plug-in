@@ -1,5 +1,13 @@
 import java.util.Date;
 
+class Test {
+    ModifiedDate previousEnd = new ModifiedDate(2020, 11, 1);
+
+    void sendReport() {
+        ModifiedDate nextDay = previousEnd.nextDay();
+    }
+}
+
 class ModifiedDate extends Date {
     public ModifiedDate(int arg1, int arg2, int arg3) {
         super(arg1, arg2, arg3);
@@ -7,13 +15,5 @@ class ModifiedDate extends Date {
 
     ModifiedDate nextDay() {
         return new ModifiedDate(2, getMonth(), 1);
-    }
-}
-
-class Test {
-    ModifiedDate previousEnd = new ModifiedDate(2020, 11, 1);
-
-    void sendReport() {
-        ModifiedDate nextDay = previousEnd.nextDay();
     }
 }

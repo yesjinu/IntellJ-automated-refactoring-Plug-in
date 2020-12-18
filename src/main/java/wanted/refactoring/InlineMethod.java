@@ -9,7 +9,6 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ClassInheritorsSearch;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.MethodSignatureUtil;
-import org.jetbrains.annotations.NotNull;
 import wanted.utils.CreatePsi;
 import wanted.utils.FindPsi;
 import wanted.utils.NavigatePsi;
@@ -40,7 +39,7 @@ public class InlineMethod extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When a method body is more obvious than the method itself, <br/>" +
                 "Replace calls to the method with the method's content and delete the method itself.</html>";
     }
@@ -127,7 +126,15 @@ public class InlineMethod extends BaseRefactorAction {
     public void refactor(AnActionEvent e) {
         assert refactorValid (project, method);
 
+        Comparator<PsiReference> comparator = new Comparator<PsiReference>() {
+            @Override
+            public int compare(PsiReference a, PsiReference b) {
+                return a.getElement().getParent().getText().compareTo(b.getElement().getParent().getText());
+            }
+        };
+
         List<PsiReference> references = new ArrayList<>(ReferencesSearch.search(method).findAll());
+        Collections.sort(references, comparator);
 
         if (!references.isEmpty()) {
 
@@ -142,7 +149,7 @@ public class InlineMethod extends BaseRefactorAction {
 
                 // Fetching Replace Element
                 PsiElement replaceElement = fetchReplaceElement(methodStatement);
-                assert replaceElement != null;
+                if (replaceElement == null) continue;
 
                 // Fetching Reference Element
                 PsiElement refElement = reference.getElement().getParent();

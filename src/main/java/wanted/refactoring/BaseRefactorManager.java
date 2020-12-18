@@ -10,6 +10,7 @@ public class BaseRefactorManager {
 
     /* Design Pattern: Singleton */
     protected BaseRefactorManager () { }
+
     public static BaseRefactorManager getInstance() {
         if (manager == null)
             manager = new BaseRefactorManager();
@@ -29,6 +30,9 @@ public class BaseRefactorManager {
                 return new IntroduceForeignMethodAction();
             case "ILE":
                 return new IntroduceLocalExtensionAction();
+            case "HD":
+                return new HideDelegateAction();
+
 
             // Scope: Field
             case "SEF":

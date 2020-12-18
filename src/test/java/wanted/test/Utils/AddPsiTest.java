@@ -5,13 +5,11 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import org.junit.jupiter.api.Assertions;
-import wanted.test.base.AbstractLightCodeInsightTestCase;
 import wanted.test.base.LightActionTestCase;
 import wanted.utils.AddPsi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Test class for 'AddPsi' util
@@ -34,7 +32,6 @@ public class AddPsiTest extends LightActionTestCase {
     public void testAddMethod() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
-//        PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
 
         final PsiClass targetClass = factory.createClass("Temp");
 
@@ -104,7 +101,7 @@ public class AddPsiTest extends LightActionTestCase {
     }
 
     // test AddPsi::addField - case 2 : Add two fields to an filled class
-    // addFields method should add fields at the end of the Psifield that already exists
+    // addFields method should add fields before Psifield that already exists
     public void testAddField2() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -124,7 +121,7 @@ public class AddPsiTest extends LightActionTestCase {
         fieldList.add(field2);
 
         String expected =
-                "public class Temp { char c = 'c';int a = 0;boolean b = true;void doNothing() {}}";
+                "public class Temp {int a = 0;boolean b = true; char c = 'c';void doNothing() {}}";
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
             AddPsi.addField(targetClass, fieldList);

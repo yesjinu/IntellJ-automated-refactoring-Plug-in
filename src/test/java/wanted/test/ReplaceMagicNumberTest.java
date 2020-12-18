@@ -90,4 +90,14 @@ public class ReplaceMagicNumberTest extends LightActionTestCase {
     public void testReplaceMagicNumber12() throws Exception {
         doTest();
     }
+
+    /* Test 13: when selected literal expression is used on field -> need to add constant before field declaration */
+    public void testReplaceMagicNumber13() throws Exception {
+        doTest();
+    }
+
+    /* Test 14: replace with pre-defined constant(general case) */
+    public void testReplaceMagicNumber14() throws Exception {
+        doTest();
+    }
 }

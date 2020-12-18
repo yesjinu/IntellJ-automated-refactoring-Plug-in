@@ -16,6 +16,30 @@ import java.util.*;
 public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
     /* createSetMethod test : create set method call */
+    public void testCreateIdentifier() {
+        Project project = getProject();
+
+        String text = "test";
+        PsiElement createElement = CreatePsi.createIdentifier(project, text);
+
+        String expected = "test";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
+    public void testCreateStatement() {
+        Project project = getProject();
+
+        String text = "int x = 1;";
+        PsiElement createElement = CreatePsi.createStatement(project, text);
+
+        String expected = "int x = 1;";
+
+        Assertions.assertTrue(createElement.isValid());
+        Assertions.assertEquals(expected, createElement.getText());
+    }
+
     public void testCreateSetMethod() {
         Project project = getProject();
         PsiElementFactory factory = PsiElementFactory.getInstance(project);
@@ -209,13 +233,13 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiExpression condition = factory.createExpressionFromText("x==1", null);
 
-        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        List<PsiReferenceExpression> thenSet = new ArrayList<>();
         PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
         thenSet.add(expression1);
         PsiReferenceExpression expression2 = (PsiReferenceExpression) factory.createExpressionFromText("b", null);
         thenSet.add(expression2);
 
-        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        List<PsiReferenceExpression> elseSet = new ArrayList<>();
 
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
@@ -223,7 +247,7 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
         String expected2 = "assert (!(x==1) || ((b != null) && (a != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertTrue(expected1.equals(createElement.getText())||expected2.equals(createElement.getText()));
+        Assertions.assertTrue(expected1.equals(createElement.getText()) || expected2.equals(createElement.getText()));
     }
 
     /* CreateAssertStatement test 2: thenSet is empty */
@@ -233,20 +257,20 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiExpression condition = factory.createExpressionFromText("x==1", null);
 
-        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        List<PsiReferenceExpression> elseSet = new ArrayList<>();
         PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
         elseSet.add(expression1);
         PsiReferenceExpression expression2 = (PsiReferenceExpression) factory.createExpressionFromText("b", null);
         elseSet.add(expression2);
 
-        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        List<PsiReferenceExpression> thenSet = new ArrayList<>();
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
         String expected1 = "assert ((x==1) || ((a != null) && (b != null)));";
         String expected2 = "assert ((x==1) || ((b != null) && (a != null)));";
 
         Assertions.assertTrue(createElement.isValid());
-        Assertions.assertTrue(expected1.equals(createElement.getText())||expected2.equals(createElement.getText()));
+        Assertions.assertTrue(expected1.equals(createElement.getText()) || expected2.equals(createElement.getText()));
     }
 
     /* CreateAssertStatement test 3: both elseSet and thenSet are not empty */
@@ -256,13 +280,13 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiExpression condition = factory.createExpressionFromText("x==1", null);
 
-        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        List<PsiReferenceExpression> thenSet = new ArrayList<>();
         PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
         thenSet.add(expression1);
         PsiReferenceExpression expression2 = (PsiReferenceExpression) factory.createExpressionFromText("b", null);
         thenSet.add(expression2);
 
-        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        List<PsiReferenceExpression> elseSet = new ArrayList<>();
         PsiReferenceExpression expression3 = (PsiReferenceExpression) factory.createExpressionFromText("c", null);
         elseSet.add(expression3);
         PsiReferenceExpression expression4 = (PsiReferenceExpression) factory.createExpressionFromText("d", null);
@@ -287,11 +311,11 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiExpression condition = factory.createExpressionFromText("x==1", null);
 
-        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        List<PsiReferenceExpression> thenSet = new ArrayList<>();
         PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
         thenSet.add(expression1);
 
-        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        List<PsiReferenceExpression> elseSet = new ArrayList<>();
 
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 
@@ -309,11 +333,11 @@ public class CreatePsiTest extends AbstractLightCodeInsightTestCase {
 
         PsiExpression condition = factory.createExpressionFromText("x==1", null);
 
-        Set<PsiReferenceExpression> elseSet = new HashSet<>();
+        List<PsiReferenceExpression> elseSet = new ArrayList<>();
         PsiReferenceExpression expression1 = (PsiReferenceExpression) factory.createExpressionFromText("a", null);
         elseSet.add(expression1);
 
-        Set<PsiReferenceExpression> thenSet = new HashSet<>();
+        List<PsiReferenceExpression> thenSet = new ArrayList<>();
 
         PsiStatement createElement = CreatePsi.createAssertStatement(project, condition, thenSet, elseSet);
 

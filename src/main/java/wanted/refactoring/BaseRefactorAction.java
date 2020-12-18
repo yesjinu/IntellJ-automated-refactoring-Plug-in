@@ -21,7 +21,6 @@ import wanted.utils.NavigatePsi;
 import wanted.utils.TraverseProjectPsi;
 
 import java.util.*;
-import java.util.List;
 
 /**
  * Abstract class to provide refactoring techniques.
@@ -31,9 +30,6 @@ import java.util.List;
  * @author Chanyoung Kim
  */
 public abstract class BaseRefactorAction extends AnAction {
-
-    protected int changedCount = 0;
-    private String basePath;
 
     /**
      * Returns the story ID.
@@ -55,7 +51,7 @@ public abstract class BaseRefactorAction extends AnAction {
      *
      * @return description of each stories as a sting format
      */
-    public abstract String descripton();
+    public abstract String description();
 
     /**
      * Returns the precondition of each story.
@@ -87,7 +83,7 @@ public abstract class BaseRefactorAction extends AnAction {
      * @see AnAction#update(AnActionEvent)
      */
     @Override
-    public void actionPerformed(AnActionEvent e) {
+    public void actionPerformed(@NotNull AnActionEvent e) {
         refactorRequestWithWindow(e);
     }
 
@@ -139,13 +135,10 @@ public abstract class BaseRefactorAction extends AnAction {
      *
      * @param e AnActionEvent
      */
-    public void refactorRequest(AnActionEvent e)
-    {
-        if(!refactorValid(e)) {
+    public void refactorRequest(AnActionEvent e) {
+        if (!refactorValid(e)) {
             Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);
-        }
-        else
-        {
+        } else {
             refactor(e);
         }
     }
@@ -156,12 +149,10 @@ public abstract class BaseRefactorAction extends AnAction {
      *
      * @param e AnActionEvent
      */
-    private void refactorRequestWithWindow(AnActionEvent e)
-    {
-        if(!refactorValid(e)) {
+    private void refactorRequestWithWindow(AnActionEvent e) {
+        if (!refactorValid(e)) {
             Messages.showMessageDialog("Nothing to do", "Wanted Refactoring", null);
-        }
-        else {
+        } else {
             NavigatePsi navigator = NavigatePsi.NavigatorFactory(e);
             Project project = navigator.findProject();
             List<PsiFile> fileList = TraverseProjectPsi.findFile(project);
@@ -183,7 +174,7 @@ public abstract class BaseRefactorAction extends AnAction {
                     requestList.add(new SimpleDiffRequest(f.getName(), contentBefore, contentAfter, "Original", "Refactor"));
 
                     changeMap.put(f, f.getText());
-                    WriteCommandAction.runWriteCommandAction(project, ()-> {
+                    WriteCommandAction.runWriteCommandAction(project, () -> {
                         Document document = PsiDocumentManager.getInstance(project).getDocument(f);
                         document.setText(fileMap.get(f));
                     });

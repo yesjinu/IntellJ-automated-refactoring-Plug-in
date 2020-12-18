@@ -38,7 +38,7 @@ public class ConsolidateDupCondFrag extends BaseRefactorAction {
 
     /* Returns the description of each story. (in html-style) */
     @Override
-    public String descripton() {
+    public String description() {
         return "<html>When several statements from the first or last for every condition,<br/>" +
                "move statements out from if statement.</html>";
     }

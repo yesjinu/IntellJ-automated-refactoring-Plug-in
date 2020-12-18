@@ -15,7 +15,7 @@
     <depends>com.intellij.java</depends>
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <toolWindow id="Project Structure" anchor="right" factoryClass="wanted.ui.MyToolWindowFactory"/>
+        <toolWindow id="Wanted Refactoring" anchor="right" factoryClass="wanted.ui.MyToolWindowFactory" icon="/general/settings.svg"/>
     </extensions>
 
     <actions>
@@ -26,6 +26,8 @@
                     text="Introduce Foreign Method" description="Moving Features between Objects: Introduce Foreign Method"/>
             <action id="Wanted-Refactoring.ILE" class="wanted.refactoring.IntroduceLocalExtensionAction"
                     text="Introduce Local Extension" description="Moving Features between Objects: Introduce Local Extension"/>
+            <action id="Wanted-Refactoring.HD" class="wanted.refactoring.HideDelegateAction"
+                    text="Hide Delegate" description="Moving Features between Objects: Hide Delegate"/>
             <action id="Wanted-Refactoring.RPA" class="wanted.refactoring.RemoveUnusedParameterAction"
                     text="Remove Unused Parameter" description="Simplifying Method Calls: Remove Unused Parameter"/>
             <action id="Wanted-Refactoring.SEF" class="wanted.refactoring.SelfEncapField" text="Self Encapsulate Field"

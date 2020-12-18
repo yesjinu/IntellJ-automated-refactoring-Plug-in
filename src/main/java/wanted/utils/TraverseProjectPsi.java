@@ -4,6 +4,7 @@ import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ public class TraverseProjectPsi {
         final Set<PsiPackage> rootPackages = new HashSet<>();
         PsiElementVisitor visitor = new PsiElementVisitor() {
             @Override
-            public void visitDirectory(PsiDirectory dir) {
+            public void visitDirectory(@NotNull PsiDirectory dir) {
                 final PsiPackage psiPackage = JavaDirectoryService.getInstance().getPackage(dir);
                 if (psiPackage != null && !PackageUtil.isPackageDefault(psiPackage))
                     rootPackages.add(psiPackage);
@@ -58,14 +59,14 @@ public class TraverseProjectPsi {
 
         PsiElementVisitor visitor = new PsiElementVisitor() {
             @Override
-            public void visitFile(PsiFile file) {
+            public void visitFile(@NotNull PsiFile file) {
                 if (file instanceof PsiJavaFile) {
                     rootClasses.addAll(Arrays.asList(((PsiJavaFile) file).getClasses()));
                 }
             }
 
             @Override
-            public void visitDirectory(PsiDirectory dir) {
+            public void visitDirectory(@NotNull PsiDirectory dir) {
                 final PsiPackage psiPackage = JavaDirectoryService.getInstance().getPackage(dir);
                 if (psiPackage != null && !PackageUtil.isPackageDefault(psiPackage)) {
 
@@ -91,14 +92,14 @@ public class TraverseProjectPsi {
      * Returns list of file in the project
      *
      * @param project A Project
-     * @return
+     * @return list of files
      */
     public static List<PsiFile> findFile(Project project) {
         List<PsiFile> fileList = new ArrayList<>();
 
         PsiElementVisitor visitor = new PsiElementVisitor() {
             @Override
-            public void visitFile(PsiFile file) {
+            public void visitFile(@NotNull PsiFile file) {
                 if (file != null) fileList.add(file);
             }
 

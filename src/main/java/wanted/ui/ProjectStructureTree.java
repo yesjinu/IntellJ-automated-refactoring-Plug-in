@@ -1,6 +1,5 @@
 package wanted.ui;
 
-import com.intellij.icons.*;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -13,9 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import wanted.refactoring.BaseRefactorAction;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalIconFactory;
 import javax.swing.tree.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
@@ -97,7 +94,7 @@ class ProjectStructureTree extends Tree {
                         }
                         append("[" + fileName + "]" + " Line " + String.valueOf(line));
                     }
-                    else if (v instanceof PsiLiteralExpression){ // TODO
+                    else if (v instanceof PsiLiteralExpression){
                         setIcon(Icon3);
                         String fileName = ((PsiLiteralExpression) v).getContainingFile().getName();
                         append("[" + fileName + "] " + ((PsiLiteralExpression)v).getValue().toString());

@@ -31,8 +31,6 @@ public class RefactorAboutWindow extends DialogWrapper {
     private JLabel precondition_title;
     private JLabel precondition;
 
-    private JComponent beforeEditor, afterEditor;
-
     private BaseRefactorAction refactorAction;
 
     public RefactorAboutWindow(BaseRefactorAction refactorAction) {
@@ -90,7 +88,7 @@ public class RefactorAboutWindow extends DialogWrapper {
         description_title.setForeground(JBColor.BLUE);
         descriptionPanel.add(description_title, BorderLayout.NORTH);
 
-        description = new JLabel(refactorAction.descripton());
+        description = new JLabel(refactorAction.description());
         description.setFont(new Font("Calibri", Font.PLAIN, 16));
         descriptionPanel.add(description, BorderLayout.WEST);
 

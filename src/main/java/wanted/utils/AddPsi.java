@@ -3,11 +3,8 @@ package wanted.utils;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
-import com.sun.istack.NotNull;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,27 +30,17 @@ public class AddPsi {
 
     /**
      * add all PsiField of addList to target class
-     * append at end of existing fields
+     * append before existing fields
      *
      * @param targetClass class to modify
      * @param addList     PsiFields to add, element of list will be appended in order
      */
     public static void addField(@NotNull PsiClass targetClass, @NotNull List<PsiField> addList) {
-        PsiElement element;
+        PsiElement element = targetClass.getLBrace();
 
-        List<PsiField> fields = new ArrayList<>();
-        fields.addAll(Arrays.asList(targetClass.getFields()));
-
-        Collections.reverse(addList);
-
-        for (PsiElement e : addList) {
-            if (fields.size() == 0) {
-                element = targetClass.getLBrace();
-            } else {
-                element = fields.get(fields.size() - 1);
-            }
-
-            targetClass.addAfter(e, element);
+        for (int i = 0; i < addList.size(); i++) {
+            targetClass.addAfter(addList.get(i), element);
+            element = targetClass.getFields()[i];
         }
     }
 }

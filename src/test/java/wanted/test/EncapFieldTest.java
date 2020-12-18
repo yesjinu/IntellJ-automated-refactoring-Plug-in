@@ -23,26 +23,26 @@ public class EncapFieldTest extends LightActionTestCase {
     /* Test 1: simple case */
     public void testEncapField1() throws Exception {
         String[] beforeFiles = {"EF_owner.java", "EF_other.java"};
-        doTestDirectory(beforeFiles);
+        doTestFoldersMulti(beforeFiles, 1);
     }
 
     /* Test 2: complicate case - complicate usage & multiple files */
     public void testEncapField2() throws Exception {
         String[] beforeFiles = {"EF_owner.java", "EF_user1.java", "EF_user2.java"};
-        doTestDirectory(beforeFiles);
+        doTestFoldersMulti(beforeFiles, 2);
     }
 
     /* Test 3: Apply encapsulate for inherited class */
     public void testEncapField3() throws Exception {
         String[] beforeFiles = {"EF_owner.java", "EF_user1.java"};
-        doTestDirectory(beforeFiles);
+        doTestFoldersMulti(beforeFiles, 3);
     }
 
     /* Test 4: Do not refactor private field */
     public void testEncapField4() throws Exception {
         String[] beforeFiles = {"EF_owner.java", "EF_other.java"};
         try {
-            doTestDirectory(beforeFiles); // This cause error since refactorValid() returns false and Message dialog appears
+            doTestFoldersMulti(beforeFiles, 4); // This cause error since refactorValid() returns false and Message dialog appears
         } catch (RuntimeException e) {
             // nothing
         }
@@ -52,7 +52,7 @@ public class EncapFieldTest extends LightActionTestCase {
     public void testEncapField5() throws Exception {
         String[] beforeFiles = {"EF_owner.java", "EF_other.java"};
         try {
-            doTestDirectory(beforeFiles); // This cause error since refactorValid() returns false and Message dialog appears
+            doTestFoldersMulti(beforeFiles, 5); // This cause error since refactorValid() returns false and Message dialog appears
         } catch (RuntimeException e) {
             // nothing
         }
@@ -62,7 +62,7 @@ public class EncapFieldTest extends LightActionTestCase {
     public void testEncapField6() throws Exception {
         String[] beforeFiles = {"EF_owner.java", "EF_other.java"};
         try {
-            doTestDirectory(beforeFiles); // This cause error since refactorValid() returns false and Message dialog appears
+            doTestFoldersMulti(beforeFiles, 6); // This cause error since refactorValid() returns false and Message dialog appears
         } catch (RuntimeException e) {
             // nothing
         }
@@ -71,6 +71,6 @@ public class EncapFieldTest extends LightActionTestCase {
     /* Test 7: when there's no other files in directory */
     public void testEncapField7() throws Exception {
         String[] beforeFiles = {"EF_owner.java"};
-        doTestDirectory(beforeFiles);
+        doTestFoldersMulti(beforeFiles, 7);
     }
 }

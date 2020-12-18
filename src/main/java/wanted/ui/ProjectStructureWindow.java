@@ -7,7 +7,6 @@ import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.tree.TreeModel;
 import java.awt.*;
 
 /**
@@ -39,15 +38,6 @@ class ProjectStructureWindow {
         return topContainer;
     }
 
-    /**
-     * Returns the current tree model for this plugin
-     *
-     * @return a tree model
-     */
-    @NotNull
-    public TreeModel getProjectStructureTree() {
-        return tree.getModel();
-    }
 
     /**
      * Returns the open project of the current IntelliJ IDEA window
