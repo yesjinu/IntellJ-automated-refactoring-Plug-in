@@ -1,12 +1,8 @@
-Team ``Wanted``
-=======================
+## Project Description
 
-Project Description
--------------------
+**Automated Refactorings**
 
-_**Automated Refactorings**_
-
-[Image1](image/6.png)
+![Image1](image/6.png)
 
 Every programmer, including our students, has their own coding style. However, there are some coding styles that contains multiple duplicates, unused parameters, messy class structures, and so on. These kinds of coding style would make their code look messy, hard to read, and most of all, hard to fix or add some new features. As a result, the concept of 'refactoring' was introduced, and these process can make your code more readable, understandable, and comprehensive.
 
@@ -17,25 +13,35 @@ Our project, 'Automated Refactorings' Plugin deals refactoring by listing availa
 And most of all, every members are interested in code refactoring and want to study clean code. With this project, we can gradually learn about refactoring techniques.
 
 
-HOW TO USE
----------------
+## HOW TO USE
 
 ![리팩토링](image/10.png)
 
-1. 화면 우측 탭의 **Refactoring Plugin**을 누르면, 현재 열려있는 있는 **파일**에 대해 **refactoring 가능한 항목들**이 리스팅
-2. 특정 refactoring 항목을 **더블 클릭**하면, **새로운 팝업 창**이 띄워져 refactoring **전과 후 코드**를 비교한 이후, 코드에 적용할 수 있음
+1. Plug-in 설치 후, 화면 우측 탭의 Refactoring Plugin을 클릭
+2. 현재 열려있는 있는 파일에 대해 refactoring 가능한 항목들이 리스팅
+3. 특정 refactoring 항목을 더블 클릭
+4. 새로운 팝업 창이 띄워져 refactoring 이전, 이후 코드를 비교한 이후, 코드에 적용
 
 &nbsp;
 
-# `Analysis`
+## Structure Overview
+### Refactoring
+![pic](image/refactoring_overview.png)
+
+### Utils
+![pic](image/utils_overview.png)
+
+### UI
+![pic](image/ui_overview.png)
+
+
+## Analysis
 ### Test Coverage : 88.5 %
 ![image](image/coverage.png)
 
 &nbsp;
 
 ### GUI scenario testing : Complete
-
-<details>
 
 1. 플러그인은 프로젝트의 코드를 자동으로 탐색하여 리팩토링이 적용 가능한 코드를 트리 형태로 리스팅해준다. 리팩토링 가능 항목은 트리 형태로 제시되는데, 가장 상위 항목은 프로젝트이며, 그 하위에 가능한 리팩토링 테크닉 카테고리가 있고, 각각의 카테고리 하위에 리팩토링 가능한 클래스, 메소드의 이름이나 line number를 표시한다. 
 
@@ -76,32 +82,5 @@ HOW TO USE
 10. (8에 이어) 컨텍스트 메뉴를 선택하면 해당 리팩토링에 대한 precondition과 postcondition, 그리고 간단한 코드 예시를 볼 수 있는 팝업창이 열린다. OK버튼을 누르면 창이 닫히고 프로젝트 화면으로 돌아온다.
 
 ![10](image/10.png)
-
-</details>
-
-&nbsp;
-
-
-Members
--------
-
-[Mintae Kim](@shsesther928), [Chanyoung Kim](@shinychan95), [Jinu Noh](@jinunoh), [Seungjae Yoo](@sjyoo), [Seha Park](@rachesh)
-
-&nbsp;
-
-Role
--------------------
-
-| Role | ~ iteration 2 | iteration 3 ~ |
-| -------- | ------ | ------ |
-| Team/Dev leader | [Mintae Kim](@shsesther928) | [Seungjae Yoo](@sjyoo)|
-| QA leader | [Chanyoung Kim](@shinychan95)| [Jinu Noh](@jinunoh) |
-| Planning leader | [Jinu Noh](@jinunoh)| [Seha Park](@rachesh) |
-| Presenter  | [Seungjae Yoo](@sjyoo) | [Chanyoung Kim](@shinychan95) |
-| Good man | [Seha Park](@rachesh)| [Mintae Kim](@shsesther928) |
-
-
-&nbsp;
-
 
 
