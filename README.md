@@ -1,0 +1,1 @@
+# IntellJ-automated-refactoring-Plug-in
